@@ -1,7 +1,7 @@
 # Graphics 
   computer graphics learning 
   some simple demo
-# Frame
+# Depend
   angular
   
   three.js
