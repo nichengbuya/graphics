@@ -17,7 +17,8 @@ import { FormComponent } from './view/form/form.component';
 import { ProfileEditorComponent } from './components/profile-editor/profile-editor.component';
 import { ObservableComponent } from './view/observable/observable.component';
 import { WorldComponent } from './view/world/world.component';
-import { SceneComponent } from './components/scene/scene.component';
+import { ClothComponent } from './components/cloth/cloth.component';
+import { ShaderComponent } from './components/shader/shader.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,7 +32,8 @@ import { SceneComponent } from './components/scene/scene.component';
     ProfileEditorComponent,
     ObservableComponent,
     WorldComponent,
-    SceneComponent
+    ClothComponent,
+    ShaderComponent
   ],
   imports: [
     BrowserModule,

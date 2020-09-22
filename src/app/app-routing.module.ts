@@ -7,6 +7,8 @@ import { DashboardComponent } from './view/dashboard/dashboard.component';
 import { FormComponent } from './view/form/form.component';
 import { ObservableComponent } from './view/observable/observable.component';
 import { WorldComponent } from './view/world/world.component';
+import { ClothComponent } from './components/cloth/cloth.component';
+import { ShaderComponent } from './components/shader/shader.component';
 
 
 
@@ -17,7 +19,10 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'form', component: FormComponent},
   { path: 'observable', component: ObservableComponent },
-  { path: 'world', component: WorldComponent }
+  { path: 'world', component: WorldComponent , children: [
+    {path: 'cloth', component: ClothComponent},
+    {path: 'shader', component: ShaderComponent}
+  ]}
 ];
 
 @NgModule({

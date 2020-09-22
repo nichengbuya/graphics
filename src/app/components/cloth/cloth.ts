@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
-import { clothFunction, DRAG, GRAVITY, MASS, RESTDISTANCE, TIMESTEP_SQ, XSEGS, YSEGS } from './utils';
-import World from './world';
+import { clothFunction, DRAG, GRAVITY, MASS, RESTDISTANCE, TIMESTEP_SQ, XSEGS, YSEGS } from './config';
+import World from '../common/world';
 
 interface ClothProp {
     width: number;

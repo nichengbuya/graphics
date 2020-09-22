@@ -2,11 +2,11 @@ import { Component, OnInit , OnDestroy} from '@angular/core';
 import AnimateCloth from './cloth';
 
 @Component({
-  selector: 'app-scene',
-  templateUrl: './scene.component.html',
-  styleUrls: ['./scene.component.scss']
+  selector: 'app-cloth',
+  templateUrl: './cloth.component.html',
+  styleUrls: ['./cloth.component.scss']
 })
-export class SceneComponent implements OnInit, OnDestroy {
+export class ClothComponent implements OnInit, OnDestroy {
   world: AnimateCloth;
   animation: number;
 
@@ -17,6 +17,7 @@ export class SceneComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     this.world.removeEvent();
+    this.world.gui.destroy();
     cancelAnimationFrame(this.animation)
   }
 

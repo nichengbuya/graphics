@@ -91,7 +91,7 @@ class World {
         renderer.setSize( this.width, this.height );
         this.composer.setSize( this.width, this.height );
 
-        this.effectFXAA.uniforms.resolution.value.set( 1 / this.width, 1 / this.height );
+        // this.effectFXAA.uniforms.resolution.value.set( 1 / this.width, 1 / this.height );
         this.render();
     }
     bindRaycasterEvent() {
