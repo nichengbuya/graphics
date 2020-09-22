@@ -1,9 +1,9 @@
 # Graphics 
   computer graphics learning 
   some simple demo
-#Frame
+# Frame
   angular
   three.js
-#Run
+# Run
   ```npm install```
   ```npm start```
