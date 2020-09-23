@@ -19,6 +19,16 @@ import { ObservableComponent } from './view/observable/observable.component';
 import { WorldComponent } from './view/world/world.component';
 import { ClothComponent } from './components/cloth/cloth.component';
 import { ShaderComponent } from './components/shader/shader.component';
+import { IconsProviderModule } from './icons-provider.module';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NZ_I18N } from 'ng-zorro-antd/i18n';
+import { zh_CN } from 'ng-zorro-antd/i18n';
+import { registerLocaleData } from '@angular/common';
+import zh from '@angular/common/locales/zh';
+
+registerLocaleData(zh);
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,9 +53,13 @@ import { ShaderComponent } from './components/shader/shader.component';
     HttpClientInMemoryWebApiModule.forRoot(
       InMemoryDataService, { dataEncapsulation: false }
     ),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    IconsProviderModule,
+    NzLayoutModule,
+    NzMenuModule,
+    BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [{ provide: NZ_I18N, useValue: zh_CN }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

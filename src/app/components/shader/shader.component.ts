@@ -8,7 +8,8 @@ import Shader from './shader';
 })
 export class ShaderComponent implements OnInit, OnDestroy {
   world: Shader;
-  constructor() { }
+
+  constructor() {}
 
   ngOnInit(): void {
     this.world = new Shader();
