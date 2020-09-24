@@ -20,10 +20,13 @@
     "@angular/platform-browser-dynamic": "~9.1.9",
     "@angular/router": "~9.1.9",
     "angular-in-memory-web-api": "^0.11.0",
+    "mathjs": "^7.2.0",
     "ng-zorro-antd": "^9.3.0",
     "rxjs": "~6.5.4",
     "three": "^0.120.1",
     "tslib": "^1.10.0",
+    "urdf-loader": "^0.8.2",
+    "xacro-parser": "^0.2.1",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {

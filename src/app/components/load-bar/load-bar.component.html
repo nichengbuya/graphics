@@ -1,0 +1,8 @@
+<div class="load-bar" *ngIf ="loadBar.percent !== 100">
+    <div class="mask"></div>
+    <div class="loading">
+      <div class="trends" [style.width]="loadBar.percent + '%'">
+        {{loadBar.percent|number:'1.0-0'}}%
+      </div>
+    </div>
+  </div>

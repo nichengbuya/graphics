@@ -4,6 +4,9 @@ import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
 interface Data{
     shader: string;
 }
+interface Prop{
+    container: any;
+}
 class Shader {
     uniforms;
     renderer: THREE.WebGLRenderer;
@@ -15,13 +18,14 @@ class Shader {
     data: Data = {
         shader: 'shader1'
     };
-    constructor() {
+    gui: any;
+    constructor(option: Prop) {
+        this.container = option.container;
         this.init();
         this.animate();
     }
     init() {
-
-        const container = this.container = document.getElementById('container');
+        const {container } = this;
         const width = container.offsetWidth;
         const height = container.offsetHeight;
         this.scene = new THREE.Scene();
@@ -47,7 +51,7 @@ class Shader {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(container.offsetWidth, container.offsetHeight);
         container.appendChild(this.renderer.domElement);
-        const gui = new GUI();
+        const gui = this.gui = new GUI();
         const changeShader = () => {
             const shader = this.data.shader;
             console.log(shader);
@@ -64,13 +68,16 @@ class Shader {
         gui.add(this.data, 'shader', ['shader1', 'shader2', 'ocean']).name('shader').onChange(changeShader);
 
         this.onWindowResize = () => {
-            this.renderer.setSize(container.offsetWidth, container.offsetHeight);
+            this.updateSize()
         };
 
         window.addEventListener('resize', this.onWindowResize, false);
 
     }
-
+    updateSize(){
+        const { container } = this;
+        this.renderer.setSize(container.offsetWidth, container.offsetHeight);
+    }
     onWindowResize = () => {
     }
 
@@ -78,6 +85,7 @@ class Shader {
     destroy() {
         window.removeEventListener('resize', this.onWindowResize, false);
         cancelAnimationFrame(this.animation);
+        this.gui.destroy();
     }
 
     animate() {

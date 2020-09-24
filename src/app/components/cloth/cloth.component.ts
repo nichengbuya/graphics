@@ -1,4 +1,7 @@
-import { Component, OnInit , OnDestroy} from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { WorldService } from 'src/app/service/world.service';
+import * as THREE from 'three';
+import World from '../common/world';
 import AnimateCloth from './cloth';
 
 @Component({
@@ -6,38 +9,44 @@ import AnimateCloth from './cloth';
   templateUrl: './cloth.component.html',
   styleUrls: ['./cloth.component.scss']
 })
-export class ClothComponent implements OnInit, OnDestroy {
+export class ClothComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('cloth') div: ElementRef;
   world: AnimateCloth;
   animation: number;
 
-  constructor() { }
+  constructor(
+    private worldService: WorldService
+  ) { }
 
   ngOnInit(): void {
+
+  }
+  ngAfterViewInit(){
     this.initWorld();
   }
   ngOnDestroy() {
     this.world.removeEvent();
     this.world.gui.destroy();
-    cancelAnimationFrame(this.animation)
+    cancelAnimationFrame(this.animation);
   }
 
-  initWorld(){
-    const div = document.getElementById('container');
+  initWorld() {
+    THREE.Object3D.DefaultUp = new THREE.Vector3(0, 1, 0);
     this.world = new AnimateCloth({
-      container: div,
+      container: this.div.nativeElement,
       listeners: {
-        move(){
+        move() {
 
         },
-        click(){
+        click() {
 
         }
       }
     });
-    // console.log(Date.now())
-    this.animate()
+    // this.worldService.setWorld(this.world);
+    this.animate();
   }
-  animate(){
+  animate() {
     this.animation = requestAnimationFrame(this.animate.bind(this));
     this.world.simulate();
     this.world.update();

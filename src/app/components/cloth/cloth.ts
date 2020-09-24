@@ -88,7 +88,6 @@ class Cloth {
         for (let v = 0; v < this.h; v++) {
 
             for (let u = 0; u < this.w; u++) {
-                console.log(this.index(u, v), this.index(u, v + 1));
                 this.constraints.push([
                     this.particles[this.index(u, v)],
                     this.particles[this.index(u, v + 1)],
@@ -165,16 +164,16 @@ class AnimateCloth extends World {
         object.position.set(0, 0, 0);
         object.castShadow = true;
         this.scene.add(object);
-        const groundMaterial = new THREE.MeshLambertMaterial({ color: 0xaaaaaa, side: THREE.DoubleSide });
+        const groundMaterial = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, side: THREE.DoubleSide });
 
-        let mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(20000, 20000), groundMaterial);
-        mesh.position.y = - 250.5;
-        mesh.rotation.x = - Math.PI / 2;
-        mesh.receiveShadow = true;
-        this.scene.add(mesh);
+        const ground = new THREE.Mesh(new THREE.PlaneBufferGeometry(20000, 20000), groundMaterial);
+        ground.position.y = - 250.5;
+        ground.rotation.x = - Math.PI / 2;
+        ground.receiveShadow = true;
+        this.scene.add(ground);
         const poleGeo = new THREE.BoxBufferGeometry(5, 375, 5);
         const poleMat = new THREE.MeshLambertMaterial();
-        mesh = new THREE.Mesh(poleGeo, poleMat);
+        let mesh = new THREE.Mesh(poleGeo, poleMat);
         mesh.position.x = - 125;
         mesh.position.y = - 62;
         mesh.receiveShadow = true;
@@ -209,6 +208,26 @@ class AnimateCloth extends World {
         mesh.receiveShadow = true;
         mesh.castShadow = true;
         this.scene.add(mesh);
+
+        const light = new THREE.DirectionalLight( 0xdfebff, 1 );
+        light.position.set( 50, 200, 100 );
+        light.position.multiplyScalar( 1.3 );
+
+        light.castShadow = true;
+
+        light.shadow.mapSize.width = 1024;
+        light.shadow.mapSize.height = 1024;
+
+        const d = 300;
+
+        light.shadow.camera.left = - d;
+        light.shadow.camera.right = d;
+        light.shadow.camera.top = d;
+        light.shadow.camera.bottom = - d;
+
+        light.shadow.camera.far = 1000;
+
+        this.scene.add( light );
     }
     simulate() {
         const now = Date.now();

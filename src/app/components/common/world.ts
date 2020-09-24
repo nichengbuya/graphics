@@ -196,25 +196,6 @@ class World {
 
         this.scene.add( new THREE.AmbientLight( 0x666666 ) );
 
-        const light = new THREE.DirectionalLight( 0xdfebff, 1 );
-        light.position.set( 50, 200, 100 );
-        light.position.multiplyScalar( 1.3 );
-
-        light.castShadow = true;
-
-        light.shadow.mapSize.width = 1024;
-        light.shadow.mapSize.height = 1024;
-
-        const d = 300;
-
-        light.shadow.camera.left = - d;
-        light.shadow.camera.right = d;
-        light.shadow.camera.top = d;
-        light.shadow.camera.bottom = - d;
-
-        light.shadow.camera.far = 1000;
-
-        this.scene.add( light );
     }
     createControl() {
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { WorldService } from './service/world.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   isCollapsed = false;
+  constructor(
+    private worldService: WorldService
+  ){}
+  toggleSlider(){
+    this.isCollapsed = !this.isCollapsed;
+  }
 }

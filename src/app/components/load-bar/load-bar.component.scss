@@ -1,0 +1,35 @@
+.load-bar {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 9;
+    .mask {
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 990;
+   }
+    .loading {
+        width: 30rem;
+        height: 2rem;
+        background: #CCCCCC;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        border-radius: 2em;
+
+   }
+    .trends {
+        width: 0;
+        height: 100%;
+        background: #50BED7;
+        box-shadow: 0.0625rem 0.0625rem 0.625rem #50BED7;
+        border-radius: 2em;
+        color:#ffffff;
+        text-align: right;
+        line-height: 2rem;
+        font-weight: bold;
+   }
+}

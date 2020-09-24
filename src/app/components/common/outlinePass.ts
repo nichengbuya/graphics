@@ -3,17 +3,17 @@ import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
 class OutLinePassCopy extends OutlinePass {
 	changeVisibilityOfNonSelectedObjects(bVisible: any) {
 
-		let selectedMeshes = [];
+		const selectedMeshes = [];
 
 		function gatherSelectedMeshesCallBack(object) {
 
-			if (object.isMesh) selectedMeshes.push(object);
+			if (object.isMesh) { selectedMeshes.push(object); }
 
 		}
 
 		for (let i = 0; i < this.selectedObjects.length; i++) {
 
-			let selectedObject = this.selectedObjects[i];
+			const selectedObject = this.selectedObjects[i];
 			selectedObject.traverse(gatherSelectedMeshesCallBack);
 
 		}
@@ -26,7 +26,7 @@ class OutLinePassCopy extends OutlinePass {
 
 				for (let i = 0; i < selectedMeshes.length; i++) {
 
-					let selectedObjectId = selectedMeshes[i].id;
+					const selectedObjectId = selectedMeshes[i].id;
 
 					if (selectedObjectId === object.id) {
 
@@ -39,9 +39,9 @@ class OutLinePassCopy extends OutlinePass {
 
 				if (!bFound) {
 
-					let visibility = object.visible;
+					const visibility = object.visible;
 
-					if (!bVisible || object.bVisible) object.visible = bVisible;
+					if (!bVisible || object.bVisible) { object.visible = bVisible; }
 
 					object.bVisible = visibility;
 
