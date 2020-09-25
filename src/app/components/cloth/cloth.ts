@@ -159,6 +159,7 @@ class AnimateCloth extends World {
         this.initCloth();
     }
     initCloth() {
+        this.camera.position.set( 1000, 50, 1500 );
         const clothMaterial = new THREE.MeshLambertMaterial({ color: 0xcccccc, side: THREE.DoubleSide });
         const object = new THREE.Mesh(this.clothGeometry, clothMaterial);
         object.position.set(0, 0, 0);

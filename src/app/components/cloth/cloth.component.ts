@@ -19,7 +19,7 @@ export class ClothComponent implements OnInit, OnDestroy, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-
+    THREE.Object3D.DefaultUp = new THREE.Vector3(0, 1, 0);
   }
   ngAfterViewInit(){
     this.initWorld();
@@ -31,7 +31,7 @@ export class ClothComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   initWorld() {
-    THREE.Object3D.DefaultUp = new THREE.Vector3(0, 1, 0);
+
     this.world = new AnimateCloth({
       container: this.div.nativeElement,
       listeners: {

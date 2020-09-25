@@ -1,4 +1,15 @@
 <div class="container">
     <div class="canvas" style="width: 100%;height: 100%;position: absolute;" #animation></div>
     <app-load-bar #load></app-load-bar>
+    <div class="tool-bar">
+        <div *ngFor="let mode of transformMode" 
+        (click) = "changeTransformMode(mode)">
+        <div class="tool-bar-item" [ngClass]="{
+            'tool-bar-item-active':mode.isActive
+        }">
+            <img class="tool-bar-item-img" [src]="mode.imgSrc" alt="">
+        </div>
+
+        </div>
+    </div>
 </div>

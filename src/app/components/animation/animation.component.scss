@@ -3,3 +3,24 @@
     height: 100%;
     position: relative;
 }
+.tool-bar{
+    position: absolute;
+    left: 1rem;
+    top:1rem;
+    .tool-bar-item{
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #dde7ee;
+        border: 1px solid #DDE7EE;
+        &-active{
+            background-color: #ffffff;
+        }
+        img{
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+    }
+}

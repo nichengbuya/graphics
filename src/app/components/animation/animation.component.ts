@@ -20,6 +20,23 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
       url: 'assets/robot/ur5_description/urdf/ur5.urdf'
     }
   ];
+  public transformMode = [
+    {
+      name: 'translate',
+      isActive: true,
+      imgSrc: 'assets/icon/trans.svg',
+    },
+    {
+      name: 'rotate',
+      isActive: false,
+      imgSrc: 'assets/icon/rotation.svg',
+    },
+    {
+      name: 'scale',
+      isActive: false,
+      imgSrc: 'assets/icon/scale.svg',
+    }
+  ];
 
   robot: URDFRobot;
   animation: number;
@@ -47,13 +64,12 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     });
-    const promises = [];
+    let promises = [];
     this.robotList.forEach(async item => {
-      this.robot = await this.world.initRobot(item.url);
-      promises.push(this.world.initRobot);
+      promises.push(this.world.initRobot(item.url));
     });
-
-    await Promise.all(promises);
+    promises = await Promise.all(promises);
+    this.robot = promises[0];
     this.load.loaded();
     this.animate();
   }
@@ -61,5 +77,15 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     this.animation = requestAnimationFrame(this.animate.bind(this));
     this.robot.userData.ik();
     this.robot.userData.fk();
+  }
+  changeTransformMode(e) {
+
+    this.world.transformControls.setMode(e.name);
+    e.isActive = true;
+    for (const i of this.transformMode) {
+      if (i !== e) {
+        i.isActive = false;
+      }
+    }
   }
 }

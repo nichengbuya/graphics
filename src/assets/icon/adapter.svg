@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="29px" height="31px" viewBox="0 0 29 31" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55 (78076) - https://sketchapp.com -->
+    <title>编组 6</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Simulation" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="programming-simulation-copy-10" transform="translate(-109.000000, -281.000000)">
+            <g id="编组-6" transform="translate(109.000000, 281.000000)">
+                <g id="编组-5">
+                    <path d="M13,12.8467686 L29,6 L29,24.1532314 L13.4224583,31 L13,12.8467686 Z M25.7655465,9.01615579 L15.6408428,13.5283508 L15.6408428,28.1602352 L26.0261587,23.7176791 L27.1857208,22.1369767 L27.1857208,9.61052711 L25.7655465,9.01615579 Z" id="形状结合" fill="#BECDD7"></path>
+                    <path d="M14.6726987,30.1966374 L14,30.5197207 L14,13 L15,13.4989503 L15,29.8057617 L14.6726987,30.1966374 Z" id="形状结合" fill="#BECDD7"></path>
+                    <polygon id="路径-5" fill="#A6B7C3" points="10.1264176 2.34243607 19.7430875 6.47247815 15.5505882 8.41040201 5.69656151 4.11653849 3.54132566e-14 6.47247815 0 24.5871533 13.5827608 31 13.5827608 12.686191 29 6 15.5505882 0"></polygon>
+                    <polygon id="路径-6" fill="#73818B" points="10.2753615 2.341251 10.2753615 3.76009049 18.2084267 7.2625508 19.8315857 6.5"></polygon>
+                    <circle id="椭圆形" fill="#73818B" cx="15.5" cy="1.5" r="1"></circle>
+                    <circle id="椭圆形备份-2" fill="#73818B" cx="3.5" cy="6.5" r="1"></circle>
+                    <circle id="椭圆形备份" fill="#73818B" cx="13.5" cy="2.5" r="1"></circle>
+                    <circle id="椭圆形备份-3" fill="#73818B" cx="5.5" cy="5.5" r="1"></circle>
+                    <polygon id="路径-18" fill="#9AA7B1" points="0 6.5 13.5827608 12.686191 13.5827608 31 8.83529068e-13 24.7250766"></polygon>
+                    <polygon id="矩形" fill="#BECDD7" points="15 13.0488842 29 7 28.5363383 23.0772921 15.5026384 29"></polygon>
+                </g>
+                <circle id="椭圆形备份-4" fill="#73818B" cx="27.5" cy="8.5" r="1"></circle>
+                <circle id="椭圆形备份-5" fill="#73818B" cx="15.5" cy="13.5" r="1"></circle>
+                <circle id="椭圆形备份-6" fill="#73818B" cx="15.5" cy="28.5" r="1"></circle>
+                <circle id="椭圆形备份-7" fill="#73818B" cx="27.5" cy="23.5" r="1"></circle>
+            </g>
+        </g>
+    </g>
+</svg>

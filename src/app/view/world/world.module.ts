@@ -6,6 +6,7 @@ import { ShaderComponent } from 'src/app/components/shader/shader.component';
 import { AnimationComponent } from 'src/app/components/animation/animation.component';
 import { CommonModule } from '@angular/common';
 import { LoadBarComponent } from 'src/app/components/load-bar/load-bar.component';
+import { BuildComponent } from 'src/app/components/build/build.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { LoadBarComponent } from 'src/app/components/load-bar/load-bar.component
       ClothComponent,
       ShaderComponent,
       AnimationComponent,
-      LoadBarComponent
+      LoadBarComponent,
+      BuildComponent
     ],
   exports: [WorldComponent]
 })

@@ -4,7 +4,7 @@ import { XacroLoader } from 'xacro-parser';
 import URDFLoader from 'urdf-loader';
 import URDFLink from 'urdf-loader';
 import Kinematics from '../common/kinematics';
-import { BoxBufferGeometry, Mesh, MeshBasicMaterial } from 'three';
+import { BoxBufferGeometry, GridHelper, Mesh, MeshBasicMaterial } from 'three';
 const PACKAGE = 'assets/robot';
 
 class Animation extends World {
@@ -15,12 +15,12 @@ class Animation extends World {
         this.initEndEffector();
     }
     initPlane() {
-        this.camera.position.set(0, 3, 3);
         const light = new THREE.DirectionalLight( 0xffffff, 1 );
-
         light.castShadow = true;
-        light.position.set(5, 10, 7.5);
-        this.scene.add(light);
+        this.camera.add(light);
+        const griper = new GridHelper(20, 10);
+        griper.rotation.x = -Math.PI / 2;
+        this.add(griper);
     }
     initRobot(url): Promise<URDFLink> {
         const manager = new THREE.LoadingManager();
@@ -62,7 +62,6 @@ class Animation extends World {
                         }
                       }
                 };
-                console.log(robot);
                 this.scene.add(robot);
                 manager.onLoad = () => {
                     resolve(robot);
