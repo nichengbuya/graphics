@@ -1,0 +1,13 @@
+<div class="welcome">
+    <div nz-row nzJustify="space-around">
+      <div nz-col [nzSpan]="6" *ngFor = "let card of cardList ">
+        <nz-card nzHoverable  [nzCover]="coverTemplate" (click)="gotoItem(card.link)">
+            <nz-card-meta [nzTitle]="card.title" [nzDescription]="card.description"></nz-card-meta>
+          </nz-card>
+          <ng-template #coverTemplate>
+            <img height="240" alt="example" [src]="card.img" />
+          </ng-template>
+    </div>
+    </div>
+    <!-- <router-outlet></router-outlet> -->
+  </div>

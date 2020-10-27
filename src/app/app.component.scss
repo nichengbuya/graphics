@@ -17,7 +17,7 @@
 }
 
 .header-trigger {
-  height: 64px;
+  height: 50px;
   padding: 20px 24px;
   font-size: 20px;
   cursor: pointer;
@@ -30,10 +30,10 @@
 
 .sidebar-logo {
   position: relative;
-  height: 64px;
+  height: 50px;
   padding-left: 24px;
   overflow: hidden;
-  line-height: 64px;
+  line-height: 50px;
   background: #001529;
   transition: all .3s;
 }
@@ -56,6 +56,7 @@
 }
 
 nz-header {
+  height: 50px;
   padding: 0;
   width: 100%;
   z-index: 0;
@@ -63,18 +64,14 @@ nz-header {
 
 .app-header {
   position: relative;
-  height: 64px;
+  height: 50px;
   padding: 0;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 }
 
-nz-content {
-  margin: 24px;
-}
 
 .inner-content {
-  padding: 24px;
   background: #fff;
   height: 100%;
 }

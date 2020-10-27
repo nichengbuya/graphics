@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { WorldService } from './service/world.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -9,9 +9,9 @@ import { WorldService } from './service/world.service';
 export class AppComponent {
   isCollapsed = false;
   constructor(
-    private worldService: WorldService
+    private router: Router
   ){}
-  toggleSlider(){
-    this.isCollapsed = !this.isCollapsed;
-  }
+    gotoHome(){
+      this.router.navigate(['/welcome']);
+    }
 }

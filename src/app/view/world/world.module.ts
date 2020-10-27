@@ -7,12 +7,18 @@ import { AnimationComponent } from 'src/app/components/animation/animation.compo
 import { CommonModule } from '@angular/common';
 import { LoadBarComponent } from 'src/app/components/load-bar/load-bar.component';
 import { BuildComponent } from 'src/app/components/build/build.component';
+import { NgZorroAntdModule } from 'ng-zorro-antd';
+import { FormsModule } from '@angular/forms';
+import { LibraryComponent } from './library/library.component';
+import { PropertyComponent } from './property/property.component';
 
 
 @NgModule({
   imports: [
     CommonModule,
-    WorldRoutingModule
+    WorldRoutingModule,
+    NgZorroAntdModule,
+    FormsModule
   ],
   declarations: [
       WorldComponent,
@@ -20,7 +26,9 @@ import { BuildComponent } from 'src/app/components/build/build.component';
       ShaderComponent,
       AnimationComponent,
       LoadBarComponent,
-      BuildComponent
+      BuildComponent,
+      LibraryComponent,
+      PropertyComponent,
     ],
   exports: [WorldComponent]
 })

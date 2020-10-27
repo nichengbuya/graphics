@@ -1,0 +1,23 @@
+<nz-tabset>
+    <nz-tab nzTitle="libraries">
+        <nz-select nzPlaceHolder="device type" [(ngModel)]="deviceType">
+            <nz-option *ngFor="let option of listOfDeviceType" [nzLabel]="option.label" [nzValue]="option.value">
+            </nz-option>
+        </nz-select>
+        <nz-divider ></nz-divider>
+        <div nz-row [nzGutter]="[16, 24]" class="card-list">
+            <div *ngFor="let device of listOfDevices" nz-col class="gutter-row" [nzSpan]="12">
+                <nz-card nzHoverable  [nzCover]="coverTemplate" (click)="addDevice(device)">
+                    <nz-card-meta [nzTitle]="device.name" ></nz-card-meta>
+                  </nz-card>
+                  <ng-template #coverTemplate>
+                    <img alt="example" [src]="device.img" />
+                  </ng-template>
+            </div>
+
+          </div>
+    </nz-tab>
+    <nz-tab nzTitle="my recent components">
+        Content of Tab Pane 2
+    </nz-tab>
+</nz-tabset>

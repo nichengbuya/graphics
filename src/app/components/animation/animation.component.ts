@@ -1,23 +1,46 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { tween } from '../common/tween';
-import Animation from './animation';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, EventEmitter } from '@angular/core';
 import URDFRobot from 'urdf-loader';
 import { LoadBarComponent } from '../load-bar/load-bar.component';
 import * as THREE from 'three';
-
+import { ConfigService } from 'src/app/service/config.service';
+import { WorldService } from 'src/app/service/world.service';
+import World from '../common/world';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, Subscription } from 'rxjs';
+import { async } from '@angular/core/testing';
 @Component({
   selector: 'app-animation',
   templateUrl: './animation.component.html',
-  styleUrls: ['./animation.component.scss']
+  styleUrls: ['./animation.component.scss'],
 })
 export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('animation') div: ElementRef;
-  @ViewChild('load') load: LoadBarComponent;
-  world: Animation;
-  public robotList = [
+  private subs: Subscription[] = [];
+  world: World;
+  robot: URDFRobot;
+  animation: number;
+  visible = false;
+  curPanel: 'libaray'|'property';
+  event: EventEmitter<any> = new EventEmitter();
+  public panelList = [
     {
-      name: 'ur5',
-      url: 'assets/robot/ur5_description/urdf/ur5.urdf'
+      name: 'library',
+      icon: 'book',
+    },
+    {
+      name: 'property',
+      icon: 'setting'
+    }
+  ];
+  public toolList = [
+    {
+      name: 'play',
+      icon: 'caret-right',
+      fun: this.deploy.bind(this)
+    },
+    {
+      name: 'stop',
+      icon: '',
+      fun: this.setSignal.bind(this)
     }
   ];
   public transformMode = [
@@ -37,10 +60,12 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
       imgSrc: 'assets/icon/scale.svg',
     }
   ];
-
-  robot: URDFRobot;
-  animation: number;
-  constructor() { }
+  constructor(
+    private worldService: WorldService,
+    private router: Router,
+  ) { }
+  @ViewChild('animation') div: ElementRef;
+  @ViewChild('load') load: LoadBarComponent;
 
   ngOnInit(): void {
     THREE.Object3D.DefaultUp = new THREE.Vector3(0, 0, 1);
@@ -53,25 +78,9 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     cancelAnimationFrame(this.animation);
   }
   public async init() {
-    this.world = new Animation({
-      container: this.div.nativeElement,
-      listeners: {
-        move() {
-
-        },
-        click() {
-
-        }
-      }
-    });
-    let promises = [];
-    this.robotList.forEach(async item => {
-      promises.push(this.world.initRobot(item.url));
-    });
-    promises = await Promise.all(promises);
-    this.robot = promises[0];
-    this.load.loaded();
-    this.animate();
+    this.world = this.worldService.getWorld(this.div.nativeElement);
+    this.world.updateSize();
+    this.worldService.initPlane();
   }
   animate() {
     this.animation = requestAnimationFrame(this.animate.bind(this));
@@ -79,7 +88,6 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     this.robot.userData.fk();
   }
   changeTransformMode(e) {
-
     this.world.transformControls.setMode(e.name);
     e.isActive = true;
     for (const i of this.transformMode) {
@@ -88,4 +96,65 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
   }
+  changeTool(e){
+    if (this.visible && e.name === this.curPanel){
+      // this.router.navigate([`/world/animation}`]);
+      this.curPanel = null;
+      this.visible = false;
+
+    }else{
+      this.curPanel = e.name;
+      this.visible = true;
+      this.router.navigate([`/world/animation/${e.name}`]);
+    }
+
+  }
+  public open(): void {
+    this.visible = true;
+  }
+  public close(): void {
+    this.visible = false;
+  }
+  public trigger(){
+
+  }
+  public deploy(){
+    this.subs.forEach(s => s.unsubscribe());
+    const node = [1, 3, 2, 4, 5, 6];
+    const link = [[1, 2], [2, 3], [3, 4], [3, 5], [4, 6], [5, 6], [6, 2]];
+    const nodeMap: Map<number, Subject<void>> = new Map();
+    const linkMap: Map<number, Subject<void>[]> = new Map();
+    node.forEach(n => {
+      nodeMap.set( n , new Subject());
+      linkMap.set( n, []);
+    });
+    link.forEach(l => {
+      const nexts = linkMap.get(l[0]);
+      const next = nodeMap.get(l[1]);
+      linkMap.set(l[0], [...nexts, next]);
+    });
+    this.subs = [];
+    nodeMap.forEach((subject, n) => {
+      this.subs.push(subject.subscribe(async () => {
+          setTimeout(() => {
+            const subjects = linkMap.get(n);
+            if ( n === 3){
+              subjects[0].next();
+              return;
+            }
+            subjects.forEach(s => {
+              s.next();
+            });
+          }, 2000);
+
+      }));
+    });
+    const start = nodeMap.get(1);
+    start.next();
+  }
+
+  setSignal(){
+    this.event.next(1);
+  }
+
 }

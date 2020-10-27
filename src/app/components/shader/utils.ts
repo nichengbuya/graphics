@@ -9,6 +9,7 @@ export const vertexShaderMap = {
     }
     `,
     shader2: `
+    precision mediump float;
     varying vec2 vUv;
     void main() {
      vUv = uv;
@@ -25,7 +26,7 @@ export const vertexShaderMap = {
 };
 export const fragmentShaderMap = {
     shader1: `
-    uniform float time;
+    uniform float iTime;
 
     varying vec2 vUv;
 
@@ -33,28 +34,49 @@ export const fragmentShaderMap = {
 
         vec2 position = 2.0 * vUv -1.0;
 
-        float red = abs( sin( position.x * position.y + time / 5.0 ) );
-        float green = abs( sin( position.x * position.y + time / 4.0 ) );
-        float blue = abs( sin( position.x * position.y + time / 3.0 ) );
+        float red = abs( sin( position.x * position.y + iTime / 5.0 ) );
+        float green = abs( sin( position.x * position.y + iTime / 4.0 ) );
+        float blue = abs( sin( position.x * position.y + iTime / 3.0 ) );
         gl_FragColor = vec4( red, green, blue, 1.0 );
 
     }
     `,
     shader2: `
-    uniform sampler2D baseTexture;
-    uniform sampler2D bloomTexture;
+    precision mediump float;
+    uniform float iTime ;
+    uniform vec2 iResolution;
     varying vec2 vUv;
-    vec4 getTexture(sampler2D texelToLinearTexture) {
-        return mapTexelToLinear(texture2D(texelToLinearTexture, vUv));
+ 
+void main() {
+    vec2 uv = -1.0 + 2.0 * vUv;
+    uv.x *=  iResolution.x / iResolution.y;
+    vec3 color = vec3(0.8 + 0.2 * uv.y);
+    for( int i = 0; i < 40; i++ ){
+ 
+        // bubble seeds
+        float pha =      sin(float(i) * 546.13 + 1.0) * 0.5 + 0.5;
+        float siz = pow( sin(float(i) * 651.74 + 5.0) * 0.5 + 0.5, 4.0 );
+        float pox =      sin(float(i) * 321.55 + 4.1) * iResolution.x / iResolution.y;
+ 
+        // buble size, position and color
+        float rad = 0.1 + 0.5 * siz;
+        vec2  pos = vec2( pox, -1.0 - rad + (2.0 + 2.0 * rad) * mod(pha + 0.1 * iTime * (0.2 + 0.8 * siz), 1.0));
+        float dis = length( uv - pos );
+        vec3  col = mix(vec3(0.94, 0.3, 0.0), vec3(0.1, 0.4, 0.8), 0.5 + 0.5 * sin(float(i) * 1.2 + 1.9));
+        //    col += 8.0 * smoothstep( rad * 0.95, rad, dis );
+ 
+        // render
+        float f = length(uv-pos)/rad;
+        f = sqrt(clamp(1.0 - f * f, 0.0, 1.0));
+        color -= col.zyx * (1.0 - smoothstep( rad * 0.95, rad, dis )) * f;
     }
-    void main() {
-        gl_FragColor = getTexture(baseTexture) + vec4(1.0) * getTexture(bloomTexture);
-    }
+    color *= sqrt(1.5 - 0.5 * length(uv));
+    gl_FragColor = vec4(color, 1.0);
+}
 
-    }
     `,
     ocean: `
-    uniform float time;
+    uniform float iTime;
 // 分辨率
 uniform vec2 iResolution;
 // 鼠标位置
@@ -82,7 +104,7 @@ const float SEA_SPEED = 0.8;
 const float SEA_FREQ = 0.16;
 const vec3 SEA_BASE = vec3(0.1,0.19,0.22);
 const vec3 SEA_WATER_COLOR = vec3(0.8,0.9,0.6);
-#define SEA_TIME (1.0 + time * SEA_SPEED)
+#define SEA_iTime (1.0 + iTime * SEA_SPEED)
 const mat2 octave_m = mat2(1.6,1.2,-1.2,1.6);
 
 // math
@@ -142,8 +164,8 @@ float map(vec3 p) {
 
     float d, h = 0.0;
     for(int i = 0; i < ITER_GEOMETRY; i++) {
-    	d = sea_octave((uv+SEA_TIME)*freq,choppy);
-    	d += sea_octave((uv-SEA_TIME)*freq,choppy);
+    	d = sea_octave((uv+SEA_iTime)*freq,choppy);
+    	d += sea_octave((uv-SEA_iTime)*freq,choppy);
         h += d * amp;
     	uv *= octave_m; freq *= 1.9; amp *= 0.22;
         choppy = mix(choppy,1.0,0.2);
@@ -159,8 +181,8 @@ float map_detailed(vec3 p) {
 
     float d, h = 0.0;
     for(int i = 0; i < ITER_FRAGMENT; i++) {
-    	d = sea_octave((uv+SEA_TIME)*freq,choppy);
-    	d += sea_octave((uv-SEA_TIME)*freq,choppy);
+    	d = sea_octave((uv+SEA_iTime)*freq,choppy);
+    	d += sea_octave((uv-SEA_iTime)*freq,choppy);
         h += d * amp;
     	uv *= octave_m; freq *= 1.9; amp *= 0.22;
         choppy = mix(choppy,1.0,0.2);
@@ -222,11 +244,11 @@ void main() {
 	vec2 uv = gl_FragCoord.xy / iResolution.xy;
     uv = uv * 2.0 - 1.0;
     uv.x *= iResolution.x / iResolution.y;
-    float time = time * 0.3 + iMouse.x*0.01;
+    float iTime = iTime * 0.3 + iMouse.x*0.01;
 
     // ray
-    vec3 ang = vec3(sin(time*3.0)*0.1,sin(time)*0.2+0.3,time);
-    vec3 ori = vec3(0.0,3.5,time*5.0);
+    vec3 ang = vec3(sin(iTime*3.0)*0.1,sin(iTime)*0.2+0.3,iTime);
+    vec3 ori = vec3(0.0,3.5,iTime*5.0);
     vec3 dir = normalize(vec3(uv.xy,-2.0)); dir.z += length(uv) * 0.15;
     dir = normalize(dir) * fromEuler(ang);
 

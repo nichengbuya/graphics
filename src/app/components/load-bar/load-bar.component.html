@@ -1,4 +1,4 @@
-<div class="load-bar" *ngIf ="loadBar.percent !== 100">
+<div class="load-bar" *ngIf ="loadBar.percent >0 && 100> loadBar.percent">
     <div class="mask"></div>
     <div class="loading">
       <div class="trends" [style.width]="loadBar.percent + '%'">

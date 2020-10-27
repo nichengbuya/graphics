@@ -1,49 +1,11 @@
 <nz-layout class="app-layout">
-  <nz-sider class="menu-sidebar"
-            nzCollapsible
-            nzWidth="256px"
-            nzBreakpoint="md"
-            [(nzCollapsed)]="isCollapsed"
-            [nzTrigger]="null">
-    <div class="sidebar-logo">
-      <a href="" target="_blank">
-        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
-        <h1>Graphics</h1>
-      </a>
-    </div>
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/welcome">Welcome</a>
-          </li>
-        </ul>
-      </li>
-      <li nz-submenu nzOpen nzTitle="world" nzIcon="form">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink = "/world/cloth">cloth</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink = "/world/shader">shader</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink = "/world/animation">animation</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink = "/world/build">build</a>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </nz-sider>
   <nz-layout>
     <nz-header>
       <div class="app-header">
-        <span class="header-trigger" (click)="toggleSlider()">
+        <span class="header-trigger" (click)="gotoHome()">
             <i class="trigger"
                nz-icon
-               [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+               nzType="menu-fold"
             ></i>
         </span>
       </div>

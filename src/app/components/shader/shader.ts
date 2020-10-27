@@ -33,7 +33,7 @@ class Shader {
         const geometry = new THREE.PlaneBufferGeometry(2, 2);
 
         const uniforms = this.uniforms = {
-            time: { value: 1.0 },
+            iTime: { value: 1.0 },
             iResolution: { value: new THREE.Vector2(width * 1.0, height * 1.0) },
             iMouse: { value: new THREE.Vector2(0.0, 0.0) }
         };
@@ -92,7 +92,7 @@ class Shader {
         const { scene, camera, renderer, uniforms } = this;
         this.animation = requestAnimationFrame(this.animate.bind(this));
 
-        uniforms.time.value = performance.now() / 1000;
+        uniforms.iTime.value = performance.now() / 1000;
 
         renderer.render(scene, camera);
 

@@ -17,9 +17,9 @@ export class LoadBarComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.initLoadBar();
-    }, 0);
+    // setTimeout(() => {
+    //   this.initLoadBar();
+    // }, 0);
 
   }
   public loaded(){
@@ -41,6 +41,7 @@ export class LoadBarComponent implements OnInit {
     );
   }
   public initLoadBar() {
+    this.loadBar.percent = 0;
     const fromData = {
       percent: 0
     };

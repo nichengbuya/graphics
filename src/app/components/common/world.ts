@@ -205,7 +205,8 @@ class World {
         this.controls.minDistance = 0;
         this.controls.maxDistance = 40000;
         this.controls.target.set(0, 0, 0);
-
+        this.controls.minPolarAngle = 0;
+        this.controls.maxPolarAngle = Math.PI / 2;
         this.controls.enableKeys = false;
         const mousemove = () => {
             // this.emitService.dragEmit.emit(true);
@@ -316,6 +317,7 @@ class World {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(container.offsetWidth, container.offsetHeight);
         this.renderer.shadowMap.enabled = true;
+        this.renderer.domElement.style.outline = 'none';
         this.container.appendChild(this.renderer.domElement);
     }
     initEffectorComposer() {
