@@ -25,30 +25,30 @@ export class ClothComponent implements OnInit, OnDestroy, AfterViewInit {
     this.initWorld();
   }
   ngOnDestroy() {
-    this.world.removeEvent();
-    this.world.gui.destroy();
-    cancelAnimationFrame(this.animation);
+    // this.world.removeEvent();
+    // this.world.gui.destroy();
+    // cancelAnimationFrame(this.animation);
   }
 
   initWorld() {
 
-    this.world = new AnimateCloth({
-      container: this.div.nativeElement,
-      listeners: {
-        move() {
+    // this.world = new AnimateCloth({
+    //   container: this.div.nativeElement,
+    //   listeners: {
+    //     move() {
 
-        },
-        click() {
+    //     },
+    //     click() {
 
-        }
-      }
-    });
-    // this.worldService.setWorld(this.world);
-    this.animate();
+    //     }
+    //   }
+    // });
+    // // this.worldService.setWorld(this.world);
+    // this.animate();
   }
   animate() {
-    this.animation = requestAnimationFrame(this.animate.bind(this));
-    this.world.simulate();
-    this.world.update();
+    // this.animation = requestAnimationFrame(this.animate.bind(this));
+    // this.world.simulate();
+    // this.world.update();
   }
 }

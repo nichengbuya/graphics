@@ -4,6 +4,7 @@ import { zip } from 'rxjs';
 import { MaterialsService } from 'src/app/service/materials.service';
 import { TexturesService } from 'src/app/service/textures.service';
 import { ToolService } from 'src/app/service/tool.service';
+import { WorldService } from 'src/app/service/world.service';
 import { environment } from 'src/environments/environment';
 import * as THREE from 'three';
 import { BufferGeometry, Color, DoubleSide, Geometry, Group, Material, Mesh, Object3D, PointLight, RepeatWrapping,
@@ -45,7 +46,8 @@ export class BuildComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private materialsService: MaterialsService,
     private texturesService: TexturesService,
-    private toolService: ToolService
+    private toolService: ToolService,
+    private worldService: WorldService
   ) { }
 
   ngOnInit(): void {
@@ -85,16 +87,16 @@ export class BuildComponent implements OnInit, OnDestroy, AfterViewInit {
     this.init();
   }
   ngOnDestroy() {
-    this.world.removeEvent();
+    this.worldService.removeEvent();
   }
   async init() {
-    this.world = new Build({
-      container: this.div.nativeElement,
-      listeners: {
-        click: () => { },
-        move: () => { }
-      }
-    });
+    // this.world = new Build({
+    //   container: this.div.nativeElement,
+    //   listeners: {
+    //     click: () => { },
+    //     move: () => { }
+    //   }
+    // });
     const list = this.ModelList.map(item => this.world.addModel(item.url));
     const models = await Promise.all(list);
     models.forEach((item: Group) => {
@@ -156,7 +158,7 @@ export class BuildComponent implements OnInit, OnDestroy, AfterViewInit {
     this.addOutsideBuildingMesh(model);
 
     this.world.add(model);
-    this.load.loaded();
+    // this.load.loaded();
   }
   private resolveLabelMesh(mesh: Mesh) {
     mesh.material = this.materialsService.labelMat;

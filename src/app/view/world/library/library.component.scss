@@ -2,4 +2,8 @@
     margin: 0 !important;
     overflow: auto;
     height: calc(100vh - 206px);
+    &-img{
+        border-left:1px solid #f0f0f0;
+        border-right: 1px solid #f0f0f0;
+    }
 }

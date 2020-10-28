@@ -5,7 +5,7 @@
             <i nz-icon [nzType]="tool.icon" nzTheme="fill"></i>
         </div>
     </div>
-    <app-load-bar #load></app-load-bar>
+    <!-- <app-load-bar #load></app-load-bar> -->
     <div class="tool-bar">
         <div *ngFor="let mode of transformMode" (click)="changeTransformMode(mode)">
             <div class="tool-bar-item" [ngClass]="{

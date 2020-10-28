@@ -2,12 +2,10 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, Eve
 import URDFRobot from 'urdf-loader';
 import { LoadBarComponent } from '../load-bar/load-bar.component';
 import * as THREE from 'three';
-import { ConfigService } from 'src/app/service/config.service';
 import { WorldService } from 'src/app/service/world.service';
 import World from '../common/world';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
-import { async } from '@angular/core/testing';
 @Component({
   selector: 'app-animation',
   templateUrl: './animation.component.html',
@@ -20,7 +18,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   animation: number;
   visible = false;
   curPanel: 'libaray'|'property';
-  event: EventEmitter<any> = new EventEmitter();
+  // event: EventEmitter<any> = new EventEmitter();
   public panelList = [
     {
       name: 'library',
@@ -74,12 +72,12 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     this.init();
   }
   ngOnDestroy() {
-    this.world.removeEvent();
+    this.worldService.removeEvent();
     cancelAnimationFrame(this.animation);
   }
   public async init() {
-    this.world = this.worldService.getWorld(this.div.nativeElement);
-    this.world.updateSize();
+    this.worldService.setWorld(this.div.nativeElement);
+    this.worldService.bindRaycasterEvent();
     this.worldService.initPlane();
   }
   animate() {
@@ -101,7 +99,6 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
       // this.router.navigate([`/world/animation}`]);
       this.curPanel = null;
       this.visible = false;
-
     }else{
       this.curPanel = e.name;
       this.visible = true;
@@ -154,7 +151,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setSignal(){
-    this.event.next(1);
+    // this.event.next(1);
   }
 
 }

@@ -22,7 +22,7 @@ export class LoadBarComponent implements OnInit {
     // }, 0);
 
   }
-  public loaded(){
+  public complete(){
     this.loadBar.isLoad = true;
     tween(
       {
@@ -41,6 +41,7 @@ export class LoadBarComponent implements OnInit {
     );
   }
   public initLoadBar() {
+    this.loadBar.isLoad = false;
     this.loadBar.percent = 0;
     const fromData = {
       percent: 0

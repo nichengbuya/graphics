@@ -16,9 +16,9 @@ import { Object3D } from 'three';
 const scale = 50;
 interface StageProps {
     container: HTMLElement;
-    listeners: {
-        [propName: string]: (data?: any) => void;
-    };
+    // listeners: {
+    //     [propName: string]: (data?: any) => void;
+    // };
 }
 const clock = new THREE.Clock();
 // THREE.Object3D.DefaultUp = new THREE.Vector3(0, 0, 1);
@@ -52,7 +52,7 @@ class World {
         // this.axesHelper = axesHelper;
         this.width = options.container.offsetWidth;
         this.height = options.container.offsetHeight;
-        this.listeners = options.listeners;
+        // this.listeners = options.listeners;
         this.objects = [];
         this.init();
     }
@@ -62,12 +62,11 @@ class World {
         this.createScene();
         this.createCamera();
         this.createLight();
-        this.createGrid();
         this.createRender();
         // this.initGui();
         this.createControl();
         this.bindResizeEvent();
-        this.bindRaycasterEvent();
+        // this.bindRaycasterEvent();
         this.initTransformControl();
         this.initEffectorComposer();
         this.animate();
@@ -103,14 +102,6 @@ class World {
         const raycaster = this.raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
         const rect = canvas.getBoundingClientRect();
-
-        this.mousemove = (event) => {
-            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = - ((event.clientY - rect.top) / rect.height) * 2 + 1;
-            raycaster.setFromCamera(mouse, this.camera);
-            const intersects = raycaster.intersectObjects(this.objects, true);
-            this.listeners.move(intersects);
-        };
         this.mouseclick  = (event) => {
             mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
             mouse.y = - ((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -118,19 +109,10 @@ class World {
             const intersects = raycaster.intersectObjects(this.objects, true);
             this.listeners.click(intersects);
         };
-        this.mouseDown = (event: MouseEvent) => {
-            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = - ((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-            raycaster.setFromCamera(mouse, this.camera);
-            const intersects = raycaster.intersectObjects(this.objects, true);
-            if (event.button === 2 ) {
-                this.listeners.rightClick(intersects);
-            }
-        };
-        container.addEventListener('mousemove', this.mousemove, false);
+
         container.addEventListener('click', this.mouseclick, false);
-        container.addEventListener('mousedown', this.mouseDown, false);
+
     }
     mouseDown = (event) => {};
     mouseUp = (event) => {};
@@ -141,49 +123,12 @@ class World {
 
         container.removeEventListener('click', this.mouseclick);
     }
-    removeEvent() {
-        const { container } = this;
-        container.removeEventListener('click', this.mouseclick);
-        container.removeEventListener('mousemove', this.mousemove);
-        window.removeEventListener('resize', () => { this.updateSize(); }, false);
-        this.scene.traverse((item) => {
-            if (item instanceof THREE.Mesh) {
-                item?.geometry && item.geometry.dispose();
-                item.material instanceof THREE.Material ? item?.material?.dispose && item.material.dispose() : item.material.forEach(item => {
-                    item.dispose();
-                });
-
-            }
-        });
-        this.objects = [];
-        while (this.scene.children.length) {
-            this.scene.remove(this.scene.children[0]);
-        }
-        cancelAnimationFrame(this.id);
-    }
     createScene() {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0xcccccc);
         if (this.axesHelper) {
             this.scene.add(new THREE.AxesHelper(10e3));
         }
-    }
-    // createPlane() {
-    //     const planeGeometry = new THREE.PlaneBufferGeometry(10e2, 10e2, 1, 1);
-    //     const planeMeterial = new THREE.ShadowMaterial();
-
-    //     const plane = new THREE.Mesh(planeGeometry, planeMeterial);
-    //     // plane.rotation.set(Math.PI / 2, 0, 0);
-
-    //     // 接收阴影
-    //     plane.receiveShadow = true;
-    //     this.scene.add(plane);
-
-    // }
-    createGrid() {
-        const gridHelper = new THREE.GridHelper(scale * 10, 20);
-        // gridHelper.rotation.x = .5 * Math.PI;
-        // this.scene.add(gridHelper);
     }
     createCamera() {
         this.camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 10000 );

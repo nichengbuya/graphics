@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ConfigService } from './config.service';
+import { EventEmitService } from './event-emit.service';
 
-describe('ConfigService', () => {
-  let service: ConfigService;
+describe('EventEmitService', () => {
+  let service: EventEmitService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ConfigService);
+    service = TestBed.inject(EventEmitService);
   });
 
   it('should be created', () => {

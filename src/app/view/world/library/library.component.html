@@ -1,6 +1,7 @@
+<app-load-bar #load></app-load-bar>
 <nz-tabset>
     <nz-tab nzTitle="libraries">
-        <nz-select nzPlaceHolder="device type" [(ngModel)]="deviceType">
+        <nz-select nzPlaceHolder="device type" [(ngModel)]="deviceType" (ngModelChange)="getDeviceList($event)">
             <nz-option *ngFor="let option of listOfDeviceType" [nzLabel]="option.label" [nzValue]="option.value">
             </nz-option>
         </nz-select>
@@ -11,7 +12,7 @@
                     <nz-card-meta [nzTitle]="device.name" ></nz-card-meta>
                   </nz-card>
                   <ng-template #coverTemplate>
-                    <img alt="example" [src]="device.img" />
+                    <img alt="example" class="card-list-img" [src]="device.img" />
                   </ng-template>
             </div>
 
