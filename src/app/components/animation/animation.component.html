@@ -28,7 +28,7 @@
     [nzMaskClosable]="false" 
     [nzMask]="false"
     [nzWidth]="400" 
-    [nzVisible]="visible"
+    [nzVisible]="this.curPanel !== null"
     [nzOffsetX]="50">
         <router-outlet></router-outlet>
     </nz-drawer>

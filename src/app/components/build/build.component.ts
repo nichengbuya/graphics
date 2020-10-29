@@ -157,7 +157,7 @@ export class BuildComponent implements OnInit, OnDestroy, AfterViewInit {
     this.addInsideBuildingMesh(model);
     this.addOutsideBuildingMesh(model);
 
-    this.world.add(model);
+    // this.world.add(model);
     // this.load.loaded();
   }
   private resolveLabelMesh(mesh: Mesh) {

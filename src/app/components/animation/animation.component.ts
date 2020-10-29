@@ -6,6 +6,8 @@ import { WorldService } from 'src/app/service/world.service';
 import World from '../common/world';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
+import { Intersection, Object3D } from 'three';
+import { EventEmitService } from 'src/app/service/event-emit.service';
 @Component({
   selector: 'app-animation',
   templateUrl: './animation.component.html',
@@ -16,9 +18,8 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   world: World;
   robot: URDFRobot;
   animation: number;
-  visible = false;
-  curPanel: 'libaray'|'property';
-  // event: EventEmitter<any> = new EventEmitter();
+  curPanel: 'libaray'|'property'|null = null;
+  curObj: Object3D;
   public panelList = [
     {
       name: 'library',
@@ -61,24 +62,34 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private worldService: WorldService,
     private router: Router,
+    private eventEmitService: EventEmitService
   ) { }
   @ViewChild('animation') div: ElementRef;
   @ViewChild('load') load: LoadBarComponent;
 
   ngOnInit(): void {
     THREE.Object3D.DefaultUp = new THREE.Vector3(0, 0, 1);
+    this.subs.push(this.eventEmitService.emitClick.subscribe((e: Intersection[]) => {
+      this.worldService.select(e);
+    }));
   }
   ngAfterViewInit() {
     this.init();
   }
   ngOnDestroy() {
     this.worldService.removeEvent();
+    document.removeEventListener('keydown', this.keyDownEvent);
+    this.subs.forEach(s => s.unsubscribe());
     cancelAnimationFrame(this.animation);
   }
   public async init() {
     this.worldService.setWorld(this.div.nativeElement);
-    this.worldService.bindRaycasterEvent();
     this.worldService.initPlane();
+  }
+  private keyDownEvent = (event) => {
+    if (event.keyCode === 46) {
+      this.worldService.remove(this.curObj);
+    }
   }
   animate() {
     this.animation = requestAnimationFrame(this.animate.bind(this));
@@ -95,22 +106,14 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   changeTool(e){
-    if (this.visible && e.name === this.curPanel){
+    if ( e.name === this.curPanel){
       // this.router.navigate([`/world/animation}`]);
       this.curPanel = null;
-      this.visible = false;
     }else{
       this.curPanel = e.name;
-      this.visible = true;
       this.router.navigate([`/world/animation/${e.name}`]);
     }
 
-  }
-  public open(): void {
-    this.visible = true;
-  }
-  public close(): void {
-    this.visible = false;
   }
   public trigger(){
 
