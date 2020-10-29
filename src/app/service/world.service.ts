@@ -425,10 +425,12 @@ export class WorldService {
     this.scene.add(model);
     this.devices.push(model);
   }
-  remove(model) {
-    if (model) {
-      this.scene.remove(model);
-      const index = this.devices.indexOf(model);
+  remove() {
+    const {curObj} = this;
+    if (curObj) {
+      this.transformControls.detach();
+      this.scene.remove(curObj);
+      const index = this.devices.indexOf(curObj);
       this.devices.splice(index, 1);
     }
   }
@@ -451,23 +453,33 @@ export class WorldService {
       this.transformControls.detach();
       this.curObj = null;
     }
+    return this.curObj;
   }
   changeColor(model: Object3D) {
     if (!this.curObj) {
       return;
     }
     model.traverse((child: any) => {
-      // if (child.isMesh) {
+      if (child.isMesh) {
         if (child.material instanceof Array) {
           for (const m of child.material) {
             child.currentColor = m.color.getHex();
-            m.color.set(0x50bed7);
           }
         } else {
           child.currentColor = child.material.color.getHex();
-          child.material.color.set(0x50bed7);
         }
-      // }
+      }
+    });
+    model.traverse((child: any) => {
+      if (child.isMesh) {
+        if (child.material instanceof Array) {
+          for (const m of child.material) {
+            m.color.set(0x50bed7);
+          }
+        } else {
+          child.material.color.setHex(0x50bed7);
+        }
+      }
     });
   }
   restoreColor(model) {
@@ -475,15 +487,15 @@ export class WorldService {
       return;
     }
     model.traverse((child: any) => {
-      // if (child.isMesh) {
+      if (child.isMesh) {
         if (child.material instanceof Array) {
           for (const m of child.material) {
-            m.color.set(child.currentColor);
+            m.color.set( child.currentColor);
           }
         } else {
           child.material.color.set(child.currentColor);
         }
-      // }
+      }
     });
   }
 }

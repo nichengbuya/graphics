@@ -1,1 +1,34 @@
-<p>property works!</p>
+<nz-divider nzPlain nzText="Scene" nzOrientation="left"></nz-divider>
+<nz-divider nzPlain nzText="Joint" nzOrientation="left"></nz-divider>
+<div *ngIf="curObj">
+
+    <nz-row *ngFor="let j of curObj.userData.joints">
+        <nz-col nzSpan="12">
+            <nz-slider [nzMin]="j.limit.lower" [nzMax]="j.limit.upper" [ngModel]="j.jointValue | number:'1.3'"
+                [nzStep]="0.1" (ngModelChange)="changeJoint($event,j)"></nz-slider>
+        </nz-col>
+        <div nz-col nzSpan="4">
+            <nz-input-number [nzMin]="j.limit.lower" [nzMax]="j.limit.upper" [ngStyle]="{ marginLeft: '16px' }"
+                [ngModel]="j.jointValue | number:'1.3'" [nzStep]="0.1" (ngModelChange)="changeJoint($event,j)">
+            </nz-input-number>
+        </div>
+        <br><br>
+    </nz-row>
+</div>
+
+<nz-divider nzPlain nzText="Pose" nzOrientation="left"></nz-divider>
+<div *ngIf="curObj">
+    <nz-row *ngFor="let p of pose">
+        <nz-col nzSpan="4">
+            {{p.key}}
+        </nz-col>
+        <div nz-col nzSpan="12">
+            <nz-input-number [ngStyle]="{width: '80%'}" [ngModel]="p.value | number: '1.3' " [nzStep]="0.1">
+            </nz-input-number>
+        </div>
+        <nz-col nzSpan="4">
+            {{p.unit}}
+        </nz-col>
+        <br><br>
+    </nz-row>
+</div>

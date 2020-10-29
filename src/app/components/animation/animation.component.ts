@@ -3,7 +3,6 @@ import URDFRobot from 'urdf-loader';
 import { LoadBarComponent } from '../load-bar/load-bar.component';
 import * as THREE from 'three';
 import { WorldService } from 'src/app/service/world.service';
-import World from '../common/world';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { Intersection, Object3D } from 'three';
@@ -15,7 +14,6 @@ import { EventEmitService } from 'src/app/service/event-emit.service';
 })
 export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   private subs: Subscription[] = [];
-  world: World;
   robot: URDFRobot;
   animation: number;
   curPanel: 'libaray'|'property'|null = null;
@@ -72,6 +70,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subs.push(this.eventEmitService.emitClick.subscribe((e: Intersection[]) => {
       this.worldService.select(e);
     }));
+    document.addEventListener('keydown', this.keyDownEvent, true);
   }
   ngAfterViewInit() {
     this.init();
@@ -88,7 +87,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   private keyDownEvent = (event) => {
     if (event.keyCode === 46) {
-      this.worldService.remove(this.curObj);
+      this.worldService.remove();
     }
   }
   animate() {
@@ -97,7 +96,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     this.robot.userData.fk();
   }
   changeTransformMode(e) {
-    this.world.transformControls.setMode(e.name);
+    this.worldService.transformControls.setMode(e.name);
     e.isActive = true;
     for (const i of this.transformMode) {
       if (i !== e) {
