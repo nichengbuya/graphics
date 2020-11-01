@@ -22,8 +22,15 @@
         <nz-col nzSpan="4">
             {{p.key}}
         </nz-col>
-        <div nz-col nzSpan="12">
-            <nz-input-number [ngStyle]="{width: '80%'}" [ngModel]="p.value | number: '1.3' " [nzStep]="0.1">
+        <div nz-col nzSpan="8">
+            <nz-input-number 
+            [ngStyle]="{width: '80%'}" 
+            [ngModel]=" p.value | number: '1.3' " 
+            [nzStep]="10"
+            [nzMin]="p.lower" 
+            [nzMax]="p.upper"
+            (ngModelChange)="changePose($event,p)"
+            >
             </nz-input-number>
         </div>
         <nz-col nzSpan="4">

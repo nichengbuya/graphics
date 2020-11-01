@@ -32,4 +32,4 @@ import { PropertyComponent } from './property/property.component';
     ],
   exports: [WorldComponent]
 })
-export class WelcomeModule { }
+export class WorldModule { }

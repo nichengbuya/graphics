@@ -73,7 +73,10 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     document.addEventListener('keydown', this.keyDownEvent, true);
   }
   ngAfterViewInit() {
-    this.init();
+    setTimeout(() => {
+      this.init();
+    }, 0);
+
   }
   ngOnDestroy() {
     this.worldService.removeEvent();

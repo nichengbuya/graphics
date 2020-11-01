@@ -8,7 +8,7 @@ import { WelcomeComponent } from './welcome.component';
 
 
 @NgModule({
-  imports: [CommonModule,WelcomeRoutingModule,NgZorroAntdModule],
+  imports: [CommonModule, WelcomeRoutingModule, NgZorroAntdModule],
   declarations: [
     WelcomeComponent,
   ],

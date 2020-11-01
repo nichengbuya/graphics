@@ -7,8 +7,10 @@ import { EventEmitter, Injectable } from '@angular/core';
 export class EventEmitService {
   public emitMove: EventEmitter<any>;
   public emitClick: EventEmitter<any>;
+  public emitChange: EventEmitter<any>;
   constructor() {
     this.emitMove = new EventEmitter();
     this.emitClick = new EventEmitter();
+    this.emitChange = new EventEmitter();
   }
 }
