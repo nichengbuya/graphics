@@ -11,6 +11,7 @@ import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { FormsModule } from '@angular/forms';
 import { LibraryComponent } from './library/library.component';
 import { PropertyComponent } from './property/property.component';
+import { LoggerComponent } from 'src/app/components/logger/logger.component';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import { PropertyComponent } from './property/property.component';
       BuildComponent,
       LibraryComponent,
       PropertyComponent,
+      LoggerComponent
     ],
   exports: [WorldComponent]
 })

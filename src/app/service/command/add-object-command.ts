@@ -1,13 +1,9 @@
-import { Injectable } from '@angular/core';
-import { executionAsyncResource } from 'async_hooks';
 import { Object3D } from 'three';
 import { WorldService } from '../world/world.service';
-
-export class AddObjectCommandService {
+export class AddObjectCommand{
   type: string;
   object: Object3D;
   name: string;
-
   constructor(
     private worldService: WorldService,
     object
@@ -19,10 +15,10 @@ export class AddObjectCommandService {
       this.name = 'Add Object: ' + object.name;
     }
   }
-  excute(){
-    this.worldService.addObject(this.object)
+  execute(){
+    this.worldService.addObject(this.object);
   }
   undo(){
-    this.worldService.removeObject(this.object)
+    this.worldService.removeObject(this.object);
   }
 }

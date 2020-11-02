@@ -1,8 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { CommandService } from 'src/app/service/command/command.service';
+import { SetPositionCommand } from 'src/app/service/command/set-position-command';
+import { SetRotationCommand } from 'src/app/service/command/set-rotation-command';
 import { EventEmitService } from 'src/app/service/event-emit.service';
 import { WorldService } from 'src/app/service/world/world.service';
-import { Object3D } from 'three';
+import { Euler, Object3D, Vector3 } from 'three';
 interface Pose{
   key: string;
   value: number;
@@ -22,7 +25,8 @@ export class PropertyComponent implements OnInit, OnDestroy {
   poseMap;
   constructor(
     private eventEmitService: EventEmitService,
-    private worldService: WorldService
+    private worldService: WorldService,
+    private commandService: CommandService
   ) { }
 
   ngOnInit(): void {
@@ -38,31 +42,46 @@ export class PropertyComponent implements OnInit, OnDestroy {
   }
   public changeJoint(e, joint){
     joint.setAngle(e);
+    this.curObj.userData.fk();
   }
   public changePose(e, p){
+    let oldPosition: Vector3;
+    let oldRotation: Euler;
     switch (p.key){
       case 'x': {
+        oldPosition = this.curObj.position.clone();
         this.curObj.position.x =  e / 1000;
+        this.commandService.execute(new SetPositionCommand(this.curObj, this.curObj.position, oldPosition));
         break;
       }
       case 'y': {
+        oldPosition = this.curObj.position.clone();
         this.curObj.position.y =  e / 1000;
+        this.commandService.execute(new SetPositionCommand(this.curObj, this.curObj.position, oldPosition));
         break;
       }
       case 'z': {
+        oldPosition = this.curObj.position.clone();
         this.curObj.position.z =  e / 1000;
+        this.commandService.execute(new SetPositionCommand(this.curObj, this.curObj.position, oldPosition));
         break;
       }
       case 'roll': {
+        oldRotation = this.curObj.rotation.clone();
         this.curObj.rotation.x =  e * Math.PI / 180;
+        this.commandService.execute(new SetRotationCommand(this.curObj, this.curObj.rotation, oldRotation));
         break;
       }
       case 'pitch': {
+        oldRotation = this.curObj.rotation.clone();
         this.curObj.rotation.y =  e * Math.PI / 180;
+        this.commandService.execute(new SetRotationCommand(this.curObj, this.curObj.rotation, oldRotation));
         break;
       }
       case 'yaw': {
+        oldRotation = this.curObj.rotation.clone();
         this.curObj.rotation.z =  e * Math.PI / 180;
+        this.commandService.execute(new SetRotationCommand(this.curObj, this.curObj.rotation, oldRotation));
         break;
       }
     }

@@ -15,11 +15,15 @@ import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { TAARenderPass } from 'three/examples/jsm/postprocessing/TAARenderPass';
 import * as dat from 'three/examples/jsm/libs/dat.gui.module.js';
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
-import { AxesHelper, BoxBufferGeometry, Intersection, Mesh, MeshBasicMaterial, Object3D, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
+import { AxesHelper, BoxBufferGeometry, Euler, Intersection, Mesh, MeshBasicMaterial, Object3D, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
 import { EventEmitService } from '../event-emit.service';
 import Kinematics from '../../common/kinematics';
 import { environmentUrl } from '../../config';
 import Shader from '../../components/shader/shader';
+import { CommandService } from '../command/command.service';
+import { AddObjectCommand } from '../command/add-object-command';
+import { SetPositionCommand } from '../command/set-position-command';
+import { SetRotationCommand } from '../command/set-rotation-command';
 export interface Device {
   img: string; name: string; url: string; type: string; attach: string;
 }
@@ -48,7 +52,8 @@ export class WorldService {
   mixer: any;
   arrowHelper: THREE.ArrowHelper;
   constructor(
-    private eventEmitService: EventEmitService
+    private eventEmitService: EventEmitService,
+    private commandService: CommandService
   ) {
   }
   setWorld(dom: Shader) {
@@ -74,6 +79,20 @@ export class WorldService {
     window.addEventListener('resize', () => {
       this.updateSize();
     }, false);
+    document.addEventListener('keydown', this.keyDownEvent, false);
+  }
+  private keyDownEvent = (event) => {
+    if (event.keyCode === 46) {
+      this.removeObject(this.curObj);
+    }
+    if (event.ctrlKey === true && event.keyCode === 90 && !event.shiftKey) {//Ctrl+Z
+      event.returnvalue = false;
+      this.commandService.undo();
+    }
+    if (event.ctrlKey === true && event.shiftKey && event.keyCode === 90) {//Ctrl+Z+Shift
+      event.returnvalue = false;
+      this.commandService.redo();
+    }
   }
   updateSize() {
     const { container, renderer } = this;
@@ -287,7 +306,9 @@ export class WorldService {
     const { container, scene, objects, id } = this;
     container.removeEventListener('click', this.mouseclick);
     container.removeEventListener('mousemove', this.mousemove);
+    document.removeEventListener('keydown', this.keyDownEvent);
     window.removeEventListener('resize', () => { this.updateSize(); }, false);
+    this.commandService.clear();
     scene.traverse((item) => {
       if (item instanceof THREE.Mesh) {
         item?.geometry && item.geometry.dispose();
@@ -332,6 +353,8 @@ export class WorldService {
   }
   initTransformControl() {
     const { scene, camera, renderer } = this;
+    let objectPositionOnDown: Vector3;
+    let objectRotationOnDown: Euler;
     this.transformControls = new TransformControls(camera, renderer.domElement);
     this.transformControls.traverse((obj: any) => { // To be detected correctly by OutlinePass.
       obj.isTransformControls = true;
@@ -343,7 +366,7 @@ export class WorldService {
     });
     this.transformControls.addEventListener('change', (event) => {
       const res = this.calcArrow();
-      if (res){
+      if (res) {
         if (res.length < .6) {
           this.changeColor(res.device, 0xffff00);
         } else {
@@ -355,7 +378,8 @@ export class WorldService {
       this.removeRaycasterEvent();
       this.arrowHelper = new THREE.ArrowHelper(new Vector3(), new Vector3(), length, 0xffff00);
       this.scene.add(this.arrowHelper);
-
+      objectPositionOnDown = this.curObj.position.clone();
+      objectRotationOnDown = this.curObj.rotation.clone();
     });
     this.transformControls.addEventListener('mouseUp', (event) => {
       const res = this.calcArrow();
@@ -368,9 +392,45 @@ export class WorldService {
           this.detach(this.curObj);
         }
       }
+      const object = this.transformControls.object;
+
+      if (object !== undefined) {
+
+        switch (this.transformControls.getMode()) {
+
+          case 'translate':
+
+            if (!objectPositionOnDown.equals(object.position)) {
+
+              this.commandService.execute(new SetPositionCommand(object, object.position, objectPositionOnDown));
+
+            }
+
+            break;
+
+          case 'rotate':
+
+            if (!objectRotationOnDown.equals(object.rotation)) {
+
+              this.commandService.execute(new SetRotationCommand(object, object.rotation, objectRotationOnDown));
+
+            }
+
+            break;
+
+          // case 'scale':
+
+          //   if (!objectScaleOnDown.equals(object.scale)) {
+
+          //     editor.execute(new SetScaleCommand(editor, object, object.scale, objectScaleOnDown));
+
+          //   }
+
+          //   break;
+        }
+      }
       setTimeout(() => {
         this.bindRaycasterEvent();
-
         this.scene.remove(this.arrowHelper);
         this.arrowHelper = null;
       }, 20);
@@ -520,7 +580,7 @@ export class WorldService {
   detach(child: Object3D): void {
     this.scene.attach(child);
     this.scene.add(child);
-    this.changeColor(child,0x50bed7)
+    this.changeColor(child, 0x50bed7)
   }
   /**
    * change a device color
@@ -535,7 +595,7 @@ export class WorldService {
       return;
     }
     model.traverse((child: any) => {
-      if(child.currentColor !== undefined){ return; }
+      if (child.currentColor !== undefined) { return; }
       if (child.isMesh) {
         if (child.material instanceof Array) {
           for (const m of child.material) {
@@ -575,7 +635,7 @@ export class WorldService {
     });
   }
   calcArrow() {
-    if (!this.curObj){
+    if (!this.curObj) {
       return;
     }
     const position = new Vector3();

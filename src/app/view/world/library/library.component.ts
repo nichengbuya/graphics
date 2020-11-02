@@ -2,6 +2,8 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { LoadBarComponent } from 'src/app/components/load-bar/load-bar.component';
+import { AddObjectCommand } from 'src/app/service/command/add-object-command';
+import { CommandService } from 'src/app/service/command/command.service';
 import { EventEmitService } from 'src/app/service/event-emit.service';
 import { HttpService } from 'src/app/service/http/http.service';
 import { Device, WorldService } from 'src/app/service/world/world.service';
@@ -24,7 +26,8 @@ export class LibraryComponent implements OnInit , OnDestroy {
     private configService: HttpService,
     private worldService: WorldService,
     private sanitizer: DomSanitizer,
-    private eventEmitService: EventEmitService
+    private eventEmitService: EventEmitService,
+    private commandService: CommandService
     ) { }
 
   ngOnInit(): void {
@@ -66,6 +69,7 @@ export class LibraryComponent implements OnInit , OnDestroy {
     this.device = await this.worldService.initRobot(item);
     this.load.complete();
     this.worldService.addObject(this.device);
+    this.commandService.execute(new AddObjectCommand(this.worldService, this.device));
     this.moveSub = this.eventEmitService.emitMove.subscribe(e => {
       this.changePosition(this.device, e[0].point);
     });

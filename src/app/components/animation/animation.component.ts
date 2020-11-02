@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { Intersection, Object3D } from 'three';
 import { EventEmitService } from 'src/app/service/event-emit.service';
+import { CommandService } from 'src/app/service/command/command.service';
 @Component({
   selector: 'app-animation',
   templateUrl: './animation.component.html',
@@ -16,7 +17,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   private subs: Subscription[] = [];
   robot: URDFRobot;
   animation: number;
-  curPanel: 'libaray'|'property'|null = null;
+  curPanel: 'libaray' | 'property' | null = null;
   curObj: Object3D;
   public panelList = [
     {
@@ -60,7 +61,8 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private worldService: WorldService,
     private router: Router,
-    private eventEmitService: EventEmitService
+    private eventEmitService: EventEmitService,
+    private commandService: CommandService
   ) { }
   @ViewChild('animation') div: ElementRef;
   @ViewChild('load') load: LoadBarComponent;
@@ -70,7 +72,6 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subs.push(this.eventEmitService.emitClick.subscribe((e: Intersection[]) => {
       this.worldService.select(e);
     }));
-    document.addEventListener('keydown', this.keyDownEvent, true);
   }
   ngAfterViewInit() {
     setTimeout(() => {
@@ -80,7 +81,6 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   ngOnDestroy() {
     this.worldService.removeEvent();
-    document.removeEventListener('keydown', this.keyDownEvent);
     this.subs.forEach(s => s.unsubscribe());
     cancelAnimationFrame(this.animation);
   }
@@ -88,11 +88,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     this.worldService.setWorld(this.div.nativeElement);
     this.worldService.initPlane();
   }
-  private keyDownEvent = (event) => {
-    if (event.keyCode === 46) {
-      this.worldService.removeObject(this.worldService.curObj);
-    }
-  }
+
   animate() {
     this.animation = requestAnimationFrame(this.animate.bind(this));
     this.robot.userData.ik();
@@ -107,28 +103,28 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
   }
-  changeTool(e){
-    if ( e.name === this.curPanel){
+  changeTool(e) {
+    if (e.name === this.curPanel) {
       // this.router.navigate([`/world/animation}`]);
       this.curPanel = null;
-    }else{
+    } else {
       this.curPanel = e.name;
       this.router.navigate([`/world/animation/${e.name}`]);
     }
 
   }
-  public trigger(){
+  public trigger() {
 
   }
-  public deploy(){
+  public deploy() {
     this.subs.forEach(s => s.unsubscribe());
     const node = [1, 3, 2, 4, 5, 6];
     const link = [[1, 2], [2, 3], [3, 4], [3, 5], [4, 6], [5, 6], [6, 2]];
     const nodeMap: Map<number, Subject<void>> = new Map();
     const linkMap: Map<number, Subject<void>[]> = new Map();
     node.forEach(n => {
-      nodeMap.set( n , new Subject());
-      linkMap.set( n, []);
+      nodeMap.set(n, new Subject());
+      linkMap.set(n, []);
     });
     link.forEach(l => {
       const nexts = linkMap.get(l[0]);
@@ -138,16 +134,16 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subs = [];
     nodeMap.forEach((subject, n) => {
       this.subs.push(subject.subscribe(async () => {
-          setTimeout(() => {
-            const subjects = linkMap.get(n);
-            if ( n === 3){
-              subjects[0].next();
-              return;
-            }
-            subjects.forEach(s => {
-              s.next();
-            });
-          }, 2000);
+        setTimeout(() => {
+          const subjects = linkMap.get(n);
+          if (n === 3) {
+            subjects[0].next();
+            return;
+          }
+          subjects.forEach(s => {
+            s.next();
+          });
+        }, 2000);
 
       }));
     });
@@ -155,7 +151,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     start.next();
   }
 
-  setSignal(){
+  setSignal() {
     // this.event.next(1);
   }
 
