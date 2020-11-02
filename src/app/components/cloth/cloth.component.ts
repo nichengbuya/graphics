@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-import { WorldService } from 'src/app/service/world.service';
+import { WorldService } from 'src/app/service/world/world.service';
 import * as THREE from 'three';
-import World from '../common/world';
+import World from '../../common/world';
 import AnimateCloth from './cloth';
 
 @Component({

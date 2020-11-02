@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, Eve
 import URDFRobot from 'urdf-loader';
 import { LoadBarComponent } from '../load-bar/load-bar.component';
 import * as THREE from 'three';
-import { WorldService } from 'src/app/service/world.service';
+import { WorldService } from 'src/app/service/world/world.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { Intersection, Object3D } from 'three';
@@ -90,7 +90,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   private keyDownEvent = (event) => {
     if (event.keyCode === 46) {
-      this.worldService.remove();
+      this.worldService.removeObject(this.worldService.curObj);
     }
   }
   animate() {

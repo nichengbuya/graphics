@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { BoxBufferGeometry, GridHelper, Mesh, MeshBasicMaterial } from 'three';
 import {DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
-import World from '../common/world';
+import World from '../../common/world';
 class Build extends World{
     public models: Array<THREE.Object3D>;
     constructor(options){

@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { WorldService } from 'src/app/service/world.service';
+import { WorldService } from 'src/app/service/world/world.service';
 import Shader from './shader';
 
 @Component({

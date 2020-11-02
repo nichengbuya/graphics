@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { EventEmitService } from 'src/app/service/event-emit.service';
-import { WorldService } from 'src/app/service/world.service';
+import { WorldService } from 'src/app/service/world/world.service';
 import { Object3D } from 'three';
 interface Pose{
   key: string;

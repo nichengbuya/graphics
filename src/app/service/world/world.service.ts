@@ -16,10 +16,10 @@ import { TAARenderPass } from 'three/examples/jsm/postprocessing/TAARenderPass';
 import * as dat from 'three/examples/jsm/libs/dat.gui.module.js';
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
 import { AxesHelper, BoxBufferGeometry, Intersection, Mesh, MeshBasicMaterial, Object3D, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
-import { EventEmitService } from './event-emit.service';
-import Kinematics from '../components/common/kinematics';
-import { environmentUrl } from '../config';
-import Shader from '../components/shader/shader';
+import { EventEmitService } from '../event-emit.service';
+import Kinematics from '../../common/kinematics';
+import { environmentUrl } from '../../config';
+import Shader from '../../components/shader/shader';
 export interface Device {
   img: string; name: string; url: string; type: string; attach: string;
 }
@@ -462,12 +462,12 @@ export class WorldService {
   /*
     edit
   */
-  add(model: THREE.Object3D) {
+  addObject(model: THREE.Object3D) {
     this.scene.add(model);
     this.devices.push(model);
   }
-  remove() {
-    const { curObj } = this;
+  removeObject(curObj) {
+    // const { curObj } = this;
     if (curObj) {
       this.transformControls.detach();
       this.scene.remove(curObj);

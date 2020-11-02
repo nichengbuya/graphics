@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { tween } from '../common/tween';
+import { tween } from '../../common/tween';
 interface LoadBar {
   isLoad: boolean;
   percent: number;

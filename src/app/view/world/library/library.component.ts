@@ -3,8 +3,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { LoadBarComponent } from 'src/app/components/load-bar/load-bar.component';
 import { EventEmitService } from 'src/app/service/event-emit.service';
-import { HttpService } from 'src/app/service/http.service';
-import { Device, WorldService } from 'src/app/service/world.service';
+import { HttpService } from 'src/app/service/http/http.service';
+import { Device, WorldService } from 'src/app/service/world/world.service';
 import { Object3D, Vector3 } from 'three';
 
 @Component({
@@ -65,7 +65,7 @@ export class LibraryComponent implements OnInit , OnDestroy {
     this.device = null;
     this.device = await this.worldService.initRobot(item);
     this.load.complete();
-    this.worldService.add(this.device);
+    this.worldService.addObject(this.device);
     this.moveSub = this.eventEmitService.emitMove.subscribe(e => {
       this.changePosition(this.device, e[0].point);
     });

@@ -4,7 +4,7 @@ import { zip } from 'rxjs';
 import { MaterialsService } from 'src/app/service/materials.service';
 import { TexturesService } from 'src/app/service/textures.service';
 import { ToolService } from 'src/app/service/tool.service';
-import { WorldService } from 'src/app/service/world.service';
+import { WorldService } from 'src/app/service/world/world.service';
 import { environment } from 'src/environments/environment';
 import * as THREE from 'three';
 import { BufferGeometry, Color, DoubleSide, Geometry, Group, Material, Mesh, Object3D, PointLight, RepeatWrapping,
