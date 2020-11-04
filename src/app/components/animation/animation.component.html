@@ -1,12 +1,24 @@
-<div class="container">
-    <div class="canvas" style="width: 100%;height: 100%;position: absolute;" #animation></div>
-    <div class="top-tool-bar">
-        <div class="top-tool-bar-item" *ngFor="let tool of toolList" (click)="tool.fun()">
+<div style="position: relative;">
+    <div class="tool-bar">
+        <div class="tool-bar-item" *ngFor="let tool of toolList" (click)="tool.fun()">
             <i nz-icon [nzType]="tool.icon" nzTheme="fill"></i>
         </div>
-    </div>
+        <nz-divider nzType="vertical"></nz-divider>
+        <div *ngFor="let mode of transformMode" (click)="changeTransformMode(mode)">
+            <div class="tool-bar-item" [ngClass]="{
+                'tool-bar-item-active':mode.isActive
+            }">
+                <img class="tool-bar-item-img" [src]="mode.imgSrc" alt="">
+            </div>
+        </div>
+    </div></div>
+
+<div class="container">
+
+    <div class="canvas" style="width: 100%;height: 100%;position: absolute;" #animation></div>
+
     <!-- <app-load-bar #load></app-load-bar> -->
-    <div class="tool-bar">
+    <!-- <div class="tool-bar">
         <div *ngFor="let mode of transformMode" (click)="changeTransformMode(mode)">
             <div class="tool-bar-item" [ngClass]="{
             'tool-bar-item-active':mode.isActive
@@ -14,22 +26,25 @@
                 <img class="tool-bar-item-img" [src]="mode.imgSrc" alt="">
             </div>
         </div>
+    </div> -->
+    <div class="library" (click)="visible =! visible" [ngStyle]="{
+        'transform':visible? 'translateX(-400px)': 'translateX(0px)'
+    }">
+        library
     </div>
     <div class="left-tool-bar">
-        <div class="left-tool-bar-item" *ngFor="let panel of panelList"  (click)="changeTool(panel)" [ngClass]="{
+        <div class="left-tool-bar-item" *ngFor="let panel of panelList" (click)="changeTool(panel)" [ngClass]="{
             'active':panel.name === curPanel
         }">
             <i nz-icon [nzType]="panel.icon" nzTheme="outline"></i>
         </div>
     </div>
-    <nz-drawer [nzClosable]="false" 
-    [nzPlacement]="'left'" 
-    [nzBodyStyle]="{ overflow: 'hidden' }" 
-    [nzMaskClosable]="false" 
-    [nzMask]="false"
-    [nzWidth]="400" 
-    [nzVisible]="this.curPanel !== null"
-    [nzOffsetX]="50">
+    <nz-drawer [nzClosable]="false" [nzPlacement]="'left'" [nzBodyStyle]="{ overflow: 'hidden' }"
+        [nzMaskClosable]="false" [nzMask]="false" [nzWidth]="400" [nzVisible]="this.curPanel !== null" [nzOffsetX]="50">
         <router-outlet></router-outlet>
+    </nz-drawer>
+    <nz-drawer [nzClosable]="false" [nzPlacement]="'right'" [nzBodyStyle]="{ overflow: 'hidden' }"
+        [nzMaskClosable]="false" [nzMask]="false" [nzWidth]="400" [nzVisible]="visible">
+        <app-library></app-library>
     </nz-drawer>
 </div>

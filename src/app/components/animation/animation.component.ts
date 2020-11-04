@@ -19,11 +19,12 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   animation: number;
   curPanel: 'libaray' | 'property' | null = null;
   curObj: Object3D;
+  visible = false;
   public panelList = [
-    {
-      name: 'library',
-      icon: 'book',
-    },
+    // {
+    //   name: 'library',
+    //   icon: 'book',
+    // },
     {
       name: 'property',
       icon: 'setting'

@@ -11,8 +11,10 @@ interface LoadBar {
 })
 export class LoadBarComponent implements OnInit {
   public loadBar: LoadBar = {
+    // isLoad: false,
+    // percent: 0,
     isLoad: false,
-    percent: 0
+    percent: 85
   };
   constructor() { }
 

@@ -24,6 +24,9 @@ import { CommandService } from '../command/command.service';
 import { AddObjectCommand } from '../command/add-object-command';
 import { SetPositionCommand } from '../command/set-position-command';
 import { SetRotationCommand } from '../command/set-rotation-command';
+import { RemoveObjectCommand } from '../command/remove-object-command';
+import { AttachCommand } from '../command/attach-command';
+import { DetachCommand } from '../command/detach-command';
 export interface Device {
   img: string; name: string; url: string; type: string; attach: string;
 }
@@ -84,12 +87,13 @@ export class WorldService {
   private keyDownEvent = (event) => {
     if (event.keyCode === 46) {
       this.removeObject(this.curObj);
+      this.commandService.execute(new RemoveObjectCommand(this, this.curObj));
     }
-    if (event.ctrlKey === true && event.keyCode === 90 && !event.shiftKey) {//Ctrl+Z
+    if (event.ctrlKey === true && event.keyCode === 90 && !event.shiftKey) {// Ctrl+Z
       event.returnvalue = false;
       this.commandService.undo();
     }
-    if (event.ctrlKey === true && event.shiftKey && event.keyCode === 90) {//Ctrl+Z+Shift
+    if (event.ctrlKey === true && event.shiftKey && event.keyCode === 90) {// Ctrl+Z+Shift
       event.returnvalue = false;
       this.commandService.redo();
     }
@@ -386,15 +390,20 @@ export class WorldService {
       if (res) {
         if (res.length < .6) {
           this.attach(this.curObj, res.device);
+          this.commandService.execute(new AttachCommand(this, objectPositionOnDown, this.curObj, res.device));
           this.restoreColor(res.device);
           this.curObj = null;
         } else {
+          if (this.curObj.parent.type !== 'Scene'){
+            this.commandService.execute(new DetachCommand(this, this.curObj.position, this.curObj, res.device));
+          }
+
           this.detach(this.curObj);
         }
       }
       const object = this.transformControls.object;
 
-      if (object !== undefined) {
+      if (object !== undefined && object.parent.type === 'Scene') {
 
         switch (this.transformControls.getMode()) {
 
@@ -580,7 +589,7 @@ export class WorldService {
   detach(child: Object3D): void {
     this.scene.attach(child);
     this.scene.add(child);
-    this.changeColor(child, 0x50bed7)
+    this.changeColor(child, 0x50bed7);
   }
   /**
    * change a device color
