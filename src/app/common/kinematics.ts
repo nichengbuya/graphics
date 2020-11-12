@@ -1,14 +1,15 @@
 import * as THREE from 'three';
-import {
-	atan2, chain, derivative, e, evaluate, log, pi, pow, round, sqrt, sin, cos, abs
-} from 'mathjs';
+import {atan2, chain, derivative, e, evaluate, log, pi, pow, round, sqrt, sin, cos, abs} from 'mathjs';
 
 const ZERO_THRESH = 1e-4;
 const PI = Math.PI;
 
 class Kinematics {
-	constructor(robot) {
-		switch (robot.robotName) {
+	inverse;
+	forward;
+	constructor(robotName) {
+	
+		switch (robotName) {
 			case 'sirobot_ur5':
 				this.forward = (a) => {
 					return this.ur_forward(a);
@@ -24,8 +25,7 @@ class Kinematics {
 		}
 
 	}
-	inverse;
-	forward;
+
 
 	ur_forward (theta) {
 		// const theta = this.joints.map(joint => joint.angle);

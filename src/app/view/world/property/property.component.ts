@@ -5,7 +5,7 @@ import { SetPositionCommand } from 'src/app/service/command/set-position-command
 import { SetRotationCommand } from 'src/app/service/command/set-rotation-command';
 import { EventEmitService } from 'src/app/service/event-emit.service';
 import { WorldService } from 'src/app/service/world/world.service';
-import { Euler, Object3D, Vector3 } from 'three';
+import { Euler, Object3D, Scene, Vector3 } from 'three';
 interface Pose{
   key: string;
   value: number;
@@ -23,6 +23,7 @@ export class PropertyComponent implements OnInit, OnDestroy {
   public curObj: Object3D;
   pose;
   poseMap;
+  nodes:Scene;
   constructor(
     private eventEmitService: EventEmitService,
     private worldService: WorldService,
@@ -31,7 +32,14 @@ export class PropertyComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.curObj = this.worldService.curObj;
+    this.nodes = new Scene();
+    this.nodes.copy(this.worldService.scene);
+    // this.nodes.traverse((child:any)=>{
+    //   child.title = child.name;
+    //   child.key = child.name;
+    // })
     this.formatePose();
+
     this.subs.push(this.eventEmitService.emitClick.subscribe(e => {
       this.curObj = this.worldService.select(e);
       this.formatePose();

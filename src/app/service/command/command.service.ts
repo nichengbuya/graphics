@@ -29,6 +29,17 @@ export class CommandService {
     this.redos = [];
     this.commandEmit.emit();
   }
+  selectCommond(index){
+    if (index < this.undos.length){
+      while (this.undos.length > index){
+        this.undo();
+      }
+    }else{
+      while (this.undos.length < index){
+        this.redo();
+      }
+    }
+  }
   undo() {
     let cmd: Command;
     if (this.undos.length > 0) {

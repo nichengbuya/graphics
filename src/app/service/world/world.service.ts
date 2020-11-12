@@ -54,6 +54,7 @@ export class WorldService {
   id: number;
   mixer: any;
   arrowHelper: THREE.ArrowHelper;
+  editType: 'montion' | 'building';
   constructor(
     private eventEmitService: EventEmitService,
     private commandService: CommandService
@@ -369,6 +370,7 @@ export class WorldService {
 
     });
     this.transformControls.addEventListener('change', (event) => {
+      if (this.editType === 'montion') { return; }
       const res = this.calcArrow();
       if (res) {
         if (res.length < .6) {
@@ -380,12 +382,14 @@ export class WorldService {
     });
     this.transformControls.addEventListener('mouseDown', (event) => {
       this.removeRaycasterEvent();
+      if (this.editType === 'montion') { return; }
       this.arrowHelper = new THREE.ArrowHelper(new Vector3(), new Vector3(), length, 0xffff00);
       this.scene.add(this.arrowHelper);
       objectPositionOnDown = this.curObj.position.clone();
       objectRotationOnDown = this.curObj.rotation.clone();
     });
     this.transformControls.addEventListener('mouseUp', (event) => {
+      if (this.editType === 'montion') { return; }
       const res = this.calcArrow();
       if (res) {
         if (res.length < .6) {
@@ -461,16 +465,16 @@ export class WorldService {
     scene.add(mesh);
     objects.push(mesh);
   }
-  initRobot(item: Device): Promise<URDFLink> {
+  initRobot(device: Device): Promise<URDFLink> {
     const manager = new THREE.LoadingManager();
     const loader = new URDFLoader(manager);
     loader.packages = `${environmentUrl}/static/robot`;
     loader.fetchOptions = { mode: 'cors', credentials: 'same-origin' };
-    const url = `${environmentUrl}/${item.url}`;
+    const url = `${environmentUrl}/${device.url}`;
     return new Promise((resolve, reject) => {
       loader.load(url, (robot: URDFLink) => {
-        robot.userData.type = item.type;
-        robot.userData.attach = item.attach;
+        robot.userData.type = device.type;
+        robot.userData.attach = device.attach;
         robot.userData.kinematics = new Kinematics(robot);
         robot.userData.joints = Object.values(robot.joints).filter((joint: any) => joint.jointType === 'revolute');
         const effector = new Mesh(new BoxBufferGeometry(.01, .01, .01), new MeshBasicMaterial({ transparent: true }));

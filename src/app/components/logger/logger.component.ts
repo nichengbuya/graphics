@@ -29,5 +29,8 @@ export class LoggerComponent implements OnInit, OnDestroy {
     this.undos = this.commandService.undos;
     this.redos = this.commandService.redos.slice().reverse();
   }
-
+  public onClick(i){
+    console.log(i);
+    this.commandService.selectCommond(i);
+  }
 }

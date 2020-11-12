@@ -28,6 +28,10 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       name: 'property',
       icon: 'setting'
+    },
+    {
+      name: 'motion',
+      icon: 'edit'
     }
   ];
   public toolList = [
@@ -92,8 +96,8 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
 
   animate() {
     this.animation = requestAnimationFrame(this.animate.bind(this));
-    this.robot.userData.ik();
-    this.robot.userData.fk();
+    this.robot.ik();
+    this.robot.fk();
   }
   changeTransformMode(e) {
     this.worldService.transformControls.setMode(e.name);

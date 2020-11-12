@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { LibraryComponent } from './library/library.component';
 import { PropertyComponent } from './property/property.component';
 import { LoggerComponent } from 'src/app/components/logger/logger.component';
+import { MotionComponent } from './motion/motion.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { LoggerComponent } from 'src/app/components/logger/logger.component';
       BuildComponent,
       LibraryComponent,
       PropertyComponent,
-      LoggerComponent
+      LoggerComponent,
+      MotionComponent
     ],
   exports: [WorldComponent]
 })
