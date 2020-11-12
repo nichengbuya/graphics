@@ -1,0 +1,12 @@
+<ul *ngIf="!collapse">
+    <li *ngFor="let node of treeData">
+      <a class="ngg-tree-node" [ngClass]="{'active': node.active}" (click)="select(node)" >
+        <span class="expand-icon" [ngStyle]="{visibility : node.children ? 'visible' : 'hidden'}">
+          <i class="fa fa-caret-right caret-down" [ngClass]="{'rotate-caret': node.expand}"></i>
+        </span>
+        <span class="title">{{node.name}}</span>
+      </a>
+      <app-tree #childTree class="ngg-tree" [rawData]="rawData" [isRoot]="false" [treeData]="node.children" [collapse]="!node.expand" *ngIf="node.children"></app-tree>
+    </li>
+  </ul>
+  

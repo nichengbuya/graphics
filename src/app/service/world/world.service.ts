@@ -130,6 +130,12 @@ export class WorldService {
       this.scene.add(new THREE.AxesHelper(10e3));
     }
   }
+  getScene(){
+    return this.scene;
+  }
+  getCurObj(){
+    return this.curObj;
+  }
   initCamera() {
     this.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 10000);
     this.camera.position.set(0, 3, 3);
@@ -475,7 +481,7 @@ export class WorldService {
       loader.load(url, (robot: URDFLink) => {
         robot.userData.type = device.type;
         robot.userData.attach = device.attach;
-        robot.userData.kinematics = new Kinematics(robot);
+        robot.userData.kinematics = new Kinematics(device.name);
         robot.userData.joints = Object.values(robot.joints).filter((joint: any) => joint.jointType === 'revolute');
         const effector = new Mesh(new BoxBufferGeometry(.01, .01, .01), new MeshBasicMaterial({ transparent: true }));
         robot.add(effector);
@@ -538,6 +544,7 @@ export class WorldService {
   addObject(model: THREE.Object3D) {
     this.scene.add(model);
     this.devices.push(model);
+    this.eventEmitService.sceneChange.emit(this.scene);
   }
   removeObject(curObj) {
     // const { curObj } = this;
@@ -546,6 +553,7 @@ export class WorldService {
       this.scene.remove(curObj);
       const index = this.devices.indexOf(curObj);
       this.devices.splice(index, 1);
+      this.eventEmitService.sceneChange.emit(this.scene);
     }
   }
   select(e: Intersection[]) {

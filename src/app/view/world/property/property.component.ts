@@ -23,7 +23,87 @@ export class PropertyComponent implements OnInit, OnDestroy {
   public curObj: Object3D;
   pose;
   poseMap;
-  nodes:Scene;
+  // nodes;
+  typeMap = new Set([
+    'Scene', 'Camera', 'Light', 'Mesh', 'Line', 'Points'
+  ]);
+  nodes = [{
+    name : 'root',
+    children : [{
+      name : 'node1'
+    },{
+      name : 'node2',
+      children : [{
+        name : 'node21'
+      }]
+    },{
+      name : 'node3',
+      children : [{
+        name : 'node31'
+      }]
+    }]
+  }];
+  // nodes = [
+  //   {
+  //     title: '0-0',
+  //     key: '00',
+  //     expanded: true,
+  //     children: [
+  //       {
+  //         title: '0-0-0',
+  //         key: '000',
+  //         expanded: true,
+  //         children: [
+  //           { title: '0-0-0-0', key: '0000', isLeaf: true },
+  //           { title: '0-0-0-1', key: '0001', isLeaf: true },
+  //           { title: '0-0-0-2', key: '0002', isLeaf: true }
+  //         ]
+  //       },
+  //       {
+  //         title: '0-0-1',
+  //         key: '001',
+  //         children: [
+  //           { title: '0-0-1-0', key: '0010', isLeaf: true },
+  //           { title: '0-0-1-1', key: '0011', isLeaf: true },
+  //           { title: '0-0-1-2', key: '0012', isLeaf: true }
+  //         ]
+  //       },
+  //       {
+  //         title: '0-0-2',
+  //         key: '002'
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     title: '0-1',
+  //     key: '01',
+  //     children: [
+  //       {
+  //         title: '0-1-0',
+  //         key: '010',
+  //         children: [
+  //           { title: '0-1-0-0', key: '0100', isLeaf: true },
+  //           { title: '0-1-0-1', key: '0101', isLeaf: true },
+  //           { title: '0-1-0-2', key: '0102', isLeaf: true }
+  //         ]
+  //       },
+  //       {
+  //         title: '0-1-1',
+  //         key: '011',
+  //         children: [
+  //           { title: '0-1-1-0', key: '0110', isLeaf: true },
+  //           { title: '0-1-1-1', key: '0111', isLeaf: true },
+  //           { title: '0-1-1-2', key: '0112', isLeaf: true }
+  //         ]
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     title: '0-2',
+  //     key: '02',
+  //     isLeaf: true
+  //   }
+  // ];
   constructor(
     private eventEmitService: EventEmitService,
     private worldService: WorldService,
@@ -31,19 +111,17 @@ export class PropertyComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.curObj = this.worldService.curObj;
-    this.nodes = new Scene();
-    this.nodes.copy(this.worldService.scene);
-    // this.nodes.traverse((child:any)=>{
-    //   child.title = child.name;
-    //   child.key = child.name;
-    // })
+    this.curObj = this.worldService.getCurObj();
     this.formatePose();
 
     this.subs.push(this.eventEmitService.emitClick.subscribe(e => {
       this.curObj = this.worldService.select(e);
       this.formatePose();
     }));
+    // this.subs.push(this.eventEmitService.sceneChange.subscribe((scene) => {
+    //   this.nodes = scene.children;
+
+    // }));
   }
   ngOnDestroy(){
     this.subs.forEach(s => s.unsubscribe());
@@ -156,5 +234,19 @@ export class PropertyComponent implements OnInit, OnDestroy {
       ];
     }
 
+  }
+  public formateNodes(scene: Scene){
+    const s = scene.clone();
+    s.traverse((child: any) => {
+      if (child.isMesh){
+        child.key  = child.name;
+        child.title = child.name;
+      }
+    });
+    this.nodes = s.children;
+
+  }
+  public nzEvent(e){
+    console.log(e);
   }
 }

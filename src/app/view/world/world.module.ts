@@ -13,6 +13,7 @@ import { LibraryComponent } from './library/library.component';
 import { PropertyComponent } from './property/property.component';
 import { LoggerComponent } from 'src/app/components/logger/logger.component';
 import { MotionComponent } from './motion/motion.component';
+import { TreeComponent } from 'src/app/components/tree/tree.component';
 
 
 @NgModule({
@@ -32,6 +33,7 @@ import { MotionComponent } from './motion/motion.component';
       LibraryComponent,
       PropertyComponent,
       LoggerComponent,
+      TreeComponent,
       MotionComponent
     ],
   exports: [WorldComponent]

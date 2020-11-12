@@ -10,7 +10,7 @@ class Kinematics {
 	constructor(robotName) {
 	
 		switch (robotName) {
-			case 'sirobot_ur5':
+			case 'UR5':
 				this.forward = (a) => {
 					return this.ur_forward(a);
 				};
@@ -18,7 +18,7 @@ class Kinematics {
 					return this.ur_inverse(a);
 				};
 				break;
-			case 'aubo_i5':
+			case 'AUBO_i5':
 				this.inverse = this.aubo_inverse;
 				this.forward = this.aubo_forward;
 				break;
