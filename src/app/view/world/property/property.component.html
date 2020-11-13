@@ -3,8 +3,6 @@
     <div class="property-item">
         <app-tree [treeData]="nodes"></app-tree>
     </div>
-
-    <!-- <nz-tree [nzData]="nodes" nzDraggable nzBlockNode nzVirtualHeight = "15vh" (nzOnDrop)="nzEvent($event)"> </nz-tree> -->
     <nz-divider nzPlain nzText="Joint" nzOrientation="left"></nz-divider>
     <div class="property-item">
         <div  *ngIf="curObj">
@@ -29,7 +27,7 @@
     
     <nz-divider nzPlain nzText="Pose" nzOrientation="left"></nz-divider>
     <div class="property-item" >
-        <div *ngIf="curObj">
+        <div>
             <nz-row *ngFor="let p of pose">
                 <nz-col nzSpan="4">
                     {{p.key}}

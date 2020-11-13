@@ -16,7 +16,7 @@ const routes: Routes = [
       { path: 'shader', component: ShaderComponent },
       {
         path: 'animation', component: AnimationComponent, children: [
-          { path: 'library', component: LibraryComponent },
+          { path: '' , redirectTo: 'property', pathMatch: 'full' },
           { path: 'property', component: PropertyComponent },
           { path: 'motion', component: MotionComponent}
         ]

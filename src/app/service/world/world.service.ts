@@ -60,11 +60,26 @@ export class WorldService {
     private commandService: CommandService
   ) {
   }
+  // set get value
   setWorld(dom: Shader) {
     this.container = dom;
     this.init();
-    // return this;
   }
+  getScene(){
+    return this.scene;
+  }
+  getCurObj(){
+    return this.curObj;
+  }
+  setEditType(type: 'montion' | 'building'){
+    if ( this.curObj && type === 'montion' && this.curObj.userData.type === 'robot'){
+      this.transformControls.attach(this.curObj.userData.effector);
+    }else if (this.curObj && type === 'building') {
+      this.transformControls.attach(this.curObj);
+    }
+    this.editType = type;
+  }
+
   init() {
     this.initScene();
     this.initCamera();
@@ -130,12 +145,7 @@ export class WorldService {
       this.scene.add(new THREE.AxesHelper(10e3));
     }
   }
-  getScene(){
-    return this.scene;
-  }
-  getCurObj(){
-    return this.curObj;
-  }
+
   initCamera() {
     this.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 10000);
     this.camera.position.set(0, 3, 3);
@@ -376,7 +386,11 @@ export class WorldService {
 
     });
     this.transformControls.addEventListener('change', (event) => {
-      if (this.editType === 'montion') { return; }
+      if (this.editType === 'montion') {
+        this.eventEmitService.emitChange.emit();
+        // return;
+      }
+
       const res = this.calcArrow();
       if (res) {
         if (res.length < .6) {
@@ -395,7 +409,6 @@ export class WorldService {
       objectRotationOnDown = this.curObj.rotation.clone();
     });
     this.transformControls.addEventListener('mouseUp', (event) => {
-      if (this.editType === 'montion') { return; }
       const res = this.calcArrow();
       if (res) {
         if (res.length < .6) {
@@ -450,8 +463,7 @@ export class WorldService {
       }
       setTimeout(() => {
         this.bindRaycasterEvent();
-        this.scene.remove(this.arrowHelper);
-        this.arrowHelper = null;
+
       }, 20);
 
     });
@@ -469,6 +481,7 @@ export class WorldService {
     const materail = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
     const mesh = new THREE.Mesh(planeGemo, materail);
     scene.add(mesh);
+    this.eventEmitService.sceneChange.emit(this.scene);
     objects.push(mesh);
   }
   initRobot(device: Device): Promise<URDFLink> {
@@ -493,9 +506,6 @@ export class WorldService {
           effector.rotation.set(result[3], result[4], result[5]);
         };
         robot.userData.ik = () => {
-          if (!effector) {
-            return;
-          }
           effector.updateMatrixWorld();
           const matrix = effector.matrix.elements;
           const cartPos = [
@@ -504,15 +514,15 @@ export class WorldService {
             matrix[2], matrix[6], matrix[10], matrix[14],
           ];
           const theta = robot.userData.kinematics.inverse(cartPos)[2];
-          theta.forEach((value: number, index: string | number) => {
-            if (Math.abs(value - robot.userData.joints[index]) > Math.PI * 2 - Math.PI / 180 * 10) {
-              value > 0 ? value = value - Math.PI * 2 : value = value + Math.PI * 2;
-            }
-          });
+          // theta.forEach((value: number, index: string | number) => {
+          //   if (Math.abs(value - robot.userData.joints[index]) > Math.PI * 2 - Math.PI / 180 * 10) {
+          //     value > 0 ? value = value - Math.PI * 2 : value = value + Math.PI * 2;
+          //   }
+          // });
           if (theta.find((item: number) => isNaN(item)) === undefined) {
             if (theta.every((item: number) => item === 0)) {
+              // robot.userData.fk();
             } else {
-              // this.changeRobotColor(color.default);
               theta.forEach((item: any, index: string | number) => {
                 robot.userData.joints[index].setAngle(item);
               });
@@ -532,11 +542,6 @@ export class WorldService {
       });
     });
 
-  }
-  initEndEffector() {
-    this.effector = new Mesh(new BoxBufferGeometry(.01, .01, .01), new MeshBasicMaterial({ transparent: true }));
-    this.scene.add(this.effector);
-    this.transformControls.attach(this.effector);
   }
   /*
     edit
@@ -590,6 +595,9 @@ export class WorldService {
     child.position.copy(parent.userData.effector.position);
     child.quaternion.copy(parent.userData.effector.quaternion);
     this.transformControls.detach();
+    this.scene.remove(this.arrowHelper);
+    this.arrowHelper = null;
+    this.eventEmitService.sceneChange.emit(this.scene);
     // this.curObj = null;
   }
   /**
@@ -602,6 +610,9 @@ export class WorldService {
     this.scene.attach(child);
     this.scene.add(child);
     this.changeColor(child, 0x50bed7);
+    this.scene.remove(this.arrowHelper);
+    this.arrowHelper = null;
+    this.eventEmitService.sceneChange.emit(this.scene);
   }
   /**
    * change a device color
@@ -656,7 +667,7 @@ export class WorldService {
     });
   }
   calcArrow() {
-    if (!this.curObj) {
+    if (!this.curObj || this.editType === 'montion') {
       return;
     }
     const position = new Vector3();

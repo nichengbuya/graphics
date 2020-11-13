@@ -1,15 +1,54 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { EventEmitService } from 'src/app/service/event-emit.service';
+import { WorldService } from 'src/app/service/world/world.service';
 
 @Component({
   selector: 'app-motion',
   templateUrl: './motion.component.html',
   styleUrls: ['./motion.component.scss']
 })
-export class MotionComponent implements OnInit {
-
-  constructor() { }
+export class MotionComponent implements OnInit, OnDestroy {
+  subs: Subscription[] = [];
+  curObj: any;
+  animation: number;
+  constructor(
+    private worldService: WorldService,
+    private eventEmitService: EventEmitService,
+  ) { }
 
   ngOnInit(): void {
+    this.worldService.setEditType('montion');
+    this.curObj = this.worldService.getCurObj();
+    this.subs.push(this.eventEmitService.emitClick.subscribe(e => {
+      this.curObj = this.worldService.select(e);
+      if (this.curObj && this.curObj?.userData.type === 'robot'){
+        this.worldService.transformControls.attach(this.curObj?.userData.effector);
+      }
+    }));
+    this.subs.push(this.eventEmitService.emitChange.subscribe(() => {
+      this.leadThrough();
+    }));
+    // this.animate();
   }
+  ngOnDestroy() {
+    this.subs.forEach(s => s.unsubscribe());
+    this.stop();
+  }
+  // animate
+  animate(){
+    this.animation = requestAnimationFrame(this.animate.bind(this));
+    this.leadThrough();
+  }
+  stop(){
+    cancelAnimationFrame(this.animation);
+  }
+
+  // robot
+  leadThrough(){
+    this.curObj?.userData.ik();
+    this.curObj?.userData.fk();
+  }
+
 
 }

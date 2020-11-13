@@ -31,11 +31,11 @@ export class CommandService {
   }
   selectCommond(index){
     if (index < this.undos.length){
-      while (this.undos.length > index){
+      while (this.undos.length > index + 1){
         this.undo();
       }
     }else{
-      while (this.undos.length < index){
+      while (this.undos.length < index + 1){
         this.redo();
       }
     }

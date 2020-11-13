@@ -3,7 +3,15 @@
     width: 100%;
     position: relative;
     overflow: hidden;
-
+    display: flex;
+    .slide-bar{
+        width: 400px;
+        height: 100%;
+    }
+    .canvas{
+        flex-grow: 1;
+        height: 100%;
+    }
 }
 .tool-bar{
     width: calc(100vw - 50px);

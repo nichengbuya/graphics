@@ -17,14 +17,10 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   private subs: Subscription[] = [];
   robot: URDFRobot;
   animation: number;
-  curPanel: 'libaray' | 'property' | null = null;
+  curPanel: 'motion' | 'property' | null = 'property';
   curObj: Object3D;
   visible = false;
   public panelList = [
-    // {
-    //   name: 'library',
-    //   icon: 'book',
-    // },
     {
       name: 'property',
       icon: 'setting'
@@ -66,6 +62,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private worldService: WorldService,
     private router: Router,
+    private route: ActivatedRoute,
     private eventEmitService: EventEmitService,
     private commandService: CommandService
   ) { }
@@ -94,11 +91,6 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     this.worldService.initPlane();
   }
 
-  animate() {
-    this.animation = requestAnimationFrame(this.animate.bind(this));
-    this.robot.ik();
-    this.robot.fk();
-  }
   changeTransformMode(e) {
     this.worldService.transformControls.setMode(e.name);
     e.isActive = true;
@@ -110,8 +102,9 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   changeTool(e) {
     if (e.name === this.curPanel) {
-      // this.router.navigate([`/world/animation}`]);
       this.curPanel = null;
+      // this.router.navigate([`/world/animation}`]);
+
     } else {
       this.curPanel = e.name;
       this.router.navigate([`/world/animation/${e.name}`]);
