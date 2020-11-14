@@ -14,6 +14,8 @@ import { PropertyComponent } from './property/property.component';
 import { LoggerComponent } from 'src/app/components/logger/logger.component';
 import { MotionComponent } from './motion/motion.component';
 import { TreeComponent } from 'src/app/components/tree/tree.component';
+import { PointListComponent } from 'src/app/components/point-list/point-list.component';
+import { DirectiveModule } from 'src/app/directive/directive/directive.module';
 
 
 @NgModule({
@@ -21,7 +23,8 @@ import { TreeComponent } from 'src/app/components/tree/tree.component';
     CommonModule,
     WorldRoutingModule,
     NgZorroAntdModule,
-    FormsModule
+    FormsModule,
+    DirectiveModule
   ],
   declarations: [
       WorldComponent,
@@ -34,7 +37,8 @@ import { TreeComponent } from 'src/app/components/tree/tree.component';
       PropertyComponent,
       LoggerComponent,
       TreeComponent,
-      MotionComponent
+      MotionComponent,
+      PointListComponent
     ],
   exports: [WorldComponent]
 })

@@ -33,31 +33,41 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   public toolList = [
     {
       name: 'play',
-      icon: 'caret-right',
+      icon: 'play-circle',
       fun: this.deploy.bind(this)
     },
     {
       name: 'stop',
-      icon: '',
-      fun: this.setSignal.bind(this)
+      icon: 'pause-circle',
+      fun: this.stop.bind(this)
+    },
+    {
+      name: 'undo',
+      icon: 'undo',
+      fun: this.undo.bind(this)
+    },
+    {
+      name: 'redo',
+      icon: 'redo',
+      fun: this.redo.bind(this)
     }
   ];
   public transformMode = [
     {
       name: 'translate',
       isActive: true,
-      imgSrc: 'assets/icon/trans.svg',
+      icon: 'drag'
     },
     {
       name: 'rotate',
       isActive: false,
-      imgSrc: 'assets/icon/rotation.svg',
+      icon: 'retweet'
     },
-    {
-      name: 'scale',
-      isActive: false,
-      imgSrc: 'assets/icon/scale.svg',
-    }
+    // {
+    //   name: 'scale',
+    //   isActive: false,
+    //   imgSrc: 'assets/icon/scale.svg',
+    // }
   ];
   constructor(
     private worldService: WorldService,
@@ -148,7 +158,15 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     const start = nodeMap.get(1);
     start.next();
   }
-
+  stop(){
+    this.subs.forEach(s => s.unsubscribe());
+  }
+  undo(){
+    this.commandService.undo();
+  }
+  redo(){
+    this.commandService.redo();
+  }
   setSignal() {
     // this.event.next(1);
   }

@@ -1,0 +1,6 @@
+<ul class="point-list">
+    <li [app-droppable]="true"  [dropTags]="['point']" (dropped)="handleMove($event,p)"
+        *ngFor="let p of pointList" class="point" [app-draggable]="true" [draggedClass]="'drag-start'" [dragData]="p"
+        [dragTag]="'point'">{{p.data}}
+    </li>
+</ul>

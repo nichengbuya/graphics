@@ -463,6 +463,9 @@ export class WorldService {
       }
       setTimeout(() => {
         this.bindRaycasterEvent();
+        this.scene.remove(this.arrowHelper);
+        this.arrowHelper = null;
+        this.eventEmitService.sceneChange.emit(this.scene);
 
       }, 20);
 
@@ -595,9 +598,6 @@ export class WorldService {
     child.position.copy(parent.userData.effector.position);
     child.quaternion.copy(parent.userData.effector.quaternion);
     this.transformControls.detach();
-    this.scene.remove(this.arrowHelper);
-    this.arrowHelper = null;
-    this.eventEmitService.sceneChange.emit(this.scene);
     // this.curObj = null;
   }
   /**
@@ -610,9 +610,6 @@ export class WorldService {
     this.scene.attach(child);
     this.scene.add(child);
     this.changeColor(child, 0x50bed7);
-    this.scene.remove(this.arrowHelper);
-    this.arrowHelper = null;
-    this.eventEmitService.sceneChange.emit(this.scene);
   }
   /**
    * change a device color

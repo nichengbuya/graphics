@@ -1,14 +1,14 @@
 <div style="position: relative;">
     <div class="tool-bar">
         <div class="tool-bar-item" *ngFor="let tool of toolList" (click)="tool.fun()">
-            <i nz-icon [nzType]="tool.icon" nzTheme="fill"></i>
+            <i nz-icon [nzType]="tool.icon" nzTheme="outline"></i>
         </div>
-        <nz-divider nzType="vertical"></nz-divider>
+        <div style="height: 100%;border-right: 1px solid #aaaaaa;margin: 0 10px;"></div>
         <div *ngFor="let mode of transformMode" (click)="changeTransformMode(mode)">
             <div class="tool-bar-item" [ngClass]="{
                 'tool-bar-item-active':mode.isActive
             }">
-                <img class="tool-bar-item-img" [src]="mode.imgSrc" alt="">
+             <i nz-icon [nzType]="mode.icon" nzTheme="outline"></i>
             </div>
         </div>
     </div></div>

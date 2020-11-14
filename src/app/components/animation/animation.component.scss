@@ -22,7 +22,7 @@
     background: #dde7ee;
     display: flex;
     justify-content: center;
-
+    font-size: 1.5rem;
     padding: 10px 0;
     .tool-bar-item{
         width: 2rem;
@@ -37,10 +37,6 @@
         }
         &-active{
             background-color: #ffffff;
-        }
-        img{
-            width: 1.5rem;
-            height: 1.5rem;
         }
     }
 }
