@@ -1,7 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { CommandService } from 'src/app/service/command/command.service';
+import { SetPositionCommand } from 'src/app/service/command/set-position-command';
+import { SetRotationCommand } from 'src/app/service/command/set-rotation-command';
 import { EventEmitService } from 'src/app/service/event-emit.service';
 import { WorldService } from 'src/app/service/world/world.service';
+import { Object3D, Scene, Vector3, Euler } from 'three';
 
 @Component({
   selector: 'app-motion',
@@ -38,7 +42,7 @@ export class MotionComponent implements OnInit, OnDestroy {
   // animate
   animate(){
     this.animation = requestAnimationFrame(this.animate.bind(this));
-    this.leadThrough();
+    // this.leadThrough();
   }
   stop(){
     cancelAnimationFrame(this.animation);
@@ -48,6 +52,11 @@ export class MotionComponent implements OnInit, OnDestroy {
   leadThrough(){
     this.curObj?.userData.ik();
     this.curObj?.userData.fk();
+  }
+
+  public changeJoint(e, joint) {
+    joint.setAngle(e);
+    this.curObj.userData.fk();
   }
 
 

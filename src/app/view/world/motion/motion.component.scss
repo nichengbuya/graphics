@@ -1,0 +1,12 @@
+.motion{
+    &-item{
+        height: calc(100vh/3 - 40px);
+        overflow: auto;
+    }
+    .txt{
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+
+    }
+}

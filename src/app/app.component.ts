@@ -8,10 +8,5 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   isCollapsed = false;
-  constructor(
-    private router: Router
-  ){}
-    gotoHome(){
-      this.router.navigate(['/welcome']);
-    }
+  constructor( ){}
 }

@@ -15,7 +15,7 @@ import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { TAARenderPass } from 'three/examples/jsm/postprocessing/TAARenderPass';
 import * as dat from 'three/examples/jsm/libs/dat.gui.module.js';
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
-import { AxesHelper, BoxBufferGeometry, Euler, Intersection, Mesh, MeshBasicMaterial, Object3D, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
+import { AxesHelper, BoxBufferGeometry,  Euler, Intersection, Mesh, MeshBasicMaterial, MeshLambertMaterial, Object3D, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
 import { EventEmitService } from '../event-emit.service';
 import Kinematics from '../../common/kinematics';
 import { environmentUrl } from '../../config';
@@ -487,12 +487,14 @@ export class WorldService {
     this.eventEmitService.sceneChange.emit(this.scene);
     objects.push(mesh);
   }
+
   initRobot(device: Device): Promise<URDFLink> {
     const manager = new THREE.LoadingManager();
     const loader = new URDFLoader(manager);
     loader.packages = `${environmentUrl}/static/robot`;
     loader.fetchOptions = { mode: 'cors', credentials: 'same-origin' };
     const url = `${environmentUrl}/${device.url}`;
+
     return new Promise((resolve, reject) => {
       loader.load(url, (robot: URDFLink) => {
         robot.userData.type = device.type;
@@ -545,6 +547,32 @@ export class WorldService {
       });
     });
 
+  }
+
+  initGeometry(device){
+    const geometry = new BoxBufferGeometry(1,1,1);
+    const material = new MeshLambertMaterial({color:0xffff00});
+    const mesh = new Mesh(geometry, material);
+    mesh.userData = {...device};
+    return new Promise((resolve, reject) => {
+       resolve(mesh);
+    })
+    
+  }
+
+  async initObject(device){
+    let res;
+    switch(device.type){
+      case 'robot':{
+        res = await this.initRobot(device)
+        break;
+      }
+      case 'geometry':{
+        res = await this.initGeometry(device)
+        break;
+      }
+    }
+    return res;
   }
   /*
     edit
@@ -664,7 +692,7 @@ export class WorldService {
     });
   }
   calcArrow() {
-    if (!this.curObj || this.editType === 'montion') {
+    if (!this.curObj || this.editType === 'montion' || this.curObj.userData.type === 'geometry') {
       return;
     }
     const position = new Vector3();

@@ -74,5 +74,8 @@ nz-header {
 .inner-content {
   background: #fff;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   // overflow: hidden;
 }

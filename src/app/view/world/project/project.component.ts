@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
 interface CardProp{
   title: string;
   description: string;
@@ -8,11 +7,11 @@ interface CardProp{
   img?: string;
 }
 @Component({
-  selector: 'app-welcome',
-  templateUrl: './welcome.component.html',
-  styleUrls: ['./welcome.component.scss']
+  selector: 'app-project',
+  templateUrl: './project.component.html',
+  styleUrls: ['./project.component.scss']
 })
-export class WelcomeComponent implements OnInit {
+export class ProjectComponent implements OnInit {
   public cardList: Array<CardProp> = [
     {
       title: 'simulation',
@@ -33,11 +32,9 @@ export class WelcomeComponent implements OnInit {
       img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1602936278548&di=37ca037c20697a7a9bc2c42868fb806b&imgtype=0&src=http%3A%2F%2Fzt.ruiec.com%2Fstorage%2Fimage%2F181019%2FfKcE7thsZeZfoiCpFJwqoshPaA4jxdByQf03fYM5.jpeg'
     }
   ];
-  constructor(
-    private router: Router,
-  ) { }
+  constructor( private router:Router) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
   public gotoItem(link){
     this.router.navigate([`/world/${link}`]);

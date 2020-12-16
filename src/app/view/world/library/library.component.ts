@@ -66,7 +66,7 @@ export class LibraryComponent implements OnInit , OnDestroy {
     // this.load.initLoadBar();
     // let {device} = this;
     this.device = null;
-    this.device = await this.worldService.initRobot(item);
+    this.device = await this.worldService.initObject(item);
     // this.load.complete();
     this.worldService.addObject(this.device);
     this.commandService.execute(new AddObjectCommand(this.worldService, this.device));

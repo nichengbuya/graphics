@@ -1,0 +1,39 @@
+<div class="animation">
+    <div class="tool-bar">
+        <div class="tool-bar-item" *ngFor="let tool of toolList" (click)="tool.fun()">
+            <i nz-icon [nzType]="tool.icon" nzTheme="outline"></i>
+        </div>
+        <div style="height: 100%;border-right: 1px solid #aaaaaa;margin: 0 10px;"></div>
+        <div *ngFor="let mode of transformMode" (click)="changeTransformMode(mode)">
+            <div class="tool-bar-item" [ngClass]="{
+                    'tool-bar-item-active':mode.isActive
+                }">
+                <i nz-icon [nzType]="mode.icon" nzTheme="outline"></i>
+            </div>
+        </div>
+    </div>
+    <div class="left-tool-bar">
+        <div class="left-tool-bar-item" *ngFor="let panel of panelList" (click)="changeTool(panel)" [ngClass]="{
+                'active':panel.name === curPanel
+            }">
+            <i nz-icon [nzType]="panel.icon" nzTheme="outline"></i>
+        </div>
+    </div>
+    <div class="canvas" #animation></div>
+
+    <div class="library" (click)="visible =! visible" [ngStyle]="{
+            'transform':visible? 'translateX(-400px)': 'translateX(0px)'
+        }">
+        library
+    </div>
+</div>
+
+
+<nz-drawer [nzClosable]="false" [nzPlacement]="'left'" [nzBodyStyle]="{ overflow: 'hidden' }" [nzMaskClosable]="false" nzOffsetX="50"
+    [nzMask]="false" [nzWidth]="400" [nzVisible]="this.curPanel !== null">
+    <router-outlet></router-outlet>
+</nz-drawer>
+<nz-drawer [nzClosable]="false" [nzPlacement]="'right'" [nzBodyStyle]="{ overflow: 'hidden' }" [nzMaskClosable]="false"
+    [nzMask]="false" [nzWidth]="400" [nzVisible]="visible">
+    <app-library></app-library>
+</nz-drawer>
