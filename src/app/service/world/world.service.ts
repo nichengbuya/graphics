@@ -15,7 +15,7 @@ import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { TAARenderPass } from 'three/examples/jsm/postprocessing/TAARenderPass';
 import * as dat from 'three/examples/jsm/libs/dat.gui.module.js';
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
-import { AxesHelper, BoxBufferGeometry,  Euler, Intersection, Mesh, MeshBasicMaterial, MeshLambertMaterial, Object3D, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
+import { AnimationMixer, AxesHelper, BoxBufferGeometry,  Clock,  Euler, Intersection, Mesh, MeshBasicMaterial, MeshLambertMaterial, Object3D, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
 import { EventEmitService } from '../event-emit.service';
 import Kinematics from '../../common/kinematics';
 import { environmentUrl } from '../../config';
@@ -52,7 +52,8 @@ export class WorldService {
   container: any;
   outlinePass: any;
   id: number;
-  mixer: any;
+  mixer: AnimationMixer;
+  clock: Clock;
   arrowHelper: THREE.ArrowHelper;
   editType: 'montion' | 'building';
   constructor(
@@ -71,6 +72,7 @@ export class WorldService {
   getCurObj(){
     return this.curObj;
   }
+
   setEditType(type: 'montion' | 'building'){
     if ( this.curObj && type === 'montion' && this.curObj.userData.type === 'robot'){
       this.transformControls.attach(this.curObj.userData.effector);
@@ -90,6 +92,7 @@ export class WorldService {
     this.updateSize();
     this.initOrbitControl();
     this.initTransformControl();
+    this.initClock();
     // this.bindRaycasterEvent();
     // this.initEffectorComposer();
     this.animate();
@@ -202,7 +205,9 @@ export class WorldService {
     datGui.add(gui, 'clearScene');
     datGui.add(gui, 'importScene');
   }
-
+  initClock(){
+    this.clock = new Clock();
+  }
   checkCollisioin(mesh: { position: { clone: () => any; }; geometry: { vertices: string | any[]; }; matrix: any; }, obstacles: THREE.Object3D[]) {
     if (mesh === undefined || obstacles === undefined) {
       return;
@@ -269,7 +274,7 @@ export class WorldService {
     // required if controls.enableDamping or controls.autoRotate are set to true
     this.controls.update();
     if (this.mixer) {
-      // this.mixer.update(clock.getDelta());
+      this.mixer.update(this.clock.getDelta());
     }
     TWEEN.update();
     this.render();
@@ -377,6 +382,7 @@ export class WorldService {
     let objectPositionOnDown: Vector3;
     let objectRotationOnDown: Euler;
     this.transformControls = new TransformControls(camera, renderer.domElement);
+    this.transformControls.setSize(.5);
     this.transformControls.traverse((obj: any) => { // To be detected correctly by OutlinePass.
       obj.isTransformControls = true;
     });

@@ -127,7 +127,16 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
   public deploy(){
-    this.AnimationService.movePTP(this.curObj);
+    const target = [
+      {jointValue:3.14},
+      {jointValue:0},
+      {jointValue:0},
+      {jointValue:0},
+      {jointValue:0},
+      {jointValue:0}
+    ]
+    this.curObj = this.worldService.getCurObj();
+    this.AnimationService.movePTP(target,3000,this.curObj);
   }
   // public deploy() {
   //   this.subs.forEach(s => s.unsubscribe());

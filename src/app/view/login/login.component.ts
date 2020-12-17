@@ -33,7 +33,6 @@ export class LoginComponent implements OnInit {
   async login(): Promise<void> {
     // tslint:disable-next-line: forin
     for (const i in this.validateForm.controls) {
-      console.log(i)
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
     }
