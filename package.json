@@ -22,6 +22,8 @@
     "@angular/platform-browser-dynamic": "~9.1.9",
     "@angular/router": "~9.1.9",
     "angular-in-memory-web-api": "^0.11.0",
+    "angular-resizable-element": "^3.3.4",
+    "gojs": "^2.1.32",
     "mathjs": "^7.2.0",
     "ng-zorro-antd": "^9.3.0",
     "rxjs": "~6.5.4",

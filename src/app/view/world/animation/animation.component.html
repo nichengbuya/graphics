@@ -12,28 +12,19 @@
             </div>
         </div>
     </div>
-    <div class="left-tool-bar">
-        <div class="left-tool-bar-item" *ngFor="let panel of panelList" (click)="changeTool(panel)" [ngClass]="{
-                'active':panel.name === curPanel
-            }">
-            <i nz-icon [nzType]="panel.icon" nzTheme="outline"></i>
+    <div class="container">
+        <div class="left-tool-bar">
+            <div class="left-tool-bar-item" *ngFor="let panel of panelList" (click)="changeTool(panel)" [ngClass]="{
+                    'active':panel.name === curPanel
+                }">
+                <i nz-icon [nzType]="panel.icon" nzTheme="outline"></i>
+            </div>
+        </div>
+        <div class="left-container" *ngIf="curPanel" #tool mwlResizable [enableGhostResize]="true" (resizeEnd)="onResizeEnd($event)" [resizeEdges]="{ right: true }" (resizing)="onResizing($event)" [resizeCursorPrecision]="10">
+            <router-outlet></router-outlet>
+        </div>
+        <div class="right-container" [app-droppable]="true" [dropTags]="['point']" (dropped)="handleMove($event)">
+            <div class=" canvas " #animation></div>
         </div>
     </div>
-    <div class="canvas" #animation></div>
-
-    <div class="library" (click)="visible =! visible" [ngStyle]="{
-            'transform':visible? 'translateX(-400px)': 'translateX(0px)'
-        }">
-        library
-    </div>
 </div>
-
-
-<nz-drawer [nzClosable]="false" [nzPlacement]="'left'" [nzBodyStyle]="{ overflow: 'hidden' }" [nzMaskClosable]="false" nzOffsetX="50"
-    [nzMask]="false" [nzWidth]="400" [nzVisible]="this.curPanel !== null">
-    <router-outlet></router-outlet>
-</nz-drawer>
-<nz-drawer [nzClosable]="false" [nzPlacement]="'right'" [nzBodyStyle]="{ overflow: 'hidden' }" [nzMaskClosable]="false"
-    [nzMask]="false" [nzWidth]="400" [nzVisible]="visible">
-    <app-library></app-library>
-</nz-drawer>

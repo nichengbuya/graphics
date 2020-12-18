@@ -4,11 +4,12 @@ import { BuildComponent } from 'src/app/components/build/build.component';
 import { ClothComponent } from 'src/app/components/cloth/cloth.component';
 import { ShaderComponent } from 'src/app/components/shader/shader.component';
 import { AnimationComponent } from './animation/animation.component';
-import { LibraryComponent } from './library/library.component';
-import { MotionComponent } from './motion/motion.component';
-import { ProjectComponent } from './project/project.component';
-import { PropertyComponent } from './property/property.component';
+
 import { WorldComponent } from './world.component';
+import { ProjectComponent } from 'src/app/components/project/project.component';
+import { PropertyComponent } from 'src/app/components/property/property.component';
+import { MotionComponent } from 'src/app/components/motion/motion.component';
+import { LibraryComponent } from 'src/app/components/library/library.component';
 
 const routes: Routes = [
   {
@@ -22,7 +23,9 @@ const routes: Routes = [
         children: [
           { path: '' , redirectTo: 'property', pathMatch: 'full' },
           { path: 'property', component: PropertyComponent },
-          { path: 'motion', component: MotionComponent}
+          { path: 'motion', component: MotionComponent},
+          { path: 'library', component: LibraryComponent}
+          
         ]
       },
       { path: 'build', component: BuildComponent }

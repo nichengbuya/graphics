@@ -1,6 +1,55 @@
-<ul class="point-list">
-    <li [app-droppable]="true"  [dropTags]="['point']" (dropped)="handleMove($event,p)"
-        *ngFor="let p of pointList" class="point" [app-draggable]="true" [draggedClass]="'drag-start'" [dragData]="p"
-        [dragTag]="'point'">{{p.data}}
-    </li>
-</ul>
+<div class="card-list">
+    <div class="card-list-title">
+        <label nz-checkbox [(ngModel)]="allChecked" (ngModelChange)="updateAllChecked()" [nzIndeterminate]="indeterminate">
+      <span style="font-weight: bold;">Waypoints</span>
+    </label>
+        <div class="card-list-title-icon" (click)="deletePoint()">
+        </div>
+    </div>
+    <!-- <div class="card-container scroll-bar" id="card-list" cdkDropList (cdkDropListDropped)="drop($event)">
+
+      <div class="card-item" *ngFor="let point of pointList;let pointIndex = index" cdkDrag >
+        <label nz-checkbox [ngModel]="point.isActive" (ngModelChange) =  "updateSingleChecked($event,point)"></label>
+        <div class="card" (click)="selectPoint(point)"  [ngClass]="{
+          'is-active': point.isActive
+        }"  nz-tooltip [nzTitle]="titleTemplate" nzPlacement="left">
+          <div class="card-left">
+            {{pointIndex}}
+          </div>
+          <div class="card-right">
+            {{'Cartesian_point'}}
+          </div>
+          <ng-template #titleTemplate>
+            px:{{point.position.x|number:'1.3'}}mm,py:{{point.position.y|  number:'1.3'}}mm,pz:{{point.position.z|number:'1.3'}}mm<br>
+            rx:{{point.rotation.x| number:'1.3'}}°,ry:{{point.rotation.y| number:'1.3'}}°,rz:{{point.rotation.z| number:'1.3'}}°
+          </ng-template>
+        </div>
+        <div class="card-edit" (click) = "edit(point)">
+          <i nz-icon nzType="edit" nzTheme="outline"></i>
+        </div>
+      </div>
+    </div> -->
+    <div class="card-container scroll-bar" id="card-list" cdkDropList (cdkDropListDropped)="drop($event)">
+        <div class="card-item" *ngFor="let point of pointList;let pointIndex = index" cdkDrag>
+            <label nz-checkbox [ngModel]="point.isActive" (ngModelChange)="updateSingleChecked($event,point)"></label>
+            <div class="card" (click)="selectPoint(point)" [ngClass]="{
+        'is-active': point.isActive
+      }" nz-tooltip [nzTitle]="titleTemplate1" nzPlacement="left">
+                <div class="card-left">
+                    {{pointIndex}}
+                </div>
+                <div class="card-right">
+                    {{'Joint_point' }}
+                </div>
+                <ng-template #titleTemplate1>
+                    j1:{{point.joints[0]|number:'1.3'}}°,j2:{{point.joints[1]| number:'1.3'}}°,j3:{{point.joints[2]|number:'1.3'}}°<br> j4:{{point.joints[3]|number:'1.3'}}°,j5:{{point.joints[4]| number:'1.3'}}°,j6:{{point.joints[5]| number:'1.3'}}°
+                </ng-template>
+            </div>
+            <div class="card-edit" (click)="edit(point)">
+                <i nz-icon nzType="edit" nzTheme="outline"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="save-scene-button option-button" (click)="addPoint()"><i nz-icon nzType="plus" nzTheme="outline"></i> Add Way Point</div>
+</div>

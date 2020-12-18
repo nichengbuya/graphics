@@ -32,11 +32,11 @@ export class LibraryComponent implements OnInit , OnDestroy {
 
   ngOnInit(): void {
     this.initData();
-    this.subs.push(this.eventEmitService.emitClick.subscribe(e => {
-      if (this.moveSub){
-        this.moveSub.unsubscribe();
-      }
-    }));
+    // this.subs.push(this.eventEmitService.emitClick.subscribe(e => {
+    //   if (this.moveSub){
+    //     this.moveSub.unsubscribe();
+    //   }
+    // }));
   }
   ngOnDestroy(){
     this.subs.forEach(s => s.unsubscribe());
@@ -58,21 +58,21 @@ export class LibraryComponent implements OnInit , OnDestroy {
         url: device.url ,
         img: this.sanitizer.bypassSecurityTrustResourceUrl(device.img) ,
         type: device.type,
-        attach: device.attach
+        attach: device.attach,
+        joints: device.joints?device.joints:[]
       };
     });
   }
   public async addDevice(item: Device){
-    // this.load.initLoadBar();
-    // let {device} = this;
     this.device = null;
-    this.device = await this.worldService.initObject(item);
+
+    // this.device = await this.worldService.initObject(item);
     // this.load.complete();
-    this.worldService.addObject(this.device);
-    this.commandService.execute(new AddObjectCommand(this.worldService, this.device));
-    this.moveSub = this.eventEmitService.emitMove.subscribe(e => {
-      this.changePosition(this.device, e[0].point);
-    });
+    // this.worldService.addObject(this.device);
+    // this.commandService.execute(new AddObjectCommand(this.worldService, this.device));
+    // this.moveSub = this.eventEmitService.emitMove.subscribe(e => {
+    //   this.changePosition(this.device, e[0].point);
+    // });
   }
   public changePosition(device: Object3D, position: Vector3){
     if (device){
@@ -80,4 +80,12 @@ export class LibraryComponent implements OnInit , OnDestroy {
     }
 
   }
+  // handleMove(e, p ){
+  //   const {pointList } = this;
+  //   const origin = pointList.indexOf(e.data);
+  //   pointList.splice(origin, 1);
+  //   const target = pointList.indexOf(p);
+  //   pointList.splice(e.top ? target : target + 1, 0, e.data);
+
+  // }
 }

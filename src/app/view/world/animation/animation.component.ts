@@ -3,12 +3,16 @@ import URDFRobot from 'urdf-loader';
 import * as THREE from 'three';
 import { WorldService } from 'src/app/service/world/world.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, Observable } from 'rxjs';
 import { Intersection, Object3D } from 'three';
 import { EventEmitService } from 'src/app/service/event-emit.service';
 import { CommandService } from 'src/app/service/command/command.service';
 import { LoadBarComponent } from 'src/app/components/load-bar/load-bar.component';
 import { AnimationService } from 'src/app/service/animation/animation.service';
+import { ResizeEvent } from 'angular-resizable-element';
+import { ThrowStmt } from '@angular/compiler';
+import { PointService } from 'src/app/service/point/point.service';
+import { Point } from 'src/app/components/point-list/point-list.component';
 @Component({
   selector: 'app-animation',
   templateUrl: './animation.component.html',
@@ -21,6 +25,8 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   curPanel: 'motion' | 'property' | null = 'property';
   curObj: Object3D;
   visible = false;
+  maxPanelWidth: number = Math.floor(window.innerWidth * 0.5);
+  minPanelwidth: number = Math.floor(window.innerWidth * 0.2);
   public panelList = [
     {
       name: 'property',
@@ -29,6 +35,10 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       name: 'motion',
       icon: 'edit'
+    },
+    {
+      name: 'library',
+      icon: 'book'
     }
   ];
   public toolList = [
@@ -76,9 +86,11 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private eventEmitService: EventEmitService,
     private commandService: CommandService,
-    private AnimationService: AnimationService
+    private AnimationService: AnimationService,
+    private pointService: PointService
   ) { }
   @ViewChild('animation') div: ElementRef;
+  @ViewChild('tool') tool: ElementRef;
   @ViewChild('load') load: LoadBarComponent;
 
   ngOnInit(): void {
@@ -115,7 +127,11 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   public changeTool(e) {
     if (e.name === this.curPanel) {
       this.curPanel = null;
+      this.worldService.updateSize();
       // this.router.navigate([`/world/animation}`]);
+      setTimeout(()=>{
+        this.worldService.updateSize();
+      })
 
     } else {
       this.curPanel = e.name;
@@ -126,17 +142,15 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   public trigger() {
 
   }
-  public deploy(){
-    const target = [
-      {jointValue:3.14},
-      {jointValue:0},
-      {jointValue:0},
-      {jointValue:0},
-      {jointValue:0},
-      {jointValue:0}
-    ]
+  public async deploy(){
     this.curObj = this.worldService.getCurObj();
-    this.AnimationService.movePTP(target,3000,this.curObj);
+    if(!this.curObj|| this.curObj.userData.type !=='robot'){
+      return
+    }
+    const pointList:Point[] = this.pointService.getPointList();
+    for(let p of pointList){
+      await this.AnimationService.movePTP(p,3000,this.curObj);
+    }
   }
   // public deploy() {
   //   this.subs.forEach(s => s.unsubscribe());
@@ -172,17 +186,40 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   //   const start = nodeMap.get(1);
   //   start.next();
   // }
-  stop(){
+  stop() {
     this.subs.forEach(s => s.unsubscribe());
   }
-  undo(){
+  undo() {
     this.commandService.undo();
   }
-  redo(){
+  redo() {
     this.commandService.redo();
   }
   setSignal() {
     // this.event.next(1);
+  }
+  onResizeEnd(event: ResizeEvent): any {
+    if (event.rectangle.width < this.minPanelwidth) {
+      this.tool.nativeElement.style.width = `${0}px`;
+      this.tool.nativeElement.style.border  = 'none';
+      setTimeout(() => {
+        this.worldService.updateSize();
+        this.curPanel = null;
+      }, 0);
+    }
+    if (event.rectangle.width > this.maxPanelWidth) {
+      this.tool.nativeElement.style.width = `${this.maxPanelWidth}px`;
+      setTimeout(() => {
+        this.worldService.updateSize();
+      }, 0);
+    }
+  }
+  onResizing(event: ResizeEvent): void {
+    this.tool.nativeElement.style.width = `${event.rectangle.width}px`;
+    this.worldService.updateSize();
+  }
+  handleMove(event){
+    console.log(event);
   }
 
 }

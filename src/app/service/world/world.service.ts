@@ -28,7 +28,7 @@ import { RemoveObjectCommand } from '../command/remove-object-command';
 import { AttachCommand } from '../command/attach-command';
 import { DetachCommand } from '../command/detach-command';
 export interface Device {
-  img: string; name: string; url: string; type: string; attach: string;
+  img: string; name: string; url: string; type: string; attach: string;joints?:[]
 }
 @Injectable({
   providedIn: 'root'
@@ -179,7 +179,6 @@ export class WorldService {
     });
   }
   initGui() {
-    // 声明一个保存需求修改的相关数据的对象
     const gui = {
       exportScene: () => {
         const sceneJson = JSON.stringify(this.scene.toJSON());
@@ -545,6 +544,9 @@ export class WorldService {
           resolve(robot);
           if (robot.userData.type === 'robot') {
             robot.userData.fk();
+            robot.userData.joints.forEach((joint: any,index: number) => {
+              joint.setAngle(device.joints[index])
+            })
           }
 
         };
@@ -554,7 +556,74 @@ export class WorldService {
     });
 
   }
+  initPoint(effector):Mesh {
+    let vertexShader = [
+        'varying vec3	vVertexWorldPosition;',
+        'varying vec3	vVertexNormal;',
+        'varying vec4	vFragColor;',
+        'void main(){',
+        '	vVertexNormal	= normalize(normalMatrix * normal);',
+        '	vVertexWorldPosition	= (modelMatrix * vec4(position, 1.0)).xyz;',
+        '	// set gl_Position',
+        '	gl_Position	= projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+        '}'
+    ].join('\n');
+    let fragmentShader2 = [
+        'uniform vec3	glowColor;',
+        'uniform float	coeficient;',
+        'uniform float	power;',
+        'varying vec3	vVertexNormal;',
+        'varying vec3	vVertexWorldPosition;',
+        'varying vec4	vFragColor;',
+        'void main(){',
+        '	vec3 worldVertexToCamera= cameraPosition - vVertexWorldPosition;',
+        '	vec3 viewCameraToVertex	= (viewMatrix * vec4(worldVertexToCamera, 0.0)).xyz;',
+        '	viewCameraToVertex	= normalize(viewCameraToVertex);',
+        '	float intensity		= coeficient + dot(vVertexNormal, viewCameraToVertex);',
+        '	if(intensity > 0.8){ intensity = 0.0;}',
+        '	gl_FragColor		= vec4(glowColor, intensity);',
+        '}'
+    ].join('\n');
 
+    let sphere = new THREE.SphereBufferGeometry(0.04, 32, 32);
+    let material = new THREE.ShaderMaterial({
+        uniforms: {
+            coeficient: {
+                value: 0,
+            },
+            power: {
+                value: 2
+            },
+            glowColor: {
+                value: new THREE.Color(0x50BED7)
+            }
+        },
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader2,
+        blending: THREE.NormalBlending,
+        transparent: true,
+        depthWrite: false,
+        depthTest: false
+    });
+    let point = new THREE.Mesh(sphere, material);
+    let haloGeometry = new THREE.SphereBufferGeometry(0.02, 32, 32);
+    let haloMaterial = new THREE.MeshBasicMaterial({
+        color: new THREE.Color(0x50BED7),
+        depthWrite: false,
+        depthTest: false,
+        transparent: true
+    });
+    let halo = new THREE.Mesh(haloGeometry, haloMaterial);
+    point.userData.type = halo.userData.type = 'point';
+    point.add(halo);
+    point.matrixAutoUpdate = true;
+    point.traverse((child: any) => {
+        child.isTransformControls = true;
+    });
+    point.position.copy(effector.position);
+    point.quaternion.copy(effector.quaternion);
+    return point;
+}
   initGeometry(device){
     const geometry = new BoxBufferGeometry(1,1,1);
     const material = new MeshLambertMaterial({color:0xffff00});

@@ -1,27 +1,150 @@
-.point-list{
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    user-select: none;
-    .drag-enter{
-        background-color: #f5f5f5;
+.card-list {
+    padding: .5rem;
+    width: 100%;
+    border: 1px solid #d2dce1;
+    &-title-icon {
+        width: 1.5rem;
+        // background: url(../../../../assets/common/delete.svg) no-repeat;
+        // &:active{
+        //     background: url(../../../../assets/common/delete_active.svg);
+        // }
     }
-    .drag-start{
-        background-color: #f5f5f5;
+    .is-active {
+        background: #50BED7;
+        color: #ffffff;
     }
-    .drag-over-gap-top{
-        border-top-color: #50bed7 !important;
+    .card-container {
+        height: 17vh;
     }
-    .drag-over-gap-bottom{
-        border-bottom-color: #50bed7 !important;
+    &-title {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: .5rem;
+        &-icon {
+            &:hover {
+                color: #50BED7;
+            }
+        }
     }
-    .point{
-        height: 4rem;
-        line-height: 4rem;
-        border: 2px solid transparent;   
-        &:hover{
-            background-color: #f5f5f5;
-        }  
-        // border-bottom: 1px solid;
+    .card-item {
+        display: flex;
+        width: 100%;
+        padding: .3rem 0;
+        .card {
+            margin-left: 1rem;
+            border: 1px solid #becdd7;
+            border-radius: 0.25rem;
+            //  width: 12.5rem;
+            //  height: 3.5rem;
+            display: flex;
+            overflow: hidden;
+            &-left {
+                width: 2.25rem;
+                text-align: center;
+                border-right: 0.0625rem solid #becdd7;
+            }
+            &-right {
+                //  line-height: 1.375rem;
+                padding-left: .5rem;
+                padding-right: 1rem;
+                -webkit-user-select: none;
+                user-select: none;
+            }
+            &-edit {
+                width: 2.25rem;
+                text-align: center;
+                display: none;
+                &:active {
+                    background-color: #f5f5f5;
+                }
+            }
+        }
+        &:hover .card-edit {
+            display: block;
+        }
     }
+    //  .card:hover{
+    //      border: 1px solid #50BED7 !important;
+    // }
+}
+
+.save-scene-button {
+    width: 100%;
+    height: 2rem;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 1rem;
+    border: 1px solid #50bed7;
+    border-radius: 0.125rem;
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    color: #50BED7;
+    justify-content: center;
+    &:hover {
+        color: #50bed7;
+        border-color: #50BED7;
+    }
+}
+
+.scroll-bar {
+    overflow: hidden;
+    &:hover {
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+}
+
+.cdk-drag-preview {
+    box-sizing: border-box;
+    display: flex;
+    .card-item {
+        display: flex;
+        width: 100%;
+        padding: .3rem 0;
+    }
+    .card:hover {
+        border: 1px solid #50BED7 !important;
+    }
+    .card {
+        margin-left: 1rem;
+        border: 1px solid #becdd7;
+        border-radius: 0.25rem;
+        //  width: 12.5rem;
+        //  height: 3.5rem;
+        display: flex;
+        overflow: hidden;
+        &-left {
+            width: 2.25rem;
+            text-align: center;
+            border-right: 0.0625rem solid #becdd7;
+        }
+        &-right {
+            //  line-height: 1.375rem;
+            padding-left: .5rem;
+            padding-right: 1rem;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+    }
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+    opacity: 0;
+}
+
+.cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+    border: none;
+}
+
+.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }

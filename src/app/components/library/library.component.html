@@ -5,18 +5,22 @@
             <nz-option *ngFor="let option of listOfDeviceType" [nzLabel]="option.label" [nzValue]="option.value">
             </nz-option>
         </nz-select>
-        <nz-divider ></nz-divider>
+        <nz-divider></nz-divider>
+        <!-- <ul class="point-list">
+            <li [app-droppable]="true" [dropTags]="['point']" [app-draggable]="true" [draggedClass]="'drag-start'" [dragData]="p" [dragTag]="'point'">{{p.name}}
+            </li>
+        </ul> -->
         <div nz-row [nzGutter]="[16, 24]" class="card-list">
             <div *ngFor="let device of listOfDevices" nz-col class="gutter-row" [nzSpan]="12">
-                <nz-card nzHoverable  [nzCover]="coverTemplate" (click)="addDevice(device)">
-                    <nz-card-meta [nzTitle]="device.name" ></nz-card-meta>
-                  </nz-card>
-                  <ng-template #coverTemplate>
+                <nz-card [app-draggable]="true" [draggedClass]="'drag-start'" [dragData]="device" [dragTag]="'point'" nzHoverable [nzCover]="coverTemplate">
+                    <nz-card-meta [nzTitle]="device.name"></nz-card-meta>
+                </nz-card>
+                <ng-template #coverTemplate>
                     <img alt="example" class="card-list-img" [src]="device.img" />
-                  </ng-template>
+                </ng-template>
             </div>
 
-          </div>
+        </div>
     </nz-tab>
     <nz-tab nzTitle="my recent components">
         Content of Tab Pane 2
