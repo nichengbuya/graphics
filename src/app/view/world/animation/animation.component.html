@@ -23,7 +23,7 @@
         <div class="left-container" *ngIf="curPanel" #tool mwlResizable [enableGhostResize]="true" (resizeEnd)="onResizeEnd($event)" [resizeEdges]="{ right: true }" (resizing)="onResizing($event)" [resizeCursorPrecision]="10">
             <router-outlet></router-outlet>
         </div>
-        <div class="right-container" [app-droppable]="true" [dropTags]="['point']" (dropped)="handleMove($event)">
+        <div class="right-container" (dragenter)="dragenter($event)" (dragover)="dragover($event)" (dragleave)="dragleave($event)" (drop)="drop($event)">
             <div class=" canvas " #animation></div>
         </div>
     </div>

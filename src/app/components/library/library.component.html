@@ -12,7 +12,7 @@
         </ul> -->
         <div nz-row [nzGutter]="[16, 24]" class="card-list">
             <div *ngFor="let device of listOfDevices" nz-col class="gutter-row" [nzSpan]="12">
-                <nz-card [app-draggable]="true" [draggedClass]="'drag-start'" [dragData]="device" [dragTag]="'point'" nzHoverable [nzCover]="coverTemplate">
+                <nz-card draggable="true" (dragstart)="dragStart($event, device)" nzHoverable [nzCover]="coverTemplate" (click)="addDevice(device)">
                     <nz-card-meta [nzTitle]="device.name"></nz-card-meta>
                 </nz-card>
                 <ng-template #coverTemplate>

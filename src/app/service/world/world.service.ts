@@ -28,7 +28,7 @@ import { RemoveObjectCommand } from '../command/remove-object-command';
 import { AttachCommand } from '../command/attach-command';
 import { DetachCommand } from '../command/detach-command';
 export interface Device {
-  img: string; name: string; url: string; type: string; attach: string;joints?:[]
+  img: string; name: string; url: string; type: string; attach: string;joints?:[],position?:Vector3
 }
 @Injectable({
   providedIn: 'root'
@@ -506,6 +506,7 @@ export class WorldService {
         robot.userData.attach = device.attach;
         robot.userData.kinematics = new Kinematics(device.name);
         robot.userData.joints = Object.values(robot.joints).filter((joint: any) => joint.jointType === 'revolute');
+        robot.position.copy(device.position)
         const effector = new Mesh(new BoxBufferGeometry(.01, .01, .01), new MeshBasicMaterial({ transparent: true }));
         robot.add(effector);
         robot.userData.effector = effector;
@@ -523,7 +524,7 @@ export class WorldService {
             matrix[1], matrix[5], matrix[9], matrix[13],
             matrix[2], matrix[6], matrix[10], matrix[14],
           ];
-          const theta = robot.userData.kinematics.inverse(cartPos)[2];
+          const theta = robot.userData.kinematics.inverse(cartPos)[3];
           // theta.forEach((value: number, index: string | number) => {
           //   if (Math.abs(value - robot.userData.joints[index]) > Math.PI * 2 - Math.PI / 180 * 10) {
           //     value > 0 ? value = value - Math.PI * 2 : value = value + Math.PI * 2;
@@ -543,12 +544,11 @@ export class WorldService {
         manager.onLoad = () => {
           resolve(robot);
           if (robot.userData.type === 'robot') {
-            robot.userData.fk();
             robot.userData.joints.forEach((joint: any,index: number) => {
               joint.setAngle(device.joints[index])
             })
           }
-
+          robot.userData.fk();
         };
       }, () => { }, (error: any) => {
         reject(error);
@@ -628,6 +628,7 @@ export class WorldService {
     const geometry = new BoxBufferGeometry(1,1,1);
     const material = new MeshLambertMaterial({color:0xffff00});
     const mesh = new Mesh(geometry, material);
+    mesh.position.copy(device.position)
     mesh.userData = {...device};
     return new Promise((resolve, reject) => {
        resolve(mesh);
@@ -642,12 +643,35 @@ export class WorldService {
         res = await this.initRobot(device)
         break;
       }
+      case 'gripper':{
+        res = await this.initRobot(device)
+        break;
+      }
       case 'geometry':{
         res = await this.initGeometry(device)
         break;
       }
     }
     return res;
+  }
+  screenPointToThreeCoords(x, y, domContainer, targetZ) {
+    const {camera} = this;
+    const vec = new THREE.Vector3(); // create once and reuse
+    const pos = new THREE.Vector3(); // create once and reuse
+  
+    vec.set(
+        ( x / domContainer.clientWidth ) * 2 - 1,
+        - ( y / domContainer.clientHeight ) * 2 + 1,
+        0.5 );
+  
+    vec.unproject( camera );
+  
+    vec.sub( camera.position ).normalize();
+  
+    var distance = (targetZ - camera.position.z) / vec.z;
+  
+    pos.copy( camera.position ).add( vec.multiplyScalar( distance ) );
+    return pos;
   }
   /*
     edit

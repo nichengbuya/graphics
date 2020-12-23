@@ -96,6 +96,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     THREE.Object3D.DefaultUp = new THREE.Vector3(0, 0, 1);
     this.subs.push(this.eventEmitService.emitClick.subscribe((e: Intersection[]) => {
+      console.log(e)
       this.worldService.select(e);
     }));
   }
@@ -218,8 +219,24 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tool.nativeElement.style.width = `${event.rectangle.width}px`;
     this.worldService.updateSize();
   }
-  handleMove(event){
-    console.log(event);
+  dragenter(event: DragEvent): void {
+
+  }
+  dragover(event: DragEvent): void {
+    event.preventDefault();
+  }
+  async drop(event:DragEvent): Promise<void>{
+    const device = JSON.parse(event.dataTransfer.getData('device'));
+    const position = this.worldService.screenPointToThreeCoords(event.offsetX,event.offsetY,this.div.nativeElement,0);
+    Object.assign(device,{
+      position:position
+    })
+    const obj = await this.worldService.initObject(device);
+    this.worldService.addObject(obj);
+
+  }
+  dragleave(e:DragEvent){
+
   }
 
 }

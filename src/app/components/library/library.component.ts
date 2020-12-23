@@ -66,9 +66,9 @@ export class LibraryComponent implements OnInit , OnDestroy {
   public async addDevice(item: Device){
     this.device = null;
 
-    // this.device = await this.worldService.initObject(item);
+    this.device = await this.worldService.initObject(item);
     // this.load.complete();
-    // this.worldService.addObject(this.device);
+    this.worldService.addObject(this.device);
     // this.commandService.execute(new AddObjectCommand(this.worldService, this.device));
     // this.moveSub = this.eventEmitService.emitMove.subscribe(e => {
     //   this.changePosition(this.device, e[0].point);
@@ -79,6 +79,9 @@ export class LibraryComponent implements OnInit , OnDestroy {
       device.position.copy(position);
     }
 
+  }
+  dragStart(e:DragEvent,device){
+    e.dataTransfer.setData('device',JSON.stringify(device));
   }
   // handleMove(e, p ){
   //   const {pointList } = this;
