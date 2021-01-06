@@ -1,13 +1,45 @@
-<div class="welcome">
-    <div nz-row nzJustify="space-around">
-      <div nz-col [nzSpan]="6" *ngFor="let card of cardList ">
-        <nz-card nzHoverable [nzCover]="coverTemplate" (click)="gotoItem(card.link)">
-          <nz-card-meta [nzTitle]="card.title" [nzDescription]="card.description"></nz-card-meta>
-        </nz-card>
-        <ng-template #coverTemplate>
-          <img height="240" alt="example" [src]="card.img" />
-        </ng-template>
-      </div>
-    </div>
-    <!-- <router-outlet></router-outlet> -->
-  </div>
+<nz-layout>
+    <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+        <div class="logo"></div>
+        <ul nz-menu nzTheme="dark" nzMode="inline">
+            <li nz-submenu nzTitle="User" nzIcon="user">
+                <ul>
+                    <li nz-menu-item>Tom</li>
+                    <li nz-menu-item>Bill</li>
+                    <li nz-menu-item>Alex</li>
+                </ul>
+            </li>
+            <li nz-submenu nzTitle="Team" nzIcon="team">
+                <ul>
+                    <li nz-menu-item>Team 1</li>
+                    <li nz-menu-item>Team 2</li>
+                </ul>
+            </li>
+            <li nz-menu-item>
+                <i nz-icon nzType="file"></i>
+                <span>File</span>
+            </li>
+        </ul>
+    </nz-sider>
+    <nz-layout>
+        <nz-header>
+            <i class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" (click)="isCollapsed = !isCollapsed"></i>
+        </nz-header>
+        <nz-content>
+            <div class="container">
+                <div class="item" *ngFor="let p of projects ">
+                    <a [routerLink]="['/world/project', p.id]">
+                        <nz-card nzHoverable [nzCover]="coverTemplate">
+                            <nz-card-meta [nzTitle]="p.name" [nzDescription]="p.description"></nz-card-meta>
+                        </nz-card>
+                        <ng-template #coverTemplate>
+                            <img height="240" alt="example" [src]="p.img" />
+                        </ng-template>
+                    </a>
+                </div>
+            </div>
+
+        </nz-content>
+        <nz-footer>graphic ©2020 Implement By Angular</nz-footer>
+    </nz-layout>
+</nz-layout>

@@ -1,16 +1,22 @@
 <div class="animation">
     <div class="tool-bar">
-        <div class="tool-bar-item" *ngFor="let tool of toolList" (click)="tool.fun()">
-            <i nz-icon [nzType]="tool.icon" nzTheme="outline"></i>
+        <div class="tool-bar-item">
+            <i nz-icon nzType="left" nzTheme="outline" (click)="gotoProject()"></i>
         </div>
-        <div style="height: 100%;border-right: 1px solid #aaaaaa;margin: 0 10px;"></div>
-        <div *ngFor="let mode of transformMode" (click)="changeTransformMode(mode)">
-            <div class="tool-bar-item" [ngClass]="{
-                    'tool-bar-item-active':mode.isActive
-                }">
-                <i nz-icon [nzType]="mode.icon" nzTheme="outline"></i>
+        <div style="display:flex;">
+            <div class="tool-bar-item" *ngFor="let tool of toolList" (click)="tool.fun()">
+                <i nz-icon [nzType]="tool.icon" nzTheme="outline"></i>
+            </div>
+            <div style="height: 100%;border-right: 1px solid #aaaaaa;margin: 0 10px;"></div>
+            <div *ngFor="let mode of transformMode" (click)="changeTransformMode(mode)">
+                <div class="tool-bar-item" [ngClass]="{
+                        'tool-bar-item-active':mode.isActive
+                    }">
+                    <i nz-icon [nzType]="mode.icon" nzTheme="outline"></i>
+                </div>
             </div>
         </div>
+        <div></div>
     </div>
     <div class="container">
         <div class="left-tool-bar">

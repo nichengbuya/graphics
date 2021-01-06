@@ -238,5 +238,8 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   dragleave(e:DragEvent){
 
   }
+  gotoProject() {
+    this.router.navigate(['/world/projects']);
+  }
 
 }

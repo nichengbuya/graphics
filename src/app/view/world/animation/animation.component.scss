@@ -39,10 +39,10 @@
     // position: absolute;
     background: #dde7ee;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     font-size: 1.5rem;
     padding: 10px 0;
-    .tool-bar-item {
+    &-item {
         width: 2rem;
         height: 2rem;
         display: flex;

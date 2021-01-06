@@ -14,12 +14,10 @@ import { LibraryComponent } from 'src/app/components/library/library.component';
 const routes: Routes = [
   {
     path: '', component: WorldComponent, children: [
-      {path:'',pathMatch:'full', redirectTo:'project'},
-      {path:'project',component: ProjectComponent},
-      { path: 'cloth', component: ClothComponent },
-      { path: 'shader', component: ShaderComponent },
+      {path:'',pathMatch:'full', redirectTo:'projects'},
+      {path:'projects',component: ProjectComponent},
       {
-        path: 'animation', component: AnimationComponent, 
+        path: 'project/:id', component: AnimationComponent, 
         children: [
           { path: '' , redirectTo: 'property', pathMatch: 'full' },
           { path: 'property', component: PropertyComponent },
