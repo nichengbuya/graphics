@@ -16,7 +16,7 @@ import { TAARenderPass } from 'three/examples/jsm/postprocessing/TAARenderPass';
 import * as dat from 'three/examples/jsm/libs/dat.gui.module.js';
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
 import { AnimationMixer, AxesHelper, BoxBufferGeometry,  Clock,  Euler, Intersection, Mesh, MeshBasicMaterial, MeshLambertMaterial, Object3D, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
-import { EventEmitService } from '../event-emit.service';
+import { EventEmitService } from '../event/event-emit.service';
 import Kinematics from '../../common/kinematics';
 import { environmentUrl } from '../../config';
 import Shader from '../../components/shader/shader';

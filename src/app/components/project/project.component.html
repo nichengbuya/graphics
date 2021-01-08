@@ -27,6 +27,9 @@
         </nz-header>
         <nz-content>
             <div class="container">
+                <div class="item" (click)="createProject()">
+                    <i nz-icon nzType="plus" nzTheme="outline"></i>
+                </div>
                 <div class="item" *ngFor="let p of projects ">
                     <a [routerLink]="['/world/project', p.id]">
                         <nz-card nzHoverable [nzCover]="coverTemplate">

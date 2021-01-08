@@ -1,7 +1,7 @@
 <div class="animation">
     <div class="tool-bar">
-        <div class="tool-bar-item">
-            <i nz-icon nzType="left" nzTheme="outline" (click)="gotoProject()"></i>
+        <div class="tool-bar-item" (click)="gotoProject()">
+            <i nz-icon nzType="left" nzTheme="outline"></i>
         </div>
         <div style="display:flex;">
             <div class="tool-bar-item" *ngFor="let tool of toolList" (click)="tool.fun()">
@@ -16,7 +16,11 @@
                 </div>
             </div>
         </div>
-        <div></div>
+        <div>
+            <div class="tool-bar-item" (click)="save()">
+                <i nz-icon nzType="save" nzTheme="outline"></i>
+            </div>
+        </div>
     </div>
     <div class="container">
         <div class="left-tool-bar">

@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { zip } from 'rxjs';
-import { MaterialsService } from 'src/app/service/materials.service';
-import { TexturesService } from 'src/app/service/textures.service';
-import { ToolService } from 'src/app/service/tool.service';
+import { MaterialsService } from 'src/app/service/tool/materials.service';
+import { TexturesService } from 'src/app/service/tool/textures.service';
+import { ToolService } from 'src/app/service/tool/tool.service';
 import { WorldService } from 'src/app/service/world/world.service';
 import { environment } from 'src/environments/environment';
 import * as THREE from 'three';

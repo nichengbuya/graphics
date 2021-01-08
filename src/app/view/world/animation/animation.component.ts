@@ -5,7 +5,7 @@ import { WorldService } from 'src/app/service/world/world.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription, Observable } from 'rxjs';
 import { Intersection, Object3D } from 'three';
-import { EventEmitService } from 'src/app/service/event-emit.service';
+import { EventEmitService } from 'src/app/service/event/event-emit.service';
 import { CommandService } from 'src/app/service/command/command.service';
 import { LoadBarComponent } from 'src/app/components/load-bar/load-bar.component';
 import { AnimationService } from 'src/app/service/animation/animation.service';
@@ -80,6 +80,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     //   imgSrc: 'assets/icon/scale.svg',
     // }
   ];
+  public projectId: string;
   constructor(
     private worldService: WorldService,
     private router: Router,
@@ -96,7 +97,6 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     THREE.Object3D.DefaultUp = new THREE.Vector3(0, 0, 1);
     this.subs.push(this.eventEmitService.emitClick.subscribe((e: Intersection[]) => {
-      console.log(e)
       this.worldService.select(e);
     }));
   }
@@ -114,6 +114,9 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   public async init() {
     this.worldService.setWorld(this.div.nativeElement);
     this.worldService.initPlane();
+    this.route.params.subscribe((res)=>{
+      this.projectId = res.id;
+    })
   }
 
   public changeTransformMode(e) {
@@ -136,7 +139,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
 
     } else {
       this.curPanel = e.name;
-      this.router.navigate([`/world/animation/${e.name}`]);
+      this.router.navigate([`world/project/${this.projectId}/${e.name}`]);
     }
 
   }
@@ -241,5 +244,18 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   gotoProject() {
     this.router.navigate(['/world/projects']);
   }
-
+  save(){
+    const objects = new Array();
+    for(let o of this.worldService.objects){
+      const json = o.toJSON();
+      const object = {
+        name:o.userData.name, 
+        id:o.userData.id,
+        parentId:o.parent.userData.id,
+        matrix:json.data.matrix
+      };
+      objects.push(object);
+    }
+    // this.projectService.save(p)
+  }
 }

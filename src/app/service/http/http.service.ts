@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Host, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
-const HOST = 'http://localhost:3000';
+import { HOST } from 'src/app/common/utils';
+
 const GET_DEVICE_TYPE = '/device/getdevicetype';
 const GET_DEVICE_LIST = '/device/getdevicelist';
 const REGISTER = '/user/register';

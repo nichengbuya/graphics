@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { LoadBarComponent } from 'src/app/components/load-bar/load-bar.component';
 import { AddObjectCommand } from 'src/app/service/command/add-object-command';
 import { CommandService } from 'src/app/service/command/command.service';
-import { EventEmitService } from 'src/app/service/event-emit.service';
+import { EventEmitService } from 'src/app/service/event/event-emit.service';
 import { HttpService } from 'src/app/service/http/http.service';
 import { Device, WorldService } from 'src/app/service/world/world.service';
 import { Object3D, Vector3 } from 'three';

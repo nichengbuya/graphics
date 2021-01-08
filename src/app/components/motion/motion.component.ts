@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { CommandService } from 'src/app/service/command/command.service';
 import { SetPositionCommand } from 'src/app/service/command/set-position-command';
 import { SetRotationCommand } from 'src/app/service/command/set-rotation-command';
-import { EventEmitService } from 'src/app/service/event-emit.service';
+import { EventEmitService } from 'src/app/service/event/event-emit.service';
 import { WorldService } from 'src/app/service/world/world.service';
 import { Object3D, Scene, Vector3, Euler } from 'three';
 

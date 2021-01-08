@@ -36,6 +36,9 @@ export class LoginComponent implements OnInit {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
     }
+    if(!this.validateForm.controls['userName'].value && !this.validateForm.controls['password'].value){
+      this.messageService.error('username or password can not be null')
+    }
     try{
       await this.httpService.login({
         name: this.validateForm.controls['userName'].value,
