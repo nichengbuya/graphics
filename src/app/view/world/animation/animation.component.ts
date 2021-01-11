@@ -245,17 +245,18 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate(['/world/projects']);
   }
   save(){
-    const objects = new Array();
-    for(let o of this.worldService.objects){
-      const json = o.toJSON();
-      const object = {
-        name:o.userData.name, 
-        id:o.userData.id,
-        parentId:o.parent.userData.id,
-        matrix:json.data.matrix
-      };
-      objects.push(object);
-    }
+    // const objects = new Array();
+    // for(let o of this.worldService.objects){
+    //   const json = o.toJSON();
+    //   const object = {
+    //     name:o.userData.name, 
+    //     id:o.userData.id,
+    //     parentId:o.parent.userData.id,
+    //     matrix:json.data.matrix
+    //   };
+    //   objects.push(object);
+    // }
+    this.worldService.save();
     // this.projectService.save(p)
   }
 }

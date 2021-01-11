@@ -1,41 +1,81 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService, Project } from 'src/app/service/project/project.service';
 import { uuid } from 'src/app/common/utils';
-interface ProjectProp{
-  name: string;
-  description?: string;
-  id: string;
-  img?: string;
-}
+import { NzModalRef, NzModalService } from 'ng-zorro-antd';
+
 @Component({
   selector: 'app-project',
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.scss']
 })
 export class ProjectComponent implements OnInit {
-  public projects:Array<ProjectProp> = [];
+  public projects:Array<Project> = [];
   isCollapsed = false;
+  tplModalButtonLoading: boolean;
+  tplModal?: NzModalRef;
+  projectName:String;
   constructor( 
     private router:Router,
-    private projectService:ProjectService
-  ) { }
+    private projectService:ProjectService,
+    private modal: NzModalService, 
+    private viewContainerRef: ViewContainerRef
+  ) { 
+  }
 
   ngOnInit(): void {
-    for(let i = 0 ;i<100;i++){
-      this.projects.push({
-        id: `${i}`,
-        name:`project${i}`
-      })
-    }
+    this.getAllProject();
   }
-  public createProject(){
-    let msg:Project = {
-      name:'aaa',
-    }
-    this.projectService.createProject(msg)
+
+
+
+  createModal(): void {
+    this.modal.create({
+      nzTitle: 'Modal Title',
+      nzContent: 'string, will close after 1 sec',
+      nzClosable: false,
+      nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000))
+    });
+  }
+
+  createTplModal(tplTitle: TemplateRef<{}>, tplContent: TemplateRef<{}>, tplFooter: TemplateRef<{}>): void {
+    this.tplModal = this.modal.create({
+      nzTitle: tplTitle,
+      nzContent: tplContent,
+      nzFooter: tplFooter,
+      nzMaskClosable: false,
+      nzClosable: false,
+      nzComponentParams: {
+        value: 'Template Context'
+      },
+      nzOnOk: () => console.log('Click ok')
+    });
+  }
+
+  public async destroyTplModal() {
+    this.tplModalButtonLoading = true;
+    const res = await  this.projectService.createProject({
+      name:this.projectName
+    }).toPromise();
+    this.tplModal.destroy();
+    this.tplModalButtonLoading = false;
+    await this.getAllProject();
+    this.gotoItem(res.data._id)
+  }
+  public async deleteProject(id,$event){
+    console.log(id)
+    $event.preventDefault();
+    $event.stopPropagation();
+    await this.projectService.deleteProject({
+      id:id
+    }).toPromise();
+    await this.getAllProject();
+  }
+  public async getAllProject(){
+    let res  = await this.projectService.getAllProject().toPromise();
+    this.projects = res.data;
   }
   public gotoItem(id){
-    this.router.navigate(['/world/project/'],{queryParams:{'id':id}});
+    this.router.navigate(['/world/project/',id]);
   }
 }

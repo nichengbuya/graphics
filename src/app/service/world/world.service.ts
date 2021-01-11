@@ -15,7 +15,7 @@ import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { TAARenderPass } from 'three/examples/jsm/postprocessing/TAARenderPass';
 import * as dat from 'three/examples/jsm/libs/dat.gui.module.js';
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
-import { AnimationMixer, AxesHelper, BoxBufferGeometry,  Clock,  Euler, Intersection, Mesh, MeshBasicMaterial, MeshLambertMaterial, Object3D, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
+import { AnimationMixer, AxesHelper, BoxBufferGeometry, Clock, Euler, Intersection, Mesh, MeshBasicMaterial, MeshLambertMaterial, Object3D, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
 import { EventEmitService } from '../event/event-emit.service';
 import Kinematics from '../../common/kinematics';
 import { environmentUrl } from '../../config';
@@ -28,7 +28,7 @@ import { RemoveObjectCommand } from '../command/remove-object-command';
 import { AttachCommand } from '../command/attach-command';
 import { DetachCommand } from '../command/detach-command';
 export interface Device {
-  img: string; name: string; url: string; type: string; attach: string;joints?:[],position?:Vector3
+  img: string; name: string; url: string; type: string; attach: string; joints?: [], position?: Vector3
 }
 @Injectable({
   providedIn: 'root'
@@ -66,17 +66,17 @@ export class WorldService {
     this.container = dom;
     this.init();
   }
-  getScene(){
+  getScene() {
     return this.scene;
   }
-  getCurObj(){
+  getCurObj() {
     return this.curObj;
   }
 
-  setEditType(type: 'montion' | 'building'){
-    if ( this.curObj && type === 'montion' && this.curObj.userData.type === 'robot'){
+  setEditType(type: 'montion' | 'building') {
+    if (this.curObj && type === 'montion' && this.curObj.userData.type === 'robot') {
       this.transformControls.attach(this.curObj.userData.effector);
-    }else if (this.curObj && type === 'building') {
+    } else if (this.curObj && type === 'building') {
       this.transformControls.attach(this.curObj);
     }
     this.editType = type;
@@ -204,7 +204,7 @@ export class WorldService {
     datGui.add(gui, 'clearScene');
     datGui.add(gui, 'importScene');
   }
-  initClock(){
+  initClock() {
     this.clock = new Clock();
   }
   checkCollisioin(mesh: { position: { clone: () => any; }; geometry: { vertices: string | any[]; }; matrix: any; }, obstacles: THREE.Object3D[]) {
@@ -422,7 +422,7 @@ export class WorldService {
           this.restoreColor(res.device);
           this.curObj = null;
         } else {
-          if (this.curObj.parent.type !== 'Scene'){
+          if (this.curObj.parent.type !== 'Scene') {
             this.commandService.execute(new DetachCommand(this, this.curObj.position, this.curObj, res.device));
           }
 
@@ -492,14 +492,34 @@ export class WorldService {
     this.eventEmitService.sceneChange.emit(this.scene);
     objects.push(mesh);
   }
+  initGripper(device: Device):Promise<URDFLink> {
+    const manager = new THREE.LoadingManager();
+    const loader = new URDFLoader(manager);
+    loader.packages = `${environmentUrl}/static/robot`;
+    loader.fetchOptions = { mode: 'cors', credentials: 'same-origin' };
+    const url = `${environmentUrl}/${device.url}`;
+    return new Promise((resolve, reject) => {
+      loader.load(url, (robot: URDFLink) => {
+        robot.userData.type = device.type;
+        robot.userData.attach = device.attach;
+        robot.userData.joints = Object.values(robot.joints).filter((joint: any) => joint.jointType === 'revolute');
+        robot.position.copy(device.position)    
+        this.scene.add(robot);
+        manager.onLoad = () => {
+          resolve(robot);
+        };
+      }, () => { }, (error: any) => {
+        reject(error);
+      });
+    });
 
+  }
   initRobot(device: Device): Promise<URDFLink> {
     const manager = new THREE.LoadingManager();
     const loader = new URDFLoader(manager);
     loader.packages = `${environmentUrl}/static/robot`;
     loader.fetchOptions = { mode: 'cors', credentials: 'same-origin' };
     const url = `${environmentUrl}/${device.url}`;
-
     return new Promise((resolve, reject) => {
       loader.load(url, (robot: URDFLink) => {
         robot.userData.type = device.type;
@@ -525,14 +545,8 @@ export class WorldService {
             matrix[2], matrix[6], matrix[10], matrix[14],
           ];
           const theta = robot.userData.kinematics.inverse(cartPos)[3];
-          // theta.forEach((value: number, index: string | number) => {
-          //   if (Math.abs(value - robot.userData.joints[index]) > Math.PI * 2 - Math.PI / 180 * 10) {
-          //     value > 0 ? value = value - Math.PI * 2 : value = value + Math.PI * 2;
-          //   }
-          // });
           if (theta.find((item: number) => isNaN(item)) === undefined) {
             if (theta.every((item: number) => item === 0)) {
-              // robot.userData.fk();
             } else {
               theta.forEach((item: any, index: string | number) => {
                 robot.userData.joints[index].setAngle(item);
@@ -543,11 +557,9 @@ export class WorldService {
         this.scene.add(robot);
         manager.onLoad = () => {
           resolve(robot);
-          if (robot.userData.type === 'robot') {
-            robot.userData.joints.forEach((joint: any,index: number) => {
+            robot.userData.joints.forEach((joint: any, index: number) => {
               joint.setAngle(device.joints[index])
             })
-          }
           robot.userData.fk();
         };
       }, () => { }, (error: any) => {
@@ -556,98 +568,99 @@ export class WorldService {
     });
 
   }
-  initPoint(effector):Mesh {
+  initPoint(effector): Mesh {
     let vertexShader = [
-        'varying vec3	vVertexWorldPosition;',
-        'varying vec3	vVertexNormal;',
-        'varying vec4	vFragColor;',
-        'void main(){',
-        '	vVertexNormal	= normalize(normalMatrix * normal);',
-        '	vVertexWorldPosition	= (modelMatrix * vec4(position, 1.0)).xyz;',
-        '	// set gl_Position',
-        '	gl_Position	= projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
-        '}'
+      'varying vec3	vVertexWorldPosition;',
+      'varying vec3	vVertexNormal;',
+      'varying vec4	vFragColor;',
+      'void main(){',
+      '	vVertexNormal	= normalize(normalMatrix * normal);',
+      '	vVertexWorldPosition	= (modelMatrix * vec4(position, 1.0)).xyz;',
+      '	// set gl_Position',
+      '	gl_Position	= projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+      '}'
     ].join('\n');
     let fragmentShader2 = [
-        'uniform vec3	glowColor;',
-        'uniform float	coeficient;',
-        'uniform float	power;',
-        'varying vec3	vVertexNormal;',
-        'varying vec3	vVertexWorldPosition;',
-        'varying vec4	vFragColor;',
-        'void main(){',
-        '	vec3 worldVertexToCamera= cameraPosition - vVertexWorldPosition;',
-        '	vec3 viewCameraToVertex	= (viewMatrix * vec4(worldVertexToCamera, 0.0)).xyz;',
-        '	viewCameraToVertex	= normalize(viewCameraToVertex);',
-        '	float intensity		= coeficient + dot(vVertexNormal, viewCameraToVertex);',
-        '	if(intensity > 0.8){ intensity = 0.0;}',
-        '	gl_FragColor		= vec4(glowColor, intensity);',
-        '}'
+      'uniform vec3	glowColor;',
+      'uniform float	coeficient;',
+      'uniform float	power;',
+      'varying vec3	vVertexNormal;',
+      'varying vec3	vVertexWorldPosition;',
+      'varying vec4	vFragColor;',
+      'void main(){',
+      '	vec3 worldVertexToCamera= cameraPosition - vVertexWorldPosition;',
+      '	vec3 viewCameraToVertex	= (viewMatrix * vec4(worldVertexToCamera, 0.0)).xyz;',
+      '	viewCameraToVertex	= normalize(viewCameraToVertex);',
+      '	float intensity		= coeficient + dot(vVertexNormal, viewCameraToVertex);',
+      '	if(intensity > 0.8){ intensity = 0.0;}',
+      '	gl_FragColor		= vec4(glowColor, intensity);',
+      '}'
     ].join('\n');
 
     let sphere = new THREE.SphereBufferGeometry(0.04, 32, 32);
     let material = new THREE.ShaderMaterial({
-        uniforms: {
-            coeficient: {
-                value: 0,
-            },
-            power: {
-                value: 2
-            },
-            glowColor: {
-                value: new THREE.Color(0x50BED7)
-            }
+      uniforms: {
+        coeficient: {
+          value: 0,
         },
-        vertexShader: vertexShader,
-        fragmentShader: fragmentShader2,
-        blending: THREE.NormalBlending,
-        transparent: true,
-        depthWrite: false,
-        depthTest: false
+        power: {
+          value: 2
+        },
+        glowColor: {
+          value: new THREE.Color(0x50BED7)
+        }
+      },
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader2,
+      blending: THREE.NormalBlending,
+      transparent: true,
+      depthWrite: false,
+      depthTest: false
     });
     let point = new THREE.Mesh(sphere, material);
     let haloGeometry = new THREE.SphereBufferGeometry(0.02, 32, 32);
     let haloMaterial = new THREE.MeshBasicMaterial({
-        color: new THREE.Color(0x50BED7),
-        depthWrite: false,
-        depthTest: false,
-        transparent: true
+      color: new THREE.Color(0x50BED7),
+      depthWrite: false,
+      depthTest: false,
+      transparent: true
     });
     let halo = new THREE.Mesh(haloGeometry, haloMaterial);
     point.userData.type = halo.userData.type = 'point';
     point.add(halo);
     point.matrixAutoUpdate = true;
     point.traverse((child: any) => {
-        child.isTransformControls = true;
+      child.isTransformControls = true;
     });
     point.position.copy(effector.position);
     point.quaternion.copy(effector.quaternion);
     return point;
-}
-  initGeometry(device){
-    const geometry = new BoxBufferGeometry(1,1,1);
-    const material = new MeshLambertMaterial({color:0xffff00});
-    const mesh = new Mesh(geometry, material);
-    mesh.position.copy(device.position)
-    mesh.userData = {...device};
-    return new Promise((resolve, reject) => {
-       resolve(mesh);
-    })
-    
   }
 
-  async initObject(device){
+  initGeometry(device) {
+    const geometry = new BoxBufferGeometry(1, 1, 1);
+    const material = new MeshLambertMaterial({ color: 0xffff00 });
+    const mesh = new Mesh(geometry, material);
+    mesh.position.copy(device.position)
+    mesh.userData = { ...device };
+    return new Promise((resolve, reject) => {
+      resolve(mesh);
+    })
+
+  }
+
+  async initObject(device) {
     let res;
-    switch(device.type){
-      case 'robot':{
+    switch (device.type) {
+      case 'robot': {
         res = await this.initRobot(device)
         break;
       }
-      case 'gripper':{
-        res = await this.initRobot(device)
+      case 'gripper': {
+        res = await this.initGripper(device)
         break;
       }
-      case 'geometry':{
+      case 'geometry': {
         res = await this.initGeometry(device)
         break;
       }
@@ -655,22 +668,22 @@ export class WorldService {
     return res;
   }
   screenPointToThreeCoords(x, y, domContainer, targetZ) {
-    const {camera} = this;
+    const { camera } = this;
     const vec = new THREE.Vector3(); // create once and reuse
     const pos = new THREE.Vector3(); // create once and reuse
-  
+
     vec.set(
-        ( x / domContainer.clientWidth ) * 2 - 1,
-        - ( y / domContainer.clientHeight ) * 2 + 1,
-        0.5 );
-  
-    vec.unproject( camera );
-  
-    vec.sub( camera.position ).normalize();
-  
+      (x / domContainer.clientWidth) * 2 - 1,
+      - (y / domContainer.clientHeight) * 2 + 1,
+      0.5);
+
+    vec.unproject(camera);
+
+    vec.sub(camera.position).normalize();
+
     var distance = (targetZ - camera.position.z) / vec.z;
-  
-    pos.copy( camera.position ).add( vec.multiplyScalar( distance ) );
+
+    pos.copy(camera.position).add(vec.multiplyScalar(distance));
     return pos;
   }
   /*
@@ -816,5 +829,17 @@ export class WorldService {
       this.arrowHelper.position.copy(position);
     }
     return distance[0];
+  }
+  save() {
+    console.log(this.devices);
+    const msg = this.devices.map(d=>{
+      return { 
+        // json:d.toJSON(),
+        parent: d.parent.userData.id,
+        matrix: d.matrix,
+      }
+    })
+    
+    console.log(msg)
   }
 }
