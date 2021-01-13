@@ -16,16 +16,17 @@ const routes: Routes = [
     path: '', component: WorldComponent, children: [
       {path:'',pathMatch:'full', redirectTo:'projects'},
       {path:'projects',component: ProjectComponent},
-      {
-        path: 'project/:id', component: AnimationComponent, 
-        children: [
-          { path: '' , redirectTo: 'property', pathMatch: 'full' },
-          { path: 'property', component: PropertyComponent },
-          { path: 'motion', component: MotionComponent},
-          { path: 'library', component: LibraryComponent}
+      {path: 'shader', component: ShaderComponent},
+      // {
+      //   path: 'project/:id', component: AnimationComponent, 
+      //   children: [
+      //     { path: '' , redirectTo: 'property', pathMatch: 'full' },
+      //     { path: 'property', component: PropertyComponent },
+      //     { path: 'motion', component: MotionComponent},
+      //     { path: 'library', component: LibraryComponent}
           
-        ]
-      },
+      //   ]
+      // },
       { path: 'build', component: BuildComponent }
     ]
   },

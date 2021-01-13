@@ -1,9 +1,14 @@
 import { Component, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProjectService, Project } from 'src/app/service/project/project.service';
+import { ProjectService } from 'src/app/service/project/project.service';
 import { uuid } from 'src/app/common/utils';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd';
-
+export interface Project{
+  name:string,
+  img:string, 
+  description:string,
+  _id:string
+}
 @Component({
   selector: 'app-project',
   templateUrl: './project.component.html',
@@ -26,18 +31,6 @@ export class ProjectComponent implements OnInit {
   ngOnInit(): void {
     this.getAllProject();
   }
-
-
-
-  createModal(): void {
-    this.modal.create({
-      nzTitle: 'Modal Title',
-      nzContent: 'string, will close after 1 sec',
-      nzClosable: false,
-      nzOnOk: () => new Promise(resolve => setTimeout(resolve, 1000))
-    });
-  }
-
   createTplModal(tplTitle: TemplateRef<{}>, tplContent: TemplateRef<{}>, tplFooter: TemplateRef<{}>): void {
     this.tplModal = this.modal.create({
       nzTitle: tplTitle,

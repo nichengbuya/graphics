@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./world.component.scss']
 })
 export class WorldComponent implements OnInit {
-
+  isCollapsed:boolean = false;
   constructor(
     private router: Router,
   ) { }

@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { HOST } from 'src/app/common/utils';
-export interface Project{
-  name: String
-}
+
 const GET_ALL_PROJECT='/project/getAllProject';
 const UPDATE_PROJECT='/project/updateProject';
 const CREATE_PROJECT='/project/createProject';
@@ -23,7 +21,7 @@ export class ProjectService {
   updateProject(msg): Observable<any>{
     return this.http.post(HOST + UPDATE_PROJECT,msg)
   }
-  createProject(msg:Project): Observable<any>{
+  createProject(msg:any): Observable<any>{
     return this.http.post(HOST + CREATE_PROJECT,msg)
   }
   deleteProject(msg):Observable<any>{
