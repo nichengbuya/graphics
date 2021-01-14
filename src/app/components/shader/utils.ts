@@ -31,6 +31,13 @@ export const vertexShaderMap = {
 }
     
     `,
+    shader5:`
+    varying vec2 vUv;
+    void main() {
+     vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}  
+    `,
     ocean: `
     void main()
 	{
@@ -41,6 +48,7 @@ export const vertexShaderMap = {
 };
 export const fragmentShaderMap = {
     shader1: `
+    //颜色变化
     uniform float iTime;
 
     varying vec2 vUv;
@@ -57,6 +65,7 @@ export const fragmentShaderMap = {
     }
     `,
     shader2: `
+    //气泡
     precision mediump float;
     uniform float iTime ;
     uniform vec2 iResolution;
@@ -91,6 +100,7 @@ void main() {
 
     `,
     shader3:`
+    //细胞分裂
     const int n = 800;
 const float rate = 7.;
 const float lineThickness = 2.2;
@@ -153,6 +163,7 @@ void main()
 }
     `,
     shader4:`
+    //紫色很酷
     varying vec2 vUv;
     uniform vec3 iResolution;
     uniform float iTime;
@@ -203,18 +214,46 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     ro.xz = rotate(ro.xz,iTime);
     vec3 cf = normalize(-ro);
     vec3 cs = normalize(cross(cf,vec3(0.,1.,0.)));
-    vec3 cu = normalize(cross(cf,cs));
-    
-    vec3 uuv = ro+cf*3. + uv.x*cs + uv.y*cu;
-    
-    vec3 rd = normalize(uuv-ro);
-    
-    vec4 col = rm(ro,rd);
-    
-    
+    vec3 cu = normalize(cross(cf,cs));    
+    vec3 uuv = ro+cf*3. + uv.x*cs + uv.y*cu;  
+    vec3 rd = normalize(uuv-ro);   
+    vec4 col = rm(ro,rd);    
     fragColor = col;
 }
 void main() {
+    mainImage(gl_FragColor, vUv * iResolution.xy);
+  }
+    `,
+    shader5:`
+    //园
+    varying vec2 vUv;
+    uniform vec3 iResolution;
+    uniform float iTime;
+    vec3 rgb(float r, float g, float b) {
+        return vec3(r / 255.0, g / 255.0, b / 255.0);
+    }
+    vec4 circle(vec2 uv, vec2 pos, float rad, vec3 color) {
+        float d = length(pos - uv) - rad;
+        float t = clamp(d, 0.0, 1.0);
+        return vec4(color, 1.0 - t);
+    }
+    void mainImage( out vec4 fragColor, in vec2 fragCoord ){
+ 
+        vec2 uv = fragCoord.xy;
+        vec2 center = iResolution.xy * 0.5;
+        float radius = 0.25 * iResolution.y;
+    
+        // Background layer
+        vec4 layer1 = vec4(rgb(210.0, 222.0, 228.0), 1.0);
+        
+        // Circle
+        vec3 red = rgb(225.0, 95.0, 60.0);
+        vec4 layer2 = circle(uv, center, radius, red);
+        
+        // Blend the two
+        fragColor = mix(layer1, layer2, layer2.a);
+    }
+   void main() {
     mainImage(gl_FragColor, vUv * iResolution.xy);
   }
     `,
