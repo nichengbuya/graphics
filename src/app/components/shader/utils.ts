@@ -16,6 +16,21 @@ export const vertexShaderMap = {
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
     `,
+    shader3: `
+    varying vec2 vUv;
+    void main() {
+     vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+    `,
+    shader4: `
+    varying vec2 vUv;
+    void main() {
+     vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+    
+    `,
     ocean: `
     void main()
 	{
@@ -74,6 +89,134 @@ void main() {
     gl_FragColor = vec4(color, 1.0);
 }
 
+    `,
+    shader3:`
+    const int n = 800;
+const float rate = 7.;
+const float lineThickness = 2.2;
+const float colours = 0.05; // proportion of cells to colour in
+const bool zoom = true;
+
+const float phi = 1.6180339887498948;
+const float tau = 6.2831853071795865;
+varying vec2 vUv;
+uniform vec3 iResolution;
+uniform float iTime;
+void main()
+{
+   vec2 uv = vUv-0.5;
+   float penOut = lineThickness/iResolution.y;
+   float penIn = (lineThickness-2.8)/iResolution.y;
+
+   float t = iTime*rate;
+
+   gl_FragColor = vec4(0,0,0,1);
+
+   float scale = sqrt(float(n));
+   if ( zoom ) scale = min( scale, pow((iTime+7.)*rate*.5,.6) ); // keep the edgemost points in shot as we zoom
+
+   float closest = 1e38;
+   float closest2 = 1e38;
+   for ( int i=0; i < n; i++ )
+   {
+       float f = float(i);
+       f += fract(t);
+       float r = sqrt(f/128.);
+       r *= 13./scale;
+       float a = fract((f-t)*phi)*tau;
+       vec2 pos = r*vec2(sin(a),cos(a));
+
+       vec3 col = sin(vec3(3,1,6)*(float(i)-floor(t)))*.5+.5;
+       if ( fract(col.y*64.) > colours ) col = vec3(1);
+
+       float l = length(pos-uv);
+
+       // add a ring to help me track size (so it doesn't look like we're zooming out)
+       //col *= smoothstep(penIn,penOut,abs(l/scale-.001)*scale);
+
+       if ( i == 0 ) l += smoothstep(1.,0.,fract(t))*1.2/scale; // grow the new point
+       if ( l < closest )
+       {
+           if ( closest < closest2 ) closest2 = closest;
+           closest = l;
+           gl_FragColor.rgb = col; // *(1.-l*sqrt(float(n)));
+       }
+       else if ( l < closest2 )
+       {
+           closest2 = l;
+       }
+       gl_FragColor.rgb = mix(gl_FragColor.rgb,vec3(0),smoothstep(penOut,penIn,length(pos-uv)));
+   }
+
+   // cell borders
+   gl_FragColor.rgb *= smoothstep(penIn,penOut,(closest2-closest));//*scale);
+}
+    `,
+    shader4:`
+    varying vec2 vUv;
+    uniform vec3 iResolution;
+    uniform float iTime;
+    vec3 palette(float d){
+	return mix(vec3(0.2,0.7,0.9),vec3(1.,0.,1.),d);
+}
+
+vec2 rotate(vec2 p,float a){
+	float c = cos(a);
+    float s = sin(a);
+    return p*mat2(c,s,-s,c);
+}
+
+float map(vec3 p){
+    for( int i = 0; i<8; ++i){
+        float t = iTime*0.2;
+        p.xz =rotate(p.xz,t);
+        p.xy =rotate(p.xy,t*1.89);
+        p.xz = abs(p.xz);
+        p.xz-=.5;
+	}
+	return dot(sign(p),p)/5.;
+}
+
+vec4 rm (vec3 ro, vec3 rd){
+    float t = 0.;
+    vec3 col = vec3(0.);
+    float d;
+    for(float i =0.; i<64.; i++){
+		vec3 p = ro + rd*t;
+        d = map(p)*.5;
+        if(d<0.02){
+            break;
+        }
+        if(d>100.){
+        	break;
+        }
+        //col+=vec3(0.6,0.8,0.8)/(400.*(d));
+        col+=palette(length(p)*.1)/(400.*(d));
+        t+=d;
+    }
+    return vec4(col,1./(d*100.));
+}
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = (fragCoord-(iResolution.xy/2.))/iResolution.x;
+	vec3 ro = vec3(0.,0.,-50.);
+    ro.xz = rotate(ro.xz,iTime);
+    vec3 cf = normalize(-ro);
+    vec3 cs = normalize(cross(cf,vec3(0.,1.,0.)));
+    vec3 cu = normalize(cross(cf,cs));
+    
+    vec3 uuv = ro+cf*3. + uv.x*cs + uv.y*cu;
+    
+    vec3 rd = normalize(uuv-ro);
+    
+    vec4 col = rm(ro,rd);
+    
+    
+    fragColor = col;
+}
+void main() {
+    mainImage(gl_FragColor, vUv * iResolution.xy);
+  }
     `,
     ocean: `
     uniform float iTime;

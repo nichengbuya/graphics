@@ -1,13 +1,17 @@
 import * as THREE from 'three';
 import { vertexShaderMap, fragmentShaderMap } from './utils';
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
+import { Injectable } from '@angular/core';
 interface Data{
     shader: string;
 }
 interface Prop{
     container: any;
 }
-class Shader {
+@Injectable({
+    providedIn: 'root'
+  })
+export class ShaderService {
     uniforms;
     renderer: THREE.WebGLRenderer;
     camera: THREE.OrthographicCamera;
@@ -16,16 +20,13 @@ class Shader {
     container: HTMLElement;
     mesh: THREE.Mesh<THREE.PlaneBufferGeometry, THREE.ShaderMaterial>;
     data: Data = {
-        shader: 'shader1'
+        shader: 'shader4'
     };
     gui: any;
-    constructor(option: Prop) {
-        this.container = option.container;
-        this.init();
-        this.animate();
+    constructor() {
     }
-    init() {
-        const {container } = this;
+    init( container) {
+        this.container = container ;
         const width = container.offsetWidth;
         const height = container.offsetHeight;
         this.scene = new THREE.Scene();
@@ -40,8 +41,8 @@ class Shader {
 
         const material = new THREE.ShaderMaterial({
             uniforms,
-            vertexShader: vertexShaderMap.shader1,
-            fragmentShader: fragmentShaderMap.shader1
+            vertexShader: vertexShaderMap[this.data.shader],
+            fragmentShader: fragmentShaderMap[this.data.shader]
         });
 
         this.mesh = new THREE.Mesh(geometry, material);
@@ -65,13 +66,15 @@ class Shader {
             }
 
         };
-        gui.add(this.data, 'shader', ['shader1', 'shader2', 'ocean']).name('shader').onChange(changeShader);
+        const list = Object.keys(vertexShaderMap);
+        gui.add(this.data, 'shader',list).name('shader').onChange(changeShader);
 
         this.onWindowResize = () => {
             this.updateSize()
         };
 
         window.addEventListener('resize', this.onWindowResize, false);
+        this.animate();
 
     }
     updateSize(){
@@ -98,4 +101,3 @@ class Shader {
 
     }
 }
-export default Shader;

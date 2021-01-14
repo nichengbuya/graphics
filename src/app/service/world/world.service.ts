@@ -19,7 +19,6 @@ import { AnimationMixer, AxesHelper, BoxBufferGeometry, Clock, Euler, Intersecti
 import { EventEmitService } from '../event/event-emit.service';
 import Kinematics from '../../common/kinematics';
 import { environmentUrl } from '../../config';
-import Shader from '../../components/shader/shader';
 import { CommandService } from '../command/command.service';
 import { AddObjectCommand } from '../command/add-object-command';
 import { SetPositionCommand } from '../command/set-position-command';
@@ -62,7 +61,7 @@ export class WorldService {
   ) {
   }
   // set get value
-  setWorld(dom: Shader) {
+  setWorld(dom: HTMLElement) {
     this.container = dom;
     this.init();
   }
