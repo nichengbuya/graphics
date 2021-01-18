@@ -38,6 +38,13 @@ export const vertexShaderMap = {
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }  
     `,
+    heart:`
+    varying vec2 vUv;
+    void main() {
+     vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}  
+    `,
     ocean: `
     void main()
 	{
@@ -229,33 +236,64 @@ void main() {
     varying vec2 vUv;
     uniform vec3 iResolution;
     uniform float iTime;
-    vec3 rgb(float r, float g, float b) {
-        return vec3(r / 255.0, g / 255.0, b / 255.0);
-    }
-    vec4 circle(vec2 uv, vec2 pos, float rad, vec3 color) {
-        float d = length(pos - uv) - rad;
-        float t = clamp(d, 0.0, 1.0);
-        return vec4(color, 1.0 - t);
-    }
     void mainImage( out vec4 fragColor, in vec2 fragCoord ){
- 
-        vec2 uv = fragCoord.xy;
-        vec2 center = iResolution.xy * 0.5;
-        float radius = 0.25 * iResolution.y;
-    
-        // Background layer
-        vec4 layer1 = vec4(rgb(210.0, 222.0, 228.0), 1.0);
-        
-        // Circle
-        vec3 red = rgb(225.0, 95.0, 60.0);
-        vec4 layer2 = circle(uv, center, radius, red);
-        
-        // Blend the two
-        fragColor = mix(layer1, layer2, layer2.a);
+        vec2 uv = (2.0 * fragCoord.xy - iResolution.xy) / min(iResolution.y, iResolution.x);
+        float len = length(uv) -0.5;
+        float t = clamp(len* min(iResolution.y,iResolution.x)*0.25,0.0,1.0);
+        vec4 bg = vec4(0.0,0.0,0.0,1.0);
+        vec4 layer = vec4(1.0,0.0,0.0,1.0-t);
+        fragColor = mix(bg,layer,layer.a);
+
     }
    void main() {
     mainImage(gl_FragColor, vUv * iResolution.xy);
-  }
+    }
+    `,
+    heart:`
+    varying vec2 vUv;
+    uniform vec3 iResolution;
+    uniform float iTime;
+    void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+	vec2 p = (2.0*fragCoord-iResolution.xy)/min(iResolution.y,iResolution.x);
+	
+    // background color
+    vec3 bcol = vec3(1.0,0.8,0.7-0.07*p.y)*(1.0-0.25*length(p));
+
+    // animate
+    float tt = mod(iTime,1.5)/1.5;
+    float ss = pow(tt,.2)*0.5 + 0.5;
+    ss = 1.0 + ss*0.5*sin(tt*6.2831*3.0 + p.y*0.5)*exp(-tt*4.0);
+    p *= vec2(0.5,1.5) + ss*vec2(0.5,-0.5);
+
+    // shape
+#if 0
+    p *= 0.8;
+    p.y = -0.1 - p.y*1.2 + abs(p.x)*(1.0-abs(p.x));
+    float r = length(p);
+	float d = 0.5;
+#else
+	p.y -= 0.25;
+    float a = atan(p.x,p.y)/3.141593;
+    float r = length(p);
+    float h = abs(a);
+    float d = (13.0*h - 22.0*h*h + 10.0*h*h*h)/(6.0-5.0*h);
+#endif
+    
+	// color
+	float s = 0.75 + 0.75*p.x;
+	s *= 1.0-0.4*r;
+	s = 0.3 + 0.7*s;
+	s *= 0.5+0.5*pow( 1.0-clamp(r/d, 0.0, 1.0 ), 0.1 );
+	vec3 hcol = vec3(1.0,0.5*r,0.3)*s;
+	
+    vec3 col = mix( bcol, hcol, smoothstep( -0.01, 0.01, d-r) );
+
+    fragColor = vec4(col,1.0);
+}
+void main() {
+    mainImage(gl_FragColor, vUv * iResolution.xy);
+    }
     `,
     ocean: `
     uniform float iTime;

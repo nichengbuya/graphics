@@ -139,7 +139,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
 
     } else {
       this.curPanel = e.name;
-      this.router.navigate([`world/project/${this.projectId}/${e.name}`]);
+      this.router.navigate([`project/${this.projectId}/${e.name}`]);
     }
 
   }
