@@ -8,7 +8,7 @@
                 <img height="240" alt="example" [src]="p.img" />
             </ng-template>
             <ng-template #extraTemplate>
-                <a (click)="deleteProject(p._id,$event)">Delete</a>
+                <a (click)="createConfirmModal(p._id,$event)">Delete</a>
             </ng-template>
         </a>
     </div>

@@ -51,6 +51,13 @@ export const vertexShaderMap = {
 		vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
 		gl_Position = projectionMatrix * mvPosition;
 	}
+    `,
+    test:`
+    varying vec2 vUv;
+    void main() {
+     vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}  
     `
 };
 export const fragmentShaderMap = {
@@ -487,7 +494,58 @@ void main() {
 
     // post
 	gl_FragColor = vec4(pow(color,vec3(0.75)), 1.0);
-}`
+}`, 
+test:`
+varying vec2 vUv;
+uniform vec3 iResolution;
+uniform float iTime;
+float Circle(vec2 uv, vec2 p, float r, float blur) {
+	float d = length(uv-p);
+    float c = smoothstep(r, r-blur, d);
+    
+    return c;
+}
 
+float Smiley(vec2 uv, vec2 p, float size) {
+    uv -= p;
+    uv /= size;
+    
+    float mask = Circle(uv, vec2(0.), .4, .05);
+    
+    mask -= Circle(uv, vec2(-.13, .2), .07, .01);
+    mask -= Circle(uv, vec2(.13, .2), .07, .01);
+    
+    float mouth = Circle(uv, vec2(0., 0.), .3, .02);
+    mouth -= Circle(uv, vec2(0., .1), .3, .02);
+    
+    mask -= mouth;
 
+    return mask;
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    // Normalized pixel coordinates (from 0 to 1)
+    // vec2 uv = fragCoord/iResolution.xy;
+	
+    // uv -=0.5;
+    // uv.x *= iResolution.x / iResolution.y;
+    
+    vec2 uv = (2.0*fragCoord-iResolution.xy)/min(iResolution.y,iResolution.x);
+    vec3 col = vec3(0.);
+    
+    float t = iTime;
+    vec2 p = vec2(sin(t)*.7, cos(t)*0.3);
+    
+    float mask = Smiley(uv, p, .3);
+    
+    
+    col = vec3(1., 1., 0.)*mask;
+    
+    fragColor = vec4(col,1.0);
+}
+void main() {
+    mainImage(gl_FragColor, vUv * iResolution.xy);
+}
+`
 };

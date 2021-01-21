@@ -20,6 +20,7 @@ export class ProjectComponent implements OnInit {
   tplModalButtonLoading: boolean;
   tplModal?: NzModalRef;
   projectName:String;
+  confirmModal: NzModalRef<unknown, any>;
   constructor( 
     private router:Router,
     private projectService:ProjectService,
@@ -40,8 +41,18 @@ export class ProjectComponent implements OnInit {
       nzClosable: false,
       nzComponentParams: {
         value: 'Template Context'
-      },
-      nzOnOk: () => console.log('Click ok')
+      }
+    });
+  }
+  createConfirmModal(id,e){
+    e.preventDefault();
+    e.stopPropagation();
+    this.confirmModal = this.modal.confirm({
+      nzTitle: 'Do you Want to delete these items?',
+      nzOnOk: async () =>{
+        await this.deleteProject(id)
+      }
+       
     });
   }
 
@@ -55,19 +66,20 @@ export class ProjectComponent implements OnInit {
     await this.getAllProject();
     this.gotoItem(res.data._id)
   }
-  public async deleteProject(id,$event){
-    console.log(id)
-    $event.preventDefault();
-    $event.stopPropagation();
+
+  public async deleteProject(id){
+
     await this.projectService.deleteProject({
       id:id
     }).toPromise();
     await this.getAllProject();
   }
+
   public async getAllProject(){
     let res  = await this.projectService.getAllProject().toPromise();
     this.projects = res.data;
   }
+
   public gotoItem(id){
     this.router.navigate(['/project/',id]);
   }

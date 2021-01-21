@@ -5,9 +5,9 @@ import { LoadBarComponent } from 'src/app/components/load-bar/load-bar.component
 import { AddObjectCommand } from 'src/app/service/command/add-object-command';
 import { CommandService } from 'src/app/service/command/command.service';
 import { EventEmitService } from 'src/app/service/event/event-emit.service';
-import { HttpService } from 'src/app/service/http/http.service';
 import { Device, WorldService } from 'src/app/service/world/world.service';
 import { Object3D, Vector3 } from 'three';
+import { DeviceService } from 'src/app/service/device/device.service';
 
 @Component({
   selector: 'app-library',
@@ -23,7 +23,7 @@ export class LibraryComponent implements OnInit , OnDestroy {
   public device: Object3D;
   moveSub: Subscription;
   constructor(
-    private configService: HttpService,
+    private configService: DeviceService,
     private worldService: WorldService,
     private sanitizer: DomSanitizer,
     private eventEmitService: EventEmitService,
@@ -67,12 +67,6 @@ export class LibraryComponent implements OnInit , OnDestroy {
     this.device = null;
     this.device = await this.worldService.initObject(item);
     this.worldService.addObject(this.device);
-  }
-  public changePosition(device: Object3D, position: Vector3){
-    if (device){
-      device.position.copy(position);
-    }
-
   }
   dragStart(e:DragEvent,device){
     e.dataTransfer.setData('device',JSON.stringify(device));

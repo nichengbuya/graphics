@@ -20,7 +20,7 @@ export class ShaderService {
     container: HTMLElement;
     mesh: THREE.Mesh<THREE.PlaneBufferGeometry, THREE.ShaderMaterial>;
     data: Data = {
-        shader: 'heart'
+        shader: 'test'
     };
     gui: any;
     constructor() {

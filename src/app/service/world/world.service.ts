@@ -63,6 +63,7 @@ export class WorldService {
   // set get value
   setWorld(dom: HTMLElement) {
     this.container = dom;
+    this.devices = [];
     this.init();
   }
   getScene() {
@@ -501,8 +502,7 @@ export class WorldService {
       loader.load(url, (robot: URDFLink) => {
         robot.userData.type = device.type;
         robot.userData.attach = device.attach;
-        robot.userData.joints = Object.values(robot.joints).filter((joint: any) => joint.jointType === 'revolute');
-        robot.position.copy(device.position)    
+        robot.userData.joints = Object.values(robot.joints).filter((joint: any) => joint.jointType === 'revolute');   
         this.scene.add(robot);
         manager.onLoad = () => {
           resolve(robot);
@@ -527,7 +527,6 @@ export class WorldService {
         robot.userData.id = device.id;
         robot.userData.kinematics = new Kinematics(device.name);
         robot.userData.joints = Object.values(robot.joints).filter((joint: any) => joint.jointType === 'revolute');
-        robot.position.copy(device.position)
         const effector = new Mesh(new BoxBufferGeometry(.01, .01, .01), new MeshBasicMaterial({ transparent: true }));
         robot.add(effector);
         robot.userData.effector = effector;
@@ -642,7 +641,6 @@ export class WorldService {
     const geometry = new BoxBufferGeometry(1, 1, 1);
     const material = new MeshLambertMaterial({ color: 0xffff00 });
     const mesh = new Mesh(geometry, material);
-    mesh.position.copy(device.position)
     mesh.userData = { ...device };
     return new Promise((resolve, reject) => {
       resolve(mesh);
@@ -835,18 +833,14 @@ export class WorldService {
   formateObject() {
     const msg = this.devices.map(d=>{
       return { 
-        name:d.name,
+        deviceId:d.userData.id,
         pose: d.userData.type === 'robot' ? d.userData.joints.map(i=>i.jointValue) : undefined, 
-        parent: d.parent.uuid,
+        parent: d.parent?d.parent.uuid: undefined,
         matrix: d.matrix,
         uuid:d.uuid
       }
     })
     return msg;
   }
-  loadWorld(objects){
-    for(let o of objects){
 
-    }
-  }
 }

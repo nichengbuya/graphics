@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd';
-import { HttpService } from 'src/app/service/http/http.service';
+import { UserService } from 'src/app/service/user/user.service';
 
 @Component({
   selector: 'app-register',
@@ -14,7 +14,7 @@ export class RegisterComponent implements OnInit {
   validateForm!: FormGroup;
   constructor(
     private fb: FormBuilder,
-    private httpService: HttpService,
+    private httpService: UserService,
     private messageService: NzMessageService,
     private router:Router
   ) {}

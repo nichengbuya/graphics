@@ -7,6 +7,7 @@ const GET_ALL_PROJECT='/project/getAllProject';
 const UPDATE_PROJECT='/project/updateProject';
 const CREATE_PROJECT='/project/createProject';
 const DELETE_PROJECT='/project/deleteProject';
+const GET_OBJECT_BY_ID='/project/getObjectById';
 @Injectable({
   providedIn: 'root'
 })
@@ -26,6 +27,9 @@ export class ProjectService {
   }
   deleteProject(msg):Observable<any>{
     return this.http.delete(HOST + DELETE_PROJECT,msg)
+  }
+  getObjectById(id):Observable<any>{
+    return this.http.get<any>(HOST + GET_OBJECT_BY_ID, { params: { id } })
   }
 
 }

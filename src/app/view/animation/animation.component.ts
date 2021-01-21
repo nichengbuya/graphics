@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { WorldService } from 'src/app/service/world/world.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription, Observable } from 'rxjs';
-import { Intersection, Object3D } from 'three';
+import { Intersection, Object3D ,Matrix4} from 'three';
 import { EventEmitService } from 'src/app/service/event/event-emit.service';
 import { CommandService } from 'src/app/service/command/command.service';
 import { LoadBarComponent } from 'src/app/components/load-bar/load-bar.component';
@@ -15,11 +15,13 @@ import { PointService } from 'src/app/service/point/point.service';
 import { Point } from 'src/app/components/point-list/point-list.component';
 import { ProjectService } from 'src/app/service/project/project.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { DeviceService } from 'src/app/service/device/device.service';
 @Component({
   selector: 'app-animation',
   templateUrl: './animation.component.html',
   styleUrls: ['./animation.component.scss'],
 })
+
 export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   private subs: Subscription[] = [];
   robot: URDFRobot;
@@ -92,7 +94,8 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     private AnimationService: AnimationService,
     private pointService: PointService,
     private projectService: ProjectService,
-    private messageService: NzMessageService
+    private messageService: NzMessageService,
+    private deviceService: DeviceService
   ) { }
   @ViewChild('animation') div: ElementRef;
   @ViewChild('tool') tool: ElementRef;
@@ -121,6 +124,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     this.route.params.subscribe((res)=>{
       this.projectId = res.id;
     })
+    await this.loadWorld();
   }
 
   public changeTransformMode(e) {
@@ -247,12 +251,38 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   gotoProject() {
     this.router.navigate(['/world/projects']);
   }
-  async save(){
+  async saveWorld(){
     const objects = this.worldService.formateObject();
     const res = await this.projectService.updateProject({
       projectId:this.projectId,
       objects:objects
     }).toPromise();
     this.messageService.success(res.data) 
+  }
+  async loadWorld(){
+    const res = await this.projectService.getObjectById(this.projectId).toPromise();
+    const objects = res.data;
+    for(let o of objects){
+      const res1 = await this.deviceService.getDevice(o.deviceId).toPromise();
+      const device = res1.data;
+      const obj:Object3D = await this.worldService.initObject(device);
+      const matrix = new Matrix4();
+      matrix.elements = o.matrix[0].elements;
+
+      // matrix.set(
+      //   m[0], m[4],m[8],m[12],
+      //   m[1], m[5],m[9],m[13],
+      //   m[2], m[6],m[10],m[14],
+      //   m[3], m[7],m[11],m[15],
+      // )
+      // console.log(matrix)
+      obj.matrixWorld.copy(matrix);
+      obj.updateMatrixWorld(true);
+      console.log(obj)
+      this.worldService.addObject(obj);
+    }
+    for(let o of objects){
+
+    }
   }
 }
