@@ -50,29 +50,23 @@ export class LibraryComponent implements OnInit , OnDestroy {
     await this.getDeviceList(this.deviceType);
   }
   public async getDeviceList(type){
-    // this.deviceType = this.listOfDeviceType[0].value;
     const devices = await this.configService.getDeviceList(type).toPromise();
-    this.listOfDevices = devices.data.map((device: Device) => {
+    this.listOfDevices = devices.data.map((device) => {
       return {
         name: device.name,
         url: device.url ,
         img: this.sanitizer.bypassSecurityTrustResourceUrl(device.img) ,
         type: device.type,
         attach: device.attach,
-        joints: device.joints?device.joints:[]
+        joints: device.joints?device.joints:[],
+        id: device._id
       };
     });
   }
   public async addDevice(item: Device){
     this.device = null;
-
     this.device = await this.worldService.initObject(item);
-    // this.load.complete();
     this.worldService.addObject(this.device);
-    // this.commandService.execute(new AddObjectCommand(this.worldService, this.device));
-    // this.moveSub = this.eventEmitService.emitMove.subscribe(e => {
-    //   this.changePosition(this.device, e[0].point);
-    // });
   }
   public changePosition(device: Object3D, position: Vector3){
     if (device){
@@ -83,12 +77,5 @@ export class LibraryComponent implements OnInit , OnDestroy {
   dragStart(e:DragEvent,device){
     e.dataTransfer.setData('device',JSON.stringify(device));
   }
-  // handleMove(e, p ){
-  //   const {pointList } = this;
-  //   const origin = pointList.indexOf(e.data);
-  //   pointList.splice(origin, 1);
-  //   const target = pointList.indexOf(p);
-  //   pointList.splice(e.top ? target : target + 1, 0, e.data);
 
-  // }
 }

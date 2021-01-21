@@ -27,7 +27,7 @@ import { RemoveObjectCommand } from '../command/remove-object-command';
 import { AttachCommand } from '../command/attach-command';
 import { DetachCommand } from '../command/detach-command';
 export interface Device {
-  img: string; name: string; url: string; type: string; attach: string; joints?: [], position?: Vector3
+  img: string; name: string; url: string; type: string; attach: string; joints?: [], position?: Vector3,id:string;
 }
 @Injectable({
   providedIn: 'root'
@@ -513,6 +513,7 @@ export class WorldService {
     });
 
   }
+
   initRobot(device: Device): Promise<URDFLink> {
     const manager = new THREE.LoadingManager();
     const loader = new URDFLoader(manager);
@@ -523,6 +524,7 @@ export class WorldService {
       loader.load(url, (robot: URDFLink) => {
         robot.userData.type = device.type;
         robot.userData.attach = device.attach;
+        robot.userData.id = device.id;
         robot.userData.kinematics = new Kinematics(device.name);
         robot.userData.joints = Object.values(robot.joints).filter((joint: any) => joint.jointType === 'revolute');
         robot.position.copy(device.position)
@@ -691,6 +693,7 @@ export class WorldService {
   addObject(model: THREE.Object3D) {
     this.scene.add(model);
     this.devices.push(model);
+    this.commandService.execute(new AddObjectCommand(this,model));
     this.eventEmitService.sceneChange.emit(this.scene);
   }
   removeObject(curObj) {
@@ -829,16 +832,21 @@ export class WorldService {
     }
     return distance[0];
   }
-  save() {
-    console.log(this.devices);
+  formateObject() {
     const msg = this.devices.map(d=>{
       return { 
-        // json:d.toJSON(),
-        parent: d.parent.userData.id,
+        name:d.name,
+        pose: d.userData.type === 'robot' ? d.userData.joints.map(i=>i.jointValue) : undefined, 
+        parent: d.parent.uuid,
         matrix: d.matrix,
+        uuid:d.uuid
       }
     })
-    
-    console.log(msg)
+    return msg;
+  }
+  loadWorld(objects){
+    for(let o of objects){
+
+    }
   }
 }

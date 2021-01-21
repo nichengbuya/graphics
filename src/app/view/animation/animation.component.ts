@@ -13,6 +13,8 @@ import { ResizeEvent } from 'angular-resizable-element';
 import { ThrowStmt } from '@angular/compiler';
 import { PointService } from 'src/app/service/point/point.service';
 import { Point } from 'src/app/components/point-list/point-list.component';
+import { ProjectService } from 'src/app/service/project/project.service';
+import { NzMessageService } from 'ng-zorro-antd';
 @Component({
   selector: 'app-animation',
   templateUrl: './animation.component.html',
@@ -88,7 +90,9 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     private eventEmitService: EventEmitService,
     private commandService: CommandService,
     private AnimationService: AnimationService,
-    private pointService: PointService
+    private pointService: PointService,
+    private projectService: ProjectService,
+    private messageService: NzMessageService
   ) { }
   @ViewChild('animation') div: ElementRef;
   @ViewChild('tool') tool: ElementRef;
@@ -132,7 +136,6 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     if (e.name === this.curPanel) {
       this.curPanel = null;
       this.worldService.updateSize();
-      // this.router.navigate([`/world/animation}`]);
       setTimeout(()=>{
         this.worldService.updateSize();
       })
@@ -244,19 +247,12 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   gotoProject() {
     this.router.navigate(['/world/projects']);
   }
-  save(){
-    // const objects = new Array();
-    // for(let o of this.worldService.objects){
-    //   const json = o.toJSON();
-    //   const object = {
-    //     name:o.userData.name, 
-    //     id:o.userData.id,
-    //     parentId:o.parent.userData.id,
-    //     matrix:json.data.matrix
-    //   };
-    //   objects.push(object);
-    // }
-    this.worldService.save();
-    // this.projectService.save(p)
+  async save(){
+    const objects = this.worldService.formateObject();
+    const res = await this.projectService.updateProject({
+      projectId:this.projectId,
+      objects:objects
+    }).toPromise();
+    this.messageService.success(res.data) 
   }
 }

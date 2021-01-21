@@ -69,6 +69,6 @@ export class ProjectComponent implements OnInit {
     this.projects = res.data;
   }
   public gotoItem(id){
-    this.router.navigate(['/world/project/',id]);
+    this.router.navigate(['/project/',id]);
   }
 }
