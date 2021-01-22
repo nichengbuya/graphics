@@ -268,17 +268,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
       const obj:Object3D = await this.worldService.initObject(device);
       const matrix = new Matrix4();
       matrix.elements = o.matrix[0].elements;
-
-      // matrix.set(
-      //   m[0], m[4],m[8],m[12],
-      //   m[1], m[5],m[9],m[13],
-      //   m[2], m[6],m[10],m[14],
-      //   m[3], m[7],m[11],m[15],
-      // )
-      // console.log(matrix)
-      obj.matrixWorld.copy(matrix);
-      obj.updateMatrixWorld(true);
-      console.log(obj)
+      console.log(matrix)
       this.worldService.addObject(obj);
     }
     for(let o of objects){
