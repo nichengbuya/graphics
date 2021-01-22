@@ -27,7 +27,7 @@ import { RemoveObjectCommand } from '../command/remove-object-command';
 import { AttachCommand } from '../command/attach-command';
 import { DetachCommand } from '../command/detach-command';
 export interface Device {
-  img: string; name: string; url: string; type: string; attach: string; joints?: [], position?: Vector3,id:string;
+  img: string; name: string; url: string; type: string; attach: string; joints?: [], position?: Vector3, id: string;
 }
 @Injectable({
   providedIn: 'root'
@@ -60,15 +60,17 @@ export class WorldService {
     private commandService: CommandService
   ) {
   }
-  // set get value
+
   setWorld(dom: HTMLElement) {
     this.container = dom;
     this.devices = [];
     this.init();
   }
+
   getScene() {
     return this.scene;
   }
+
   getCurObj() {
     return this.curObj;
   }
@@ -97,12 +99,14 @@ export class WorldService {
     // this.initEffectorComposer();
     this.animate();
   }
+
   bindResizeEvent() {
     window.addEventListener('resize', () => {
       this.updateSize();
     }, false);
     document.addEventListener('keydown', this.keyDownEvent, false);
   }
+
   private keyDownEvent = (event) => {
     if (event.keyCode === 46) {
       this.removeObject(this.curObj);
@@ -117,6 +121,7 @@ export class WorldService {
       this.commandService.redo();
     }
   }
+
   updateSize() {
     const { container, renderer } = this;
     const { offsetWidth, offsetHeight } = container;
@@ -135,12 +140,14 @@ export class WorldService {
     // this.effectFXAA.uniforms.resolution.value.set( 1 / this.width, 1 / this.height );
     this.render();
   }
+
   removeRaycasterEvent() {
     const { container } = this;
 
     container.removeEventListener('click', this.mouseclick);
     container.removeEventListener('move', this.mousemove);
   }
+
   initScene() {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xcccccc);
@@ -156,11 +163,11 @@ export class WorldService {
     this.scene.add(this.camera);
     this.camera.updateProjectionMatrix();
   }
+
   initLight() {
-
     this.scene.add(new THREE.AmbientLight(0xeeeeee));
-
   }
+
   initDragControl(objects: THREE.Object3D[]) {
     this.dragControls = new DragControls(objects, this.camera, this.renderer.domElement);
     const mousemove = () => {
@@ -178,6 +185,7 @@ export class WorldService {
 
     });
   }
+
   initGui() {
     const gui = {
       exportScene: () => {
@@ -204,9 +212,11 @@ export class WorldService {
     datGui.add(gui, 'clearScene');
     datGui.add(gui, 'importScene');
   }
+
   initClock() {
     this.clock = new Clock();
   }
+
   checkCollisioin(mesh: { position: { clone: () => any; }; geometry: { vertices: string | any[]; }; matrix: any; }, obstacles: THREE.Object3D[]) {
     if (mesh === undefined || obstacles === undefined) {
       return;
@@ -225,11 +235,13 @@ export class WorldService {
       }
     }
   }
+
   initRender() {
     const { container } = this;
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
-      alpha: true
+      alpha: true,
+      preserveDrawingBuffer: true
     });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(container.offsetWidth, container.offsetHeight);
@@ -237,6 +249,7 @@ export class WorldService {
     this.renderer.domElement.style.outline = 'none';
     this.container.appendChild(this.renderer.domElement);
   }
+
   initEffectorComposer() {
     const { renderer, scene, camera } = this;
     const composer = this.composer = new EffectComposer(renderer);
@@ -257,6 +270,7 @@ export class WorldService {
     // composer.addPass( this.effectFXAA );
 
   }
+
   renderOutlineObject(selectedObjects: Array<Object3D>) {
     this.outlinePass.selectedObjects = selectedObjects;
   }
@@ -267,6 +281,7 @@ export class WorldService {
     this.renderer.render(scene, camera);
     // this.composer.render();
   }
+
   animate() {
     this.id = requestAnimationFrame(this.animate.bind(this));
 
@@ -279,12 +294,15 @@ export class WorldService {
     this.render();
 
   }
+
   setMixer(moveObj: THREE.Object3D | THREE.AnimationObjectGroup) {
     this.mixer = new THREE.AnimationMixer(moveObj);
   }
+
   getMixer() {
     return this.mixer;
   }
+
   bindRaycasterEvent() {
     const { container, renderer, camera, objects } = this;
     const isMobile = 'ontouchstart' in document;
@@ -323,10 +341,15 @@ export class WorldService {
     container.addEventListener('click', this.mouseclick, false);
     container.addEventListener('mousedown', this.mouseDown, false);
   }
+
   mouseDown = (event: any) => { };
+
   mouseUp = (event: any) => { };
+
   mouseclick = (event: any) => { };
+
   mousemove = (event: any) => { };
+
   removeEvent() {
     const { container, scene, objects, id } = this;
     container.removeEventListener('click', this.mouseclick);
@@ -349,6 +372,7 @@ export class WorldService {
     }
     cancelAnimationFrame(id);
   }
+
   initOrbitControl() {
     const { scene, camera, renderer } = this;
     this.controls = new OrbitControls(camera, renderer.domElement);
@@ -376,6 +400,7 @@ export class WorldService {
 
     this.controls.update();
   }
+
   initTransformControl() {
     const { scene, camera, renderer } = this;
     let objectPositionOnDown: Vector3;
@@ -395,7 +420,6 @@ export class WorldService {
         this.eventEmitService.emitChange.emit();
         // return;
       }
-
       const res = this.calcArrow();
       if (res) {
         if (res.length < .6) {
@@ -476,6 +500,7 @@ export class WorldService {
 
     });
   }
+
   initPlane() {
     const { scene, camera, objects } = this;
     const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -492,7 +517,8 @@ export class WorldService {
     this.eventEmitService.sceneChange.emit(this.scene);
     objects.push(mesh);
   }
-  initGripper(device: Device):Promise<URDFLink> {
+
+  initGripper(device: Device): Promise<URDFLink> {
     const manager = new THREE.LoadingManager();
     const loader = new URDFLoader(manager);
     loader.packages = `${environmentUrl}/static/robot`;
@@ -502,7 +528,7 @@ export class WorldService {
       loader.load(url, (robot: URDFLink) => {
         robot.userData.type = device.type;
         robot.userData.attach = device.attach;
-        robot.userData.joints = Object.values(robot.joints).filter((joint: any) => joint.jointType === 'revolute');   
+        robot.userData.joints = Object.values(robot.joints).filter((joint: any) => joint.jointType === 'revolute');
         this.scene.add(robot);
         manager.onLoad = () => {
           resolve(robot);
@@ -511,7 +537,6 @@ export class WorldService {
         reject(error);
       });
     });
-
   }
 
   initRobot(device: Device): Promise<URDFLink> {
@@ -557,17 +582,17 @@ export class WorldService {
         this.scene.add(robot);
         manager.onLoad = () => {
           resolve(robot);
-            robot.userData.joints.forEach((joint: any, index: number) => {
-              joint.setAngle(device.joints[index])
-            })
+          robot.userData.joints.forEach((joint: any, index: number) => {
+            joint.setAngle(device.joints[index])
+          })
           robot.userData.fk();
         };
       }, () => { }, (error: any) => {
         reject(error);
       });
     });
-
   }
+
   initPoint(effector): Mesh {
     let vertexShader = [
       'varying vec3	vVertexWorldPosition;',
@@ -666,6 +691,7 @@ export class WorldService {
     }
     return res;
   }
+
   screenPointToThreeCoords(x, y, domContainer, targetZ) {
     const { camera } = this;
     const vec = new THREE.Vector3(); // create once and reuse
@@ -685,15 +711,17 @@ export class WorldService {
     pos.copy(camera.position).add(vec.multiplyScalar(distance));
     return pos;
   }
+
   /*
     edit
   */
   addObject(model: THREE.Object3D) {
     this.scene.add(model);
     this.devices.push(model);
-    this.commandService.execute(new AddObjectCommand(this,model));
+    this.commandService.execute(new AddObjectCommand(this, model));
     this.eventEmitService.sceneChange.emit(this.scene);
   }
+
   removeObject(curObj) {
     // const { curObj } = this;
     if (curObj) {
@@ -704,6 +732,7 @@ export class WorldService {
       this.eventEmitService.sceneChange.emit(this.scene);
     }
   }
+
   select(e: Intersection[]) {
     if (e.length) {
       let mesh = e[0].object;
@@ -740,6 +769,7 @@ export class WorldService {
     this.transformControls.detach();
     // this.curObj = null;
   }
+
   /**
    * detach child from parent
    *
@@ -751,6 +781,7 @@ export class WorldService {
     this.scene.add(child);
     this.changeColor(child, 0x50bed7);
   }
+
   /**
    * change a device color
    *
@@ -787,6 +818,7 @@ export class WorldService {
       }
     });
   }
+
   restoreColor(model: THREE.Object3D) {
     if (!this.curObj) {
       return;
@@ -803,6 +835,7 @@ export class WorldService {
       }
     });
   }
+
   calcArrow() {
     if (!this.curObj || this.editType === 'montion' || this.curObj.userData.type === 'geometry') {
       return;
@@ -830,14 +863,15 @@ export class WorldService {
     }
     return distance[0];
   }
+
   formateObject() {
-    const msg = this.devices.map(d=>{
-      return { 
-        deviceId:d.userData.id,
-        pose: d.userData.type === 'robot' ? d.userData.joints.map(i=>i.jointValue) : undefined, 
-        parent: d.parent?d.parent.uuid: undefined,
+    const msg = this.devices.map(d => {
+      return {
+        deviceId: d.userData.id,
+        pose: d.userData.type === 'robot' ? d.userData.joints.map(i => i.jointValue) : undefined,
+        parent: d.parent ? d.parent.uuid : undefined,
         matrix: d.matrix,
-        uuid:d.uuid
+        uuid: d.uuid
       }
     })
     return msg;

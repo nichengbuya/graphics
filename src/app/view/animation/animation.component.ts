@@ -253,9 +253,17 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   async saveWorld(){
     const objects = this.worldService.formateObject();
+    const canvas = this.worldService.renderer.domElement;
+    let filename = `${new Date().getTime()}.png`;
+    let formData = new FormData();
+    canvas.toBlob(async (blob) => {
+      let file = new File([blob], filename, { type: 'image/png' });
+      formData.append('file', file);
+      const ret = await this.projectService.upload(formData);
+    })
     const res = await this.projectService.updateProject({
       projectId:this.projectId,
-      objects:objects
+      objects:objects, 
     }).toPromise();
     this.messageService.success(res.data) 
   }

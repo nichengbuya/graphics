@@ -5,7 +5,7 @@
                 <nz-card-meta [nzTitle]="p.name" [nzDescription]="p.description"></nz-card-meta>
             </nz-card>
             <ng-template #coverTemplate>
-                <img height="240" alt="example" [src]="p.img" />
+                <img  alt="example" [src]="p.img" />
             </ng-template>
             <ng-template #extraTemplate>
                 <a (click)="createConfirmModal(p._id,$event)">Delete</a>

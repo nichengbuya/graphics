@@ -32,15 +32,12 @@ export class LibraryComponent implements OnInit , OnDestroy {
 
   ngOnInit(): void {
     this.initData();
-    // this.subs.push(this.eventEmitService.emitClick.subscribe(e => {
-    //   if (this.moveSub){
-    //     this.moveSub.unsubscribe();
-    //   }
-    // }));
   }
+
   ngOnDestroy(){
     this.subs.forEach(s => s.unsubscribe());
   }
+
   private async initData() {
     const res = await this.configService.getDeviceType().toPromise();
     this.listOfDeviceType = res.data.map(type => {
@@ -63,12 +60,14 @@ export class LibraryComponent implements OnInit , OnDestroy {
       };
     });
   }
+
   public async addDevice(item: Device){
     this.device = null;
     this.device = await this.worldService.initObject(item);
     this.worldService.addObject(this.device);
   }
-  dragStart(e:DragEvent,device){
+
+  public dragStart(e:DragEvent,device){
     e.dataTransfer.setData('device',JSON.stringify(device));
   }
 

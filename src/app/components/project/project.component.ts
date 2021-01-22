@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ProjectService } from 'src/app/service/project/project.service';
 import { uuid } from 'src/app/common/utils';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd';
+import { DomSanitizer } from '@angular/platform-browser';
 export interface Project{
   name:string,
   img:string, 
@@ -25,7 +26,8 @@ export class ProjectComponent implements OnInit {
     private router:Router,
     private projectService:ProjectService,
     private modal: NzModalService, 
-    private viewContainerRef: ViewContainerRef
+    private viewContainerRef: ViewContainerRef,
+    private sanitizer: DomSanitizer
   ) { 
   }
 
@@ -77,6 +79,9 @@ export class ProjectComponent implements OnInit {
 
   public async getAllProject(){
     let res  = await this.projectService.getAllProject().toPromise();
+    res.data.forEach( p =>{
+      p.img = this.sanitizer.bypassSecurityTrustResourceUrl(p.img)
+    });
     this.projects = res.data;
   }
 
