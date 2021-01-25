@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { WorldService } from 'src/app/service/world/world.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription, Observable } from 'rxjs';
-import { Intersection, Object3D ,Matrix4} from 'three';
+import { Intersection, Object3D, Matrix4, Vector3 } from 'three';
 import { EventEmitService } from 'src/app/service/event/event-emit.service';
 import { CommandService } from 'src/app/service/command/command.service';
 import { LoadBarComponent } from 'src/app/components/load-bar/load-bar.component';
@@ -121,7 +121,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   public async init() {
     this.worldService.setWorld(this.div.nativeElement);
     this.worldService.initPlane();
-    this.route.params.subscribe((res)=>{
+    this.route.params.subscribe((res) => {
       this.projectId = res.id;
     })
     await this.loadWorld();
@@ -140,7 +140,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     if (e.name === this.curPanel) {
       this.curPanel = null;
       this.worldService.updateSize();
-      setTimeout(()=>{
+      setTimeout(() => {
         this.worldService.updateSize();
       })
 
@@ -153,14 +153,14 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   public trigger() {
 
   }
-  public async deploy(){
+  public async deploy() {
     this.curObj = this.worldService.getCurObj();
-    if(!this.curObj|| this.curObj.userData.type !=='robot'){
+    if (!this.curObj || this.curObj.userData.type !== 'robot') {
       return
     }
-    const pointList:Point[] = this.pointService.getPointList();
-    for(let p of pointList){
-      await this.AnimationService.movePTP(p,3000,this.curObj);
+    const pointList: Point[] = this.pointService.getPointList();
+    for (let p of pointList) {
+      await this.AnimationService.movePTP(p, 3000, this.curObj);
     }
   }
   // public deploy() {
@@ -212,7 +212,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   onResizeEnd(event: ResizeEvent): any {
     if (event.rectangle.width < this.minPanelwidth) {
       this.tool.nativeElement.style.width = `${0}px`;
-      this.tool.nativeElement.style.border  = 'none';
+      this.tool.nativeElement.style.border = 'none';
       setTimeout(() => {
         this.worldService.updateSize();
         this.curPanel = null;
@@ -235,51 +235,69 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   dragover(event: DragEvent): void {
     event.preventDefault();
   }
-  async drop(event:DragEvent): Promise<void>{
+  async drop(event: DragEvent): Promise<void> {
     const device = JSON.parse(event.dataTransfer.getData('device'));
-    const position = this.worldService.screenPointToThreeCoords(event.offsetX,event.offsetY,this.div.nativeElement,0);
-    Object.assign(device,{
-      position:position
+    const position = this.worldService.screenPointToThreeCoords(event.offsetX, event.offsetY, this.div.nativeElement, 0);
+    Object.assign(device, {
+      position: position
     })
     const obj = await this.worldService.initObject(device);
     this.worldService.addObject(obj);
 
   }
-  dragleave(e:DragEvent){
+  dragleave(e: DragEvent) {
 
   }
   gotoProject() {
     this.router.navigate(['/world/projects']);
   }
-  async saveWorld(){
+  async saveWorld() {
     const objects = this.worldService.formateObject();
-    const canvas = this.worldService.renderer.domElement;
-    let filename = `${new Date().getTime()}.png`;
-    let formData = new FormData();
-    canvas.toBlob(async (blob) => {
-      let file = new File([blob], filename, { type: 'image/png' });
-      formData.append('file', file);
-      const ret = await this.projectService.upload(formData);
-    })
+    await this.uploadScreenShot();
     const res = await this.projectService.updateProject({
-      projectId:this.projectId,
-      objects:objects, 
+      projectId: this.projectId,
+      objects: objects,
     }).toPromise();
-    this.messageService.success(res.data) 
+    this.messageService.success(res.data)
   }
-  async loadWorld(){
+  async uploadScreenShot() {
+    let mycanvas = this.worldService.renderer.domElement;
+    let base64Data = mycanvas.toDataURL();
+    let blob = this.dataURItoBlob(base64Data);
+    let fd = new FormData();
+    fd.append("file", blob, `${this.projectId}.png`);
+    fd.append("id", this.projectId);
+    await this.projectService.upload(fd).toPromise();
+
+  }
+  private dataURItoBlob(base64Data) {
+    let byteString;
+    if (base64Data.split(',')[0].indexOf('base64') >= 0)
+      byteString = atob(base64Data.split(',')[1]);
+    else
+      byteString = unescape(base64Data.split(',')[1]);
+    let mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];
+    let ia = new Uint8Array(byteString.length);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ia], { type: mimeString });
+  }
+
+  async loadWorld() {
     const res = await this.projectService.getObjectById(this.projectId).toPromise();
     const objects = res.data;
-    for(let o of objects){
+    for (let o of objects) {
       const res1 = await this.deviceService.getDevice(o.deviceId).toPromise();
       const device = res1.data;
-      const obj:Object3D = await this.worldService.initObject(device);
-      const matrix = new Matrix4();
-      matrix.elements = o.matrix[0].elements;
-      console.log(matrix)
+      //TODO
+      device.position = new Vector3();
+      const obj: Object3D = await this.worldService.initObject(device);
+
+      obj.uuid = o.uuid;
       this.worldService.addObject(obj);
     }
-    for(let o of objects){
+    for (let o of objects) {
 
     }
   }

@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from 'src/app/service/project/project.service';
-import { uuid } from 'src/app/common/utils';
+import { HOST, uuid } from 'src/app/common/utils';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd';
 import { DomSanitizer } from '@angular/platform-browser';
 export interface Project{
@@ -61,7 +61,8 @@ export class ProjectComponent implements OnInit {
   public async destroyTplModal() {
     this.tplModalButtonLoading = true;
     const res = await  this.projectService.createProject({
-      name:this.projectName
+      name:this.projectName,
+      img:'aaaaa'
     }).toPromise();
     this.tplModal.destroy();
     this.tplModalButtonLoading = false;
@@ -80,7 +81,8 @@ export class ProjectComponent implements OnInit {
   public async getAllProject(){
     let res  = await this.projectService.getAllProject().toPromise();
     res.data.forEach( p =>{
-      p.img = this.sanitizer.bypassSecurityTrustResourceUrl(p.img)
+      // p.img = this.sanitizer.bypassSecurityTrustResourceUrl(p.img)
+      p.img = `${HOST}/${p.img}`
     });
     this.projects = res.data;
   }

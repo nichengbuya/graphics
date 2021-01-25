@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { HOST } from 'src/app/common/utils';
-
 const GET_ALL_PROJECT='/project/getAllProject';
 const UPDATE_PROJECT='/project/updateProject';
 const CREATE_PROJECT='/project/createProject';

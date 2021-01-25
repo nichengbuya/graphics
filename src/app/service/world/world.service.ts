@@ -528,6 +528,7 @@ export class WorldService {
       loader.load(url, (robot: URDFLink) => {
         robot.userData.type = device.type;
         robot.userData.attach = device.attach;
+        robot.position.copy(device.position);
         robot.userData.joints = Object.values(robot.joints).filter((joint: any) => joint.jointType === 'revolute');
         this.scene.add(robot);
         manager.onLoad = () => {
@@ -550,6 +551,7 @@ export class WorldService {
         robot.userData.type = device.type;
         robot.userData.attach = device.attach;
         robot.userData.id = device.id;
+        robot.position.copy(device.position);
         robot.userData.kinematics = new Kinematics(device.name);
         robot.userData.joints = Object.values(robot.joints).filter((joint: any) => joint.jointType === 'revolute');
         const effector = new Mesh(new BoxBufferGeometry(.01, .01, .01), new MeshBasicMaterial({ transparent: true }));
@@ -666,6 +668,7 @@ export class WorldService {
     const geometry = new BoxBufferGeometry(1, 1, 1);
     const material = new MeshLambertMaterial({ color: 0xffff00 });
     const mesh = new Mesh(geometry, material);
+    mesh.position.copy(device.position);
     mesh.userData = { ...device };
     return new Promise((resolve, reject) => {
       resolve(mesh);
