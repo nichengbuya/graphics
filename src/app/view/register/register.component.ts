@@ -16,8 +16,8 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
     private httpService: UserService,
     private messageService: NzMessageService,
-    private router:Router
-  ) {}
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
@@ -28,24 +28,19 @@ export class RegisterComponent implements OnInit {
     });
   }
   async submitForm(): Promise<void> {
-    if(!this.validateForm.controls['agree'].value){
+    if (!this.validateForm.controls['agree'].value) {
       this.messageService.warning('Please agree the compact')
-      return 
+      return
     }
     for (const i in this.validateForm.controls) {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
     }
-    try{
-      let res = await this.httpService.register({
-        name: this.validateForm.controls['name'].value,
-        password:this.validateForm.controls['password'].value
-      }).toPromise();
-      this.messageService.success(res.data.user)
-    }catch(err){
-      this.messageService.error(err.error.message)
-    }
-
+    let res = await this.httpService.register({
+      name: this.validateForm.controls['name'].value,
+      password: this.validateForm.controls['password'].value
+    }).toPromise();
+    this.messageService.success(res.data.user)
   }
 
   updateConfirmValidator(): void {
@@ -65,7 +60,7 @@ export class RegisterComponent implements OnInit {
   getCaptcha(e: MouseEvent): void {
     e.preventDefault();
   }
-  login(){
+  login() {
     this.router.navigate(['/login']);
   }
 }

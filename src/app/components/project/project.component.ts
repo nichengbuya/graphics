@@ -62,7 +62,7 @@ export class ProjectComponent implements OnInit {
     this.tplModalButtonLoading = true;
     const res = await  this.projectService.createProject({
       name:this.projectName,
-      img:'aaaaa'
+      img:`${this.projectName}`
     }).toPromise();
     this.tplModal.destroy();
     this.tplModalButtonLoading = false;

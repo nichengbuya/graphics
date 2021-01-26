@@ -11,10 +11,9 @@ import { UserService } from 'src/app/service/user/user.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  
+
   validateForm!: FormGroup;
   registerForm!: FormGroup;
-
 
   constructor(
     private fb: FormBuilder,
@@ -30,28 +29,26 @@ export class LoginComponent implements OnInit {
       remember: [true]
     });
   }
+
   async login(): Promise<void> {
     // tslint:disable-next-line: forin
     for (const i in this.validateForm.controls) {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
     }
-    if(!this.validateForm.controls['userName'].value && !this.validateForm.controls['password'].value){
+    if (!this.validateForm.controls['userName'].value && !this.validateForm.controls['password'].value) {
       this.messageService.error('username or password can not be null')
     }
-    try{
-      const res = await this.httpService.login({
-        name: this.validateForm.controls['userName'].value,
-        password:this.validateForm.controls['password'].value
-      }).toPromise();
-      localStorage.setItem('token',res.data.accessToken);
-      this.router.navigate(['/world'])
-    }catch(err){
-      this.messageService.error(err.error.message)
-    }
+    const res = await this.httpService.login({
+      name: this.validateForm.controls['userName'].value,
+      password: this.validateForm.controls['password'].value
+    }).toPromise();
+    localStorage.setItem('token', res.data.accessToken);
+    this.router.navigate(['/world'])
 
   }
-  register(){
+
+  register() {
     this.router.navigate(['/register'])
   }
 }
