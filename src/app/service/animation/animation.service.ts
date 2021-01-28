@@ -13,8 +13,8 @@ export class AnimationService {
   constructor(
     private world: WorldService
   ) { }
-  movePTP(target:Point,duration:number, mesh) {
-    const joints = mesh.userData.joints;
+  movePTP(target:Point,duration:number, robot) {
+    const joints = robot.userData.joints;
     let from = {}, to = {};
     for (let i = 0; i < joints.length; i++) {
       from[`j${i}`] = joints[i].jointValue;
@@ -30,14 +30,14 @@ export class AnimationService {
           joints[3].setAngle(j3);
           joints[4].setAngle(j4);
           joints[5].setAngle(j5);
-          mesh.userData.fk();
+          robot.userData.fk();
       }, () => {
         resolve(new Subject())
       })
     })
 
   }
-  moveLiner(){
+  moveLiner(target:Point,duration:number,robot){
 
   }
 }

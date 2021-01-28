@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
       this.messageService.error('username or password can not be null')
     }
     const res = await this.httpService.login({
-      name: this.validateForm.controls['userName'].value,
+      username: this.validateForm.controls['userName'].value,
       password: this.validateForm.controls['password'].value
     }).toPromise();
     localStorage.setItem('token', res.data.accessToken);

@@ -249,6 +249,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
   gotoProject() {
+    this.saveWorld();
     this.router.navigate(['/world/projects']);
   }
   async saveWorld() {

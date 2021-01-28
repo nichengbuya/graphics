@@ -37,7 +37,7 @@ export class RegisterComponent implements OnInit {
       this.validateForm.controls[i].updateValueAndValidity();
     }
     let res = await this.httpService.register({
-      name: this.validateForm.controls['name'].value,
+      username: this.validateForm.controls['name'].value,
       password: this.validateForm.controls['password'].value
     }).toPromise();
     this.messageService.success(res.data.user)

@@ -1,15 +1,21 @@
 <div class="container">
     <div class="item" *ngFor="let p of projects ">
         <a [routerLink]="['/project', p._id]">
-            <nz-card nzHoverable [nzCover]="coverTemplate" [nzExtra]="extraTemplate">
-                <nz-card-meta [nzTitle]="p.name" [nzDescription]="p.description"></nz-card-meta>
+            <div class="card">
+                <div class="card-title">
+                    <h4>{{p.name}}</h4>
+                    <a (click)="createConfirmModal(p._id,$event)">Delete</a>
+                </div>
+                <img [src]="p.img" alt="">
+            </div>
+            <!-- <nz-card nzHoverable [nzCover]="coverTemplate" [nzTitle]="p.name" [nzExtra]="extraTemplate">
             </nz-card>
             <ng-template #coverTemplate>
-                <img  alt="example" [src]="p.img" />
+                <img alt="example" [src]="p.img" />
             </ng-template>
             <ng-template #extraTemplate>
                 <a (click)="createConfirmModal(p._id,$event)">Delete</a>
-            </ng-template>
+            </ng-template> -->
         </a>
     </div>
     <div class="item" (click)="createTplModal(tplTitle, tplContent, tplFooter)">
