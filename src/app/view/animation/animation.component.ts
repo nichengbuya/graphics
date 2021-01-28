@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { WorldService } from 'src/app/service/world/world.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription, Observable } from 'rxjs';
-import { Intersection, Object3D, Matrix4, Vector3 } from 'three';
+import { Intersection, Object3D, Matrix4, Vector3, Quaternion } from 'three';
 import { EventEmitService } from 'src/app/service/event/event-emit.service';
 import { CommandService } from 'src/app/service/command/command.service';
 import { LoadBarComponent } from 'src/app/components/load-bar/load-bar.component';
@@ -16,6 +16,16 @@ import { Point } from 'src/app/components/point-list/point-list.component';
 import { ProjectService } from 'src/app/service/project/project.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { DeviceService } from 'src/app/service/device/device.service';
+
+interface model{
+  name:string,
+  parent:string,
+  matrix:Array<any>,
+  projectId:string,
+  deviceId:string,
+  uuid:string
+}
+
 @Component({
   selector: 'app-animation',
   templateUrl: './animation.component.html',
@@ -24,13 +34,13 @@ import { DeviceService } from 'src/app/service/device/device.service';
 
 export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   private subs: Subscription[] = [];
-  robot: URDFRobot;
-  animation: number;
-  curPanel: 'motion' | 'property' | null = 'property';
-  curObj: Object3D;
-  visible = false;
-  maxPanelWidth: number = Math.floor(window.innerWidth * 0.5);
-  minPanelwidth: number = Math.floor(window.innerWidth * 0.2);
+  public robot: URDFRobot;
+  public animation: number;
+  public curPanel: 'motion' | 'property' | null = 'property';
+  public curObj: Object3D;
+  public visible = false;
+  public maxPanelWidth: number = Math.floor(window.innerWidth * 0.5);
+  public minPanelwidth: number = Math.floor(window.innerWidth * 0.2);
   public panelList = [
     {
       name: 'property',
@@ -97,6 +107,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     private messageService: NzMessageService,
     private deviceService: DeviceService
   ) { }
+
   @ViewChild('animation') div: ElementRef;
   @ViewChild('tool') tool: ElementRef;
   @ViewChild('load') load: LoadBarComponent;
@@ -107,17 +118,20 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
       this.worldService.select(e);
     }));
   }
+  
   ngAfterViewInit() {
     setTimeout(() => {
       this.init();
     }, 0);
 
   }
+
   ngOnDestroy() {
     this.worldService.removeEvent();
     this.subs.forEach(s => s.unsubscribe());
     cancelAnimationFrame(this.animation);
   }
+
   public async init() {
     this.worldService.setWorld(this.div.nativeElement);
     this.worldService.initPlane();
@@ -197,19 +211,24 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   //   const start = nodeMap.get(1);
   //   start.next();
   // }
-  stop() {
+
+  public stop() {
     this.subs.forEach(s => s.unsubscribe());
   }
-  undo() {
+
+  public undo() {
     this.commandService.undo();
   }
-  redo() {
+
+  public redo() {
     this.commandService.redo();
   }
-  setSignal() {
+
+  public setSignal() {
     // this.event.next(1);
   }
-  onResizeEnd(event: ResizeEvent): any {
+
+  public onResizeEnd(event: ResizeEvent): any {
     if (event.rectangle.width < this.minPanelwidth) {
       this.tool.nativeElement.style.width = `${0}px`;
       this.tool.nativeElement.style.border = 'none';
@@ -225,17 +244,21 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
       }, 0);
     }
   }
-  onResizing(event: ResizeEvent): void {
+
+  public onResizing(event: ResizeEvent): void {
     this.tool.nativeElement.style.width = `${event.rectangle.width}px`;
     this.worldService.updateSize();
   }
-  dragenter(event: DragEvent): void {
+
+  public dragenter(event: DragEvent): void {
 
   }
-  dragover(event: DragEvent): void {
+
+  public dragover(event: DragEvent): void {
     event.preventDefault();
   }
-  async drop(event: DragEvent): Promise<void> {
+
+  public async drop(event: DragEvent): Promise<void> {
     const device = JSON.parse(event.dataTransfer.getData('device'));
     const position = this.worldService.screenPointToThreeCoords(event.offsetX, event.offsetY, this.div.nativeElement, 0);
     Object.assign(device, {
@@ -245,14 +268,17 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     this.worldService.addObject(obj);
 
   }
-  dragleave(e: DragEvent) {
+
+  public dragleave(e: DragEvent) {
 
   }
-  gotoProject() {
+
+  public gotoProject() {
     this.saveWorld();
     this.router.navigate(['/world/projects']);
   }
-  async saveWorld() {
+
+  public async saveWorld() {
     const objects = this.worldService.formateObject();
     await this.uploadScreenShot();
     const res = await this.projectService.updateProject({
@@ -261,7 +287,8 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     }).toPromise();
     this.messageService.success(res.data)
   }
-  async uploadScreenShot() {
+
+  public async uploadScreenShot() {
     let mycanvas = this.worldService.renderer.domElement;
     let base64Data = mycanvas.toDataURL();
     let blob = this.dataURItoBlob(base64Data);
@@ -271,6 +298,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     await this.projectService.upload(fd).toPromise();
 
   }
+
   private dataURItoBlob(base64Data) {
     let byteString;
     if (base64Data.split(',')[0].indexOf('base64') >= 0)
@@ -285,21 +313,32 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     return new Blob([ia], { type: mimeString });
   }
 
-  async loadWorld() {
+  public async loadWorld() {
     const res = await this.projectService.getObjectById(this.projectId).toPromise();
-    const objects = res.data;
+    const objects:Array<model> = res.data;
+    const map = new Map();
     for (let o of objects) {
       const res1 = await this.deviceService.getDevice(o.deviceId).toPromise();
       const device = res1.data;
-      //TODO
-      device.position = new Vector3();
+      const matrix = new Matrix4();
+      matrix.elements = o.matrix[0].elements;
+      const position = new Vector3();
+      position.setFromMatrixPosition(matrix);
+      device.position = position;
+      const quaternion = new Quaternion();
+      quaternion.setFromRotationMatrix(matrix);
       const obj: Object3D = await this.worldService.initObject(device);
-
+      obj.quaternion.copy(quaternion)
       obj.uuid = o.uuid;
+      map.set(obj.uuid,obj);
       this.worldService.addObject(obj);
     }
     for (let o of objects) {
-
+      if(map.has(o.parent)){
+        const child = map.get(o.uuid);
+        const parent = map.get(o.parent);
+        this.worldService.attach(child,parent);
+      }
     }
   }
 }

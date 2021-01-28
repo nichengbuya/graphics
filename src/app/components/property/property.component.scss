@@ -1,12 +1,11 @@
-.property{
-    &-item{
-        height: calc(100vh/5 - 40px);
+.property {
+    &-item {
+        height: calc((100vh - 250px)/3);
         overflow: auto;
     }
-    .txt{
-        overflow:hidden;
-        text-overflow:ellipsis;
-        white-space:nowrap;
-
+    .txt {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 }

@@ -528,6 +528,7 @@ export class WorldService {
       loader.load(url, (robot: URDFLink) => {
         robot.userData.type = device.type;
         robot.userData.attach = device.attach;
+        robot.userData.id = device.id;
         robot.position.copy(device.position);
         robot.userData.joints = Object.values(robot.joints).filter((joint: any) => joint.jointType === 'revolute');
         this.scene.add(robot);
@@ -571,7 +572,7 @@ export class WorldService {
             matrix[1], matrix[5], matrix[9], matrix[13],
             matrix[2], matrix[6], matrix[10], matrix[14],
           ];
-          const theta = robot.userData.kinematics.inverse(cartPos)[3];
+          const theta = robot.userData.kinematics.inverse(cartPos)[2];
           if (theta.find((item: number) => isNaN(item)) === undefined) {
             if (theta.every((item: number) => item === 0)) {
             } else {

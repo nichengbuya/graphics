@@ -40,4 +40,10 @@ export class AnimationService {
   moveLiner(target:Point,duration:number,robot){
 
   }
+  moveCircle(){
+
+  }
+  gripperOpen(){
+    
+  }
 }
