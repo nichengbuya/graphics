@@ -24,7 +24,7 @@ registerLocaleData(zh);
   declarations: [
     AppComponent,
     LoginComponent,
-    RegisterComponent,
+    RegisterComponent
   ],
   imports: [
     NgZorroAntdModule,

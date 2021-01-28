@@ -23,6 +23,7 @@ import { ProjectComponent } from 'src/app/components/project/project.component';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AnimationComponent } from '../animation/animation.component';
+import { TeachingComponent } from 'src/app/components/teaching/teaching.component';
 
 @NgModule({
   imports: [
@@ -47,7 +48,8 @@ import { AnimationComponent } from '../animation/animation.component';
       TreeComponent,
       MotionComponent,
       PointListComponent,
-      ProjectComponent
+      ProjectComponent,
+      TeachingComponent
     ],
   exports: [WorldComponent]
 })

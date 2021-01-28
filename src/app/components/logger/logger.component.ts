@@ -30,7 +30,6 @@ export class LoggerComponent implements OnInit, OnDestroy {
     this.redos = this.commandService.redos.slice().reverse();
   }
   public onClick(i){
-    console.log(i);
     this.commandService.selectCommond(i);
   }
 }
