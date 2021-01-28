@@ -66,10 +66,9 @@ export class CommandService {
     return cmd;
   }
   clear() {
-
     this.undos = [];
     this.redos = [];
-    // this.idCounter = 0;
+    this.commandEmit.emit();
   }
 
 

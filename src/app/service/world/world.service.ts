@@ -693,6 +693,7 @@ export class WorldService {
         break;
       }
     }
+    this.commandService.execute(new AddObjectCommand(this, res));
     return res;
   }
 
@@ -722,7 +723,6 @@ export class WorldService {
   addObject(model: THREE.Object3D) {
     this.scene.add(model);
     this.devices.push(model);
-    this.commandService.execute(new AddObjectCommand(this, model));
     this.eventEmitService.sceneChange.emit(this.scene);
   }
 
@@ -800,7 +800,7 @@ export class WorldService {
     }
     model.traverse((child: any) => {
       if (child.currentColor !== undefined) { return; }
-      if (child.isMesh) {
+      if (child.isMesh && child.userData.type !== 'point') {
         if (child.material instanceof Array) {
           for (const m of child.material) {
             child.currentColor = m.color.getHex();
@@ -811,7 +811,7 @@ export class WorldService {
       }
     });
     model.traverse((child: any) => {
-      if (child.isMesh) {
+      if (child.isMesh && child.userData.type !== 'point') {
         if (child.material instanceof Array) {
           for (const m of child.material) {
             m.color.set(color);
@@ -828,13 +828,13 @@ export class WorldService {
       return;
     }
     model.traverse((child: any) => {
-      if (child.isMesh) {
+      if (child.isMesh && child.userData.type !== 'point') {
         if (child.material instanceof Array) {
           for (const m of child.material) {
             m.color.set(child.currentColor);
           }
         } else {
-          child.material.color.set(child.currentColor);
+            child.material.color.set(child.currentColor);
         }
       }
     });

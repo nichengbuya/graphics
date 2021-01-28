@@ -4,6 +4,7 @@
       <span style="font-weight: bold;">Waypoints</span>
     </label>
         <div class="card-list-title-icon" (click)="deletePoint()">
+          <i nz-icon nzType="delete" nzTheme="outline"></i>
         </div>
     </div>
     <!-- <div class="card-container scroll-bar" id="card-list" cdkDropList (cdkDropListDropped)="drop($event)">
@@ -34,7 +35,7 @@
             <label nz-checkbox [ngModel]="point.isActive" (ngModelChange)="updateSingleChecked($event,point)"></label>
             <div class="card" (click)="selectPoint(point)" [ngClass]="{
         'is-active': point.isActive
-      }" nz-tooltip [nzTitle]="titleTemplate1" nzPlacement="left">
+      }" nz-tooltip [nzTooltipTitle]="titleTemplate1" nzTooltipPlacement="left">
                 <div class="card-left">
                     {{pointIndex}}
                 </div>
@@ -42,7 +43,8 @@
                     {{'Joint_point' }}
                 </div>
                 <ng-template #titleTemplate1>
-                    j1:{{point.joints[0]|number:'1.3'}}°,j2:{{point.joints[1]| number:'1.3'}}°,j3:{{point.joints[2]|number:'1.3'}}°<br> j4:{{point.joints[3]|number:'1.3'}}°,j5:{{point.joints[4]| number:'1.3'}}°,j6:{{point.joints[5]| number:'1.3'}}°
+                    j1:{{point.joints[0].jointValue|number:'1.3'}}°,j2:{{point.joints[1].jointValue| number:'1.3'}}°,j3:{{point.joints[2].jointValue|number:'1.3'}}°<br> 
+                    j4:{{point.joints[3].jointValue|number:'1.3'}}°,j5:{{point.joints[4].jointValue| number:'1.3'}}°,j6:{{point.joints[5].jointValue| number:'1.3'}}°
                 </ng-template>
             </div>
             <div class="card-edit" (click)="edit(point)">

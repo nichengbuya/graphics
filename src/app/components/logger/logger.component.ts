@@ -22,14 +22,21 @@ export class LoggerComponent implements OnInit, OnDestroy {
       this.formatData();
     }));
   }
+
   ngOnDestroy(){
     this.subs.forEach(s => s.unsubscribe());
   }
+
   private formatData(){
     this.undos = this.commandService.undos;
     this.redos = this.commandService.redos.slice().reverse();
   }
+
   public onClick(i){
     this.commandService.selectCommond(i);
+  }
+
+  public clear(){
+    this.commandService.clear();
   }
 }

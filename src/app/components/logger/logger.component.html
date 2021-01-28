@@ -1,4 +1,5 @@
 <div class="logger">
+    <button class="clear-button" nz-button (click)="clear()">Clear</button>
     <nz-list nzBordered nzSize="small">
         <nz-list-item class="undos" *ngFor="let item of undos;let i = index;" (click) = "onClick(i)">{{item.name}}</nz-list-item>
     </nz-list>
