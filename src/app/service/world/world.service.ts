@@ -18,7 +18,6 @@ import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
 import { AnimationMixer, AxesHelper, BoxBufferGeometry, Clock, Euler, Intersection, Mesh, MeshBasicMaterial, MeshLambertMaterial, Object3D, PerspectiveCamera, Vector3, WebGLRenderer } from 'three';
 import { EventEmitService } from '../event/event-emit.service';
 import Kinematics from '../../common/kinematics';
-import { environmentUrl } from '../../config';
 import { CommandService } from '../command/command.service';
 import { AddObjectCommand } from '../command/add-object-command';
 import { SetPositionCommand } from '../command/set-position-command';
@@ -26,6 +25,7 @@ import { SetRotationCommand } from '../command/set-rotation-command';
 import { RemoveObjectCommand } from '../command/remove-object-command';
 import { AttachCommand } from '../command/attach-command';
 import { DetachCommand } from '../command/detach-command';
+import { HOST } from 'src/app/common/utils';
 export interface Device {
   img: string; name: string; url: string; type: string; attach: string; joints?: [], position?: Vector3, id: string;
 }
@@ -84,7 +84,7 @@ export class WorldService {
     this.editType = type;
   }
 
-  init() {
+  public init() {
     this.initScene();
     this.initCamera();
     this.initLight();
@@ -100,7 +100,7 @@ export class WorldService {
     this.animate();
   }
 
-  bindResizeEvent() {
+  private bindResizeEvent() {
     window.addEventListener('resize', () => {
       this.updateSize();
     }, false);
@@ -521,9 +521,9 @@ export class WorldService {
   initGripper(device: Device): Promise<URDFLink> {
     const manager = new THREE.LoadingManager();
     const loader = new URDFLoader(manager);
-    loader.packages = `${environmentUrl}/static/robot`;
+    loader.packages = `${HOST}/static/robot`;
     loader.fetchOptions = { mode: 'cors', credentials: 'same-origin' };
-    const url = `${environmentUrl}/${device.url}`;
+    const url = `${HOST}/${device.url}`;
     return new Promise((resolve, reject) => {
       loader.load(url, (robot: URDFLink) => {
         robot.userData.type = device.type;
@@ -544,9 +544,9 @@ export class WorldService {
   initRobot(device: Device): Promise<URDFLink> {
     const manager = new THREE.LoadingManager();
     const loader = new URDFLoader(manager);
-    loader.packages = `${environmentUrl}/static/robot`;
+    loader.packages = `${HOST}/static/robot`;
     loader.fetchOptions = { mode: 'cors', credentials: 'same-origin' };
-    const url = `${environmentUrl}/${device.url}`;
+    const url = `${HOST}/${device.url}`;
     return new Promise((resolve, reject) => {
       loader.load(url, (robot: URDFLink) => {
         robot.userData.type = device.type;
@@ -771,7 +771,7 @@ export class WorldService {
     child.position.copy(parent.userData.effector.position);
     child.quaternion.copy(parent.userData.effector.quaternion);
     this.transformControls.detach();
-    // this.curObj = null;
+    
   }
 
   /**

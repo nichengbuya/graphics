@@ -1,5 +1,4 @@
 import Kinematics from 'src/app/common/kinematics';
-import { environmentUrl } from 'src/app/config';
 import * as THREE from 'three';
 import { Mesh, BoxBufferGeometry, MeshBasicMaterial, Object3D } from 'three';
 import { Device } from './world.service';

@@ -173,9 +173,10 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
       return
     }
     const pointList: Point[] = this.pointService.getPointList();
-    for (let p of pointList) {
-      await this.AnimationService.movePTP(p, 3000, this.curObj);
-    }
+    // await this.AnimationService.moveJointPoints(pointList, 3000, this.curObj);
+    await this.AnimationService.moveLinerPoints(pointList, 3, this.curObj);
+    // await this.AnimationService.moveCirclePoints(pointList, 3000, this.curObj);
+    
   }
   // public deploy() {
   //   this.subs.forEach(s => s.unsubscribe());

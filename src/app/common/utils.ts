@@ -1,4 +1,4 @@
-export const HOST = 'http://localhost:3000';
+export const HOST = 'http://localhost:3003';
 export function uuid() {
     let s = [];
     let hexDigits = "0123456789abcdef";
@@ -11,4 +11,7 @@ export function uuid() {
 
     let uuid = s.join("");
     return uuid;
+}
+export const COLOR = {
+    active: 0xffff00
 }

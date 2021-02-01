@@ -7,7 +7,7 @@ export const tween = (configs: { from: any; to: any; duration: any; easing?: ((k
     easing = (k: any) => k,
     autoStart = true // 为了使用tween的chain
   } = configs;
-
+  
   const tweenAnimation = new TWEEN.Tween(from)
     .to(to, duration)
     .easing(easing)

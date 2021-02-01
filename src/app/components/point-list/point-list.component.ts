@@ -5,6 +5,7 @@ import { Quaternion, Vector3, Mesh } from 'three';
 import { PointService } from 'src/app/service/point/point.service';
 export interface Point {
   joints: Array<{jointValue:number}>;
+  position:Vector3;
   mesh: Mesh;
   isActive: boolean;
 }
@@ -90,6 +91,7 @@ export class PointListComponent implements OnInit {
       joints: robot.userData.joints.map(j => {
         return { jointValue: j.jointValue }
       }),
+      position: mesh.position,
       isActive: false
     }
     this.pointList.push(point);

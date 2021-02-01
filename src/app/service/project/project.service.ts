@@ -7,7 +7,7 @@ const UPDATE_PROJECT='/project/updateProject';
 const CREATE_PROJECT='/project/createProject';
 const DELETE_PROJECT='/project/deleteProject';
 const GET_OBJECT_BY_ID='/project/getObjectById';
-const UPLOAD='/project/upload';
+const UPLOAD_SCREEN_CAPTURE='/project/uploadScreenCapture';
 @Injectable({
   providedIn: 'root'
 })
@@ -32,6 +32,6 @@ export class ProjectService {
     return this.http.get<any>(HOST + GET_OBJECT_BY_ID, { params: { id } })
   }
   upload(formData):Observable<any>{
-    return this.http.post(HOST + UPLOAD,formData)
+    return this.http.post(HOST + UPLOAD_SCREEN_CAPTURE,formData)
   }
 }
