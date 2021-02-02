@@ -1,6 +1,6 @@
 .motion {
     &-item {
-        height: 33%;
+        height: calc((100vh - 250px)/3);
         overflow: auto;
     }
     .txt {

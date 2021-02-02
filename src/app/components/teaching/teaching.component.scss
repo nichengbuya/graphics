@@ -1,0 +1,16 @@
+.teaching {
+    display: flex;
+    justify-content: center;
+}
+
+.dropplet {
+    width: 40px;
+    height: 60px;
+    border-bottom-left-radius: 36% 23%;
+    border-bottom-right-radius: 36% 23%;
+    background: #eeeeee;
+    transform: perspective(40px) rotateX(10deg);
+    &:before {
+        content: '';
+    }
+}
