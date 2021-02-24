@@ -72,12 +72,20 @@ export class PointListComponent implements OnInit {
     if (!robot || robot.userData.type !== 'robot') {
       return;
     }
-    this.pointList = this.pointList.filter(p => {
-      p.isActive !== false;
-      robot.remove(p.mesh);
+    this.pointList.forEach(p =>{
+      if(p.isActive){
+        robot.remove(p.mesh);
+     }
     })
+    this.pointList = this.pointList.filter(p => {
+
+      return p.isActive == false;
+
+    })
+
     this.pointService.setPointList(this.pointList)
     this.allChecked = false;
+    this.indeterminate = false;
   }
   public addPoint() {
     const robot = this.worldService.getCurObj();

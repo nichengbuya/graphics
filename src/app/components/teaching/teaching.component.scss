@@ -1,16 +1,53 @@
 .teaching {
+    height: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
+}
+.control{
+  display: grid;
+  width: 166px;
+  height:166px;
+  grid-template-columns: 60px 46px 60px;
+  grid-template-rows: 60px 46px 60px;
+  &-item{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    &-button{
+      width:36px;
+      height:60px;
+      background:#CCCCCC;
+      &:before{
+        content:"";
+        position: absolute;
+        border-left: 18px solid transparent;
+        border-right: 18px solid transparent;
+        border-top:20px solid #CCCCCC;
+        bottom:-20px;
+      }
+    }
+  }
+  &-item:nth-child(2){
+
+  }
+  &-item:nth-child(4){
+    .control-item-button{
+      transform:rotate(-90deg)
+    }
+  }
+  &-item:nth-child(6){
+    .control-item-button{
+      transform:rotate(90deg)
+    }
+  }
+  &-item:nth-child(8){
+    .control-item-button{
+      transform:rotate(180deg)
+    }
+
+  }
 }
 
-.dropplet {
-    width: 40px;
-    height: 60px;
-    border-bottom-left-radius: 36% 23%;
-    border-bottom-right-radius: 36% 23%;
-    background: #eeeeee;
-    transform: perspective(40px) rotateX(10deg);
-    &:before {
-        content: '';
-    }
-}
+   

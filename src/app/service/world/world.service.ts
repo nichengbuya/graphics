@@ -284,7 +284,9 @@ export class WorldService {
 
   animate() {
     this.id = requestAnimationFrame(this.animate.bind(this));
-
+    if(this.curObj && this.curObj.userData.type === 'robot'){
+      this.curObj.userData.ik();
+    }
     // required if controls.enableDamping or controls.autoRotate are set to true
     this.controls.update();
     if (this.mixer) {

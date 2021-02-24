@@ -53,7 +53,7 @@ export class AnimationService {
         points[i]
       ])
 
-      linerPoints = [...linerPoints,...curve.getPoints(100)];
+      linerPoints = [...linerPoints,...curve.getPoints(2)];
     }
     return linerPoints;
   }
@@ -135,11 +135,12 @@ export class AnimationService {
     this.line = new Line(curveGeometry,linematerial);
     robot.add(this.line);
     this.worldService.getScene().attach(this.line)
-    const times: any = [0,1,duration]
+    const times: any = Array.from({length:points.length},(x,i)=>x=i);
     const posArr = []; 
     points.forEach(p=>{
       return posArr.push(p.x,p.y,p.z);
     })
+    console.log(posArr)
     const values: any = new Float32Array(posArr);
     const posTrack = new KeyframeTrack('.position',times,values);
     const clip = new AnimationClip('default',duration, [posTrack]);
@@ -170,7 +171,11 @@ export class AnimationService {
 
   public moveLinerPoints(pointList:Point[],duration:number,robot:Object3D){
     const currentPosition = robot.userData.effector.position;
-    const points = this.getLinerTrajectory(pointList,currentPosition);
+    this.getLinerTrajectory(pointList,currentPosition);
+    const points = pointList.map(p=>{
+      return p.position
+    })
+    points.unshift(currentPosition);
     this.trajectoryPlay(points,duration,robot);
   }
 
