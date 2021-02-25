@@ -55,7 +55,6 @@ export class ShaderService {
         const gui = this.gui = new GUI();
         const changeShader = () => {
             const shader = this.data.shader;
-            console.log(shader);
             if (vertexShaderMap[shader] && fragmentShaderMap[shader]) {
                 const newMaterial = new THREE.ShaderMaterial({
                     uniforms,

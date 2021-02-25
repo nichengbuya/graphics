@@ -1,21 +1,7 @@
 <div class="teaching">
-    <div class="control">
-        <div class="control-item"></div>
-        <div class="control-item">
-            <div class="control-item-button"></div>
+    <div class="control" >
+        <div class="control-item" *ngFor="let item of controlArr;let index = index">
+            <div *ngIf="item.button" class="control-item-button" (mousedown)="leadThrough(item)" (mouseup)="stop()"></div>
         </div>
-        <div class="control-item"></div>
-        <div class="control-item">
-            <div class="control-item-button"></div>
-        </div>
-        <div class="control-item"></div>
-        <div class="control-item">
-            <div class="control-item-button"></div>
-        </div>
-        <div class="control-item"></div>
-        <div class="control-item">
-            <div class="control-item-button"></div>
-        </div>
-        <div class="control-item"></div>
     </div>
 </div>

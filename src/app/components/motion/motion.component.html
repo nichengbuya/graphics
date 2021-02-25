@@ -1,7 +1,7 @@
 <div class="motion">
     <nz-divider nzPlain nzText="Teaching apparatus" nzOrientation="left"></nz-divider>
     <div class="motion-item">
-       <app-teaching></app-teaching>
+       <app-teaching [curObj] ="curObj"></app-teaching>
     </div>
     <nz-divider nzPlain nzText="Point List" nzOrientation="left"></nz-divider>
     <div class="motion-item">
@@ -10,21 +10,18 @@
     <nz-divider nzPlain nzText="Joint" nzOrientation="left"></nz-divider>
     <div class="motion-item">
         <div  *ngIf="curObj">
-            <nz-row *ngFor="let j of curObj.userData.joints">
-                <nz-col class="txt" nzSpan="4">
+            <div class="grid" *ngFor="let j of curObj.userData.joints">
+                <div>
                     {{j.name}}
-                </nz-col>
-                <nz-col nzSpan="10">
+                </div>
                     <nz-slider [nzMin]="j.limit.lower" [nzMax]="j.limit.upper" [ngModel]="j.jointValue | number:'1.3'"
                         [nzStep]="0.1" (ngModelChange)="changeJoint($event,j)"></nz-slider>
-                </nz-col>
-                <div nz-col nzSpan="2">
+  
                     <nz-input-number [nzMin]="j.limit.lower" [nzMax]="j.limit.upper" [ngStyle]="{ marginLeft: '16px' }"
                         [ngModel]="j.jointValue | number:'1.3'" [nzStep]="0.1" (ngModelChange)="changeJoint($event,j)">
                     </nz-input-number>
                 </div>
-                <br><br>
-            </nz-row>
+          
         </div>
         
     </div>

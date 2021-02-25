@@ -36,7 +36,7 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
   private subs: Subscription[] = [];
   public robot: URDFRobot;
   public animation: number;
-  public curPanel: 'motion' | 'property' | null = 'property';
+  public curPanel: string;
   public curObj: Object3D;
   public visible = false;
   public maxPanelWidth: number = Math.floor(window.innerWidth * 0.5);
@@ -105,7 +105,8 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     private pointService: PointService,
     private projectService: ProjectService,
     private messageService: NzMessageService,
-    private deviceService: DeviceService
+    private deviceService: DeviceService,
+
   ) { }
 
   @ViewChild('animation') div: ElementRef;
@@ -117,6 +118,9 @@ export class AnimationComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subs.push(this.eventEmitService.emitClick.subscribe((e: Intersection[]) => {
       this.worldService.select(e);
     }));
+    this.route.firstChild.url.subscribe(res=>{
+      this.curPanel = res[0].path;
+    })
   }
   
   ngAfterViewInit() {

@@ -1,38 +1,29 @@
 <div class="property">
-    <nz-divider nzPlain nzText="Scene" nzOrientation="left"></nz-divider>
-    <div class="property-item">
-        <app-tree [treeData]="nodes"></app-tree>
+  <nz-divider nzPlain nzText="Scene" nzOrientation="left"></nz-divider>
+  <div class="property-item">
+    <app-tree [treeData]="nodes"></app-tree>
+  </div>
+
+
+  <nz-divider nzPlain nzText="Pose" nzOrientation="left"></nz-divider>
+  <div class="property-item">
+    <div>
+      <div class="grid" *ngFor="let p of pose">
+        <div>
+          {{p.key}}
+        </div>
+        <nz-input-number [ngModel]=" p.value | number: '1.3' " [nzStep]="10" [nzMin]="p.lower" [nzMax]="p.upper"
+          (ngModelChange)="changePose($event,p)">
+        </nz-input-number>
+        <div>
+          {{p.unit}}
+        </div>
+      </div>
     </div>
 
-    
-    <nz-divider nzPlain nzText="Pose" nzOrientation="left"></nz-divider>
-    <div class="property-item" >
-        <div>
-            <nz-row *ngFor="let p of pose">
-                <nz-col nzSpan="4">
-                    {{p.key}}
-                </nz-col>
-                <div nz-col nzSpan="8">
-                    <nz-input-number 
-                    [ngStyle]="{width: '80%'}" 
-                    [ngModel]=" p.value | number: '1.3' " 
-                    [nzStep]="10"
-                    [nzMin]="p.lower" 
-                    [nzMax]="p.upper"
-                    (ngModelChange)="changePose($event,p)"
-                    >
-                    </nz-input-number>
-                </div>
-                <nz-col nzSpan="4">
-                    {{p.unit}}
-                </nz-col>
-                <br><br>
-            </nz-row>
-        </div>
-        
-    </div>
-    <nz-divider nzPlain nzText="Logger" nzOrientation="left"></nz-divider>
-    <div class="property-item">
-        <app-logger></app-logger>
-    </div>
+  </div>
+  <nz-divider nzPlain nzText="Logger" nzOrientation="left"></nz-divider>
+  <div class="property-item">
+    <app-logger></app-logger>
+  </div>
 </div>

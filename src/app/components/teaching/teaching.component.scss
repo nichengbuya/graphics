@@ -6,9 +6,9 @@
 }
 .control{
   display: grid;
-  width: 166px;
+  width: 242px;
   height:166px;
-  grid-template-columns: 60px 46px 60px;
+  grid-template-columns: 60px 46px 60px 30px 46px;
   grid-template-rows: 60px 46px 60px;
   &-item{
     display: flex;
@@ -32,17 +32,23 @@
   &-item:nth-child(2){
 
   }
-  &-item:nth-child(4){
+  &-item:nth-child(6){
     .control-item-button{
       transform:rotate(-90deg)
     }
   }
-  &-item:nth-child(6){
+  &-item:nth-child(8){
     .control-item-button{
       transform:rotate(90deg)
     }
   }
-  &-item:nth-child(8){
+  &-item:nth-child(12){
+    .control-item-button{
+      transform:rotate(180deg)
+    }
+
+  }
+  &-item:nth-child(15){
     .control-item-button{
       transform:rotate(180deg)
     }

@@ -140,7 +140,6 @@ export class AnimationService {
     points.forEach(p=>{
       return posArr.push(p.x,p.y,p.z);
     })
-    console.log(posArr)
     const values: any = new Float32Array(posArr);
     const posTrack = new KeyframeTrack('.position',times,values);
     const clip = new AnimationClip('default',duration, [posTrack]);
