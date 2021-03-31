@@ -2,15 +2,16 @@ import * as THREE from 'three';
 import { vertexShaderMap, fragmentShaderMap } from './utils';
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
 import { Injectable } from '@angular/core';
-interface Data{
+const matcapTextureUrl = "https://i.loli.net/2021/02/27/7zhBySIYxEqUFW3.png";
+interface Data {
     shader: string;
 }
-interface Prop{
+interface Prop {
     container: any;
 }
 @Injectable({
     providedIn: 'root'
-  })
+})
 export class ShaderService {
     uniforms;
     renderer: THREE.WebGLRenderer;
@@ -20,23 +21,43 @@ export class ShaderService {
     container: HTMLElement;
     mesh: THREE.Mesh<THREE.PlaneBufferGeometry, THREE.ShaderMaterial>;
     data: Data = {
-        shader: 'snail'
+        shader: 'rayMatching'
     };
     gui: any;
     constructor() {
     }
-    init( container) {
-        this.container = container ;
+    init(container) {
+        this.container = container;
         const width = container.offsetWidth;
         const height = container.offsetHeight;
         this.scene = new THREE.Scene();
+        const loader = new THREE.TextureLoader();
+        const texture = loader.load(matcapTextureUrl);
         this.camera = new THREE.OrthographicCamera(- 1, 1, 1, - 1, 0, 1);
         const geometry = new THREE.PlaneBufferGeometry(2, 2);
 
         const uniforms = this.uniforms = {
             iTime: { value: 1.0 },
             iResolution: { value: new THREE.Vector2(width * 1.0, height * 1.0) },
-            iMouse: { value: new THREE.Vector2(0.0, 0.0) }
+            iMouse: { value: new THREE.Vector2(0.0, 0.0) },
+            iTexture: {
+                value: texture
+            },
+            iProgress: {
+                value: 1
+            },
+            iVelocityBox: {
+                value: 0.25
+            },
+            iVelocitySphere: {
+                value: 0.5
+            },
+            iAngle: {
+                value: 1.5
+            },
+            iDistance: {
+                value: 1.2
+            }
         };
 
         const material = new THREE.ShaderMaterial({
@@ -66,7 +87,7 @@ export class ShaderService {
 
         };
         const list = Object.keys(vertexShaderMap);
-        gui.add(this.data, 'shader',list).name('shader').onChange(changeShader);
+        gui.add(this.data, 'shader', list).name('shader').onChange(changeShader);
 
         this.onWindowResize = () => {
             this.updateSize()
@@ -76,7 +97,7 @@ export class ShaderService {
         this.animate();
 
     }
-    updateSize(){
+    updateSize() {
         const { container } = this;
         this.renderer.setSize(container.offsetWidth, container.offsetHeight);
     }
