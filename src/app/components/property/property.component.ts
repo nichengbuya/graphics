@@ -36,7 +36,7 @@ export class PropertyComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.worldService.setEditType('building');
     this.curObj = this.worldService.getCurObj();
-    this.nodes = this.worldService.getScene()? this.worldService.getScene().children.filter(o => o.type !== 'Object3D'): [];
+    this.nodes = this.worldService.getScene() ? this.worldService.getScene().children.filter(o => o.type !== 'Object3D') : [];
     this.formatePose();
 
     this.subs.push(this.eventEmitService.emitClick.subscribe(e => {
