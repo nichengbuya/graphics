@@ -27,7 +27,7 @@ import { AttachCommand } from '../command/attach-command';
 import { DetachCommand } from '../command/detach-command';
 import { HOST } from 'src/app/common/utils';
 export interface Device {
-  img: string; name: string; url: string; type: string; attach: string; joints?: []; position?: Vector3; id: string;
+  img: string; name: string; url: string; type: string; attach: string; joints?: [], position?: Vector3, id: string;
 }
 @Injectable({
   providedIn: 'root'
@@ -284,7 +284,7 @@ export class WorldService {
 
   animate() {
     this.id = requestAnimationFrame(this.animate.bind(this));
-    if (this.curObj && this.curObj.userData.type === 'robot'){
+    if(this.curObj && this.curObj.userData.type === 'robot'){
       this.curObj.userData.ik();
     }
     // required if controls.enableDamping or controls.autoRotate are set to true
@@ -315,17 +315,11 @@ export class WorldService {
     const mouse = new THREE.Vector2();
     const rect = canvas.getBoundingClientRect();
     this.mousemove = (event) => {
-      // mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      // mouse.y = - ((event.clientY - rect.top) / rect.height) * 2 + 1;
-      // raycaster.setFromCamera(mouse, camera);
-      // const intersects = raycaster.intersectObjects(objects, true);
-      // this.eventEmitService.emitMove.emit(intersects);
-      const x = event.clientX - rect.left;
-      console.log(x);
-      const y = event.clientY - rect.top;
-      // if (x <= 0){
-      //   this.controls.object.position.x += 1;
-      // }
+      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = - ((event.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(objects, true);
+      this.eventEmitService.emitMove.emit(intersects);
     };
     this.mouseclick = (event) => {
       mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -393,10 +387,21 @@ export class WorldService {
     this.controls.minPolarAngle = 0;
     this.controls.maxPolarAngle = Math.PI / 2;
     this.controls.enableKeys = false;
-    console.log(this.controls);
-    // this.controls.mouseButtons.MIDDLE = 0;
-    // this.controls.mouseButtons.RIGHT = -1;
-    // this.controls.mouseButtons.LEFT = -1;
+
+    const mousemove = () => {
+      // this.emitService.dragEmit.emit(true);
+    };
+    const mousedown = () => {
+      this.controls.domElement.addEventListener('mousemove', mousemove);
+    };
+    const mouseup = () => {
+      this.controls.domElement.removeEventListener('mousemove', mousemove);
+    };
+    this.controls.domElement.addEventListener('mousedown', mousedown);
+    this.controls.domElement.addEventListener('wheel', mousemove);
+    this.controls.domElement.addEventListener('mouseup', mouseup);
+
+    this.controls.update();
   }
 
   initTransformControl() {
@@ -584,8 +589,8 @@ export class WorldService {
         manager.onLoad = () => {
           resolve(robot);
           robot.userData.joints.forEach((joint: any, index: number) => {
-            joint.setAngle(device.joints[index]);
-          });
+            joint.setAngle(device.joints[index])
+          })
           robot.userData.fk();
         };
       }, () => { }, (error: any) => {
@@ -595,7 +600,7 @@ export class WorldService {
   }
 
   initPoint(effector): Mesh {
-    const vertexShader = [
+    let vertexShader = [
       'varying vec3	vVertexWorldPosition;',
       'varying vec3	vVertexNormal;',
       'varying vec4	vFragColor;',
@@ -606,7 +611,7 @@ export class WorldService {
       '	gl_Position	= projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
       '}'
     ].join('\n');
-    const fragmentShader2 = [
+    let fragmentShader2 = [
       'uniform vec3	glowColor;',
       'uniform float	coeficient;',
       'uniform float	power;',
@@ -623,8 +628,8 @@ export class WorldService {
       '}'
     ].join('\n');
 
-    const sphere = new THREE.SphereBufferGeometry(0.04, 32, 32);
-    const material = new THREE.ShaderMaterial({
+    let sphere = new THREE.SphereBufferGeometry(0.04, 32, 32);
+    let material = new THREE.ShaderMaterial({
       uniforms: {
         coeficient: {
           value: 0,
@@ -636,22 +641,22 @@ export class WorldService {
           value: new THREE.Color(0x50BED7)
         }
       },
-      vertexShader,
+      vertexShader: vertexShader,
       fragmentShader: fragmentShader2,
       blending: THREE.NormalBlending,
       transparent: true,
       depthWrite: false,
       depthTest: false
     });
-    const point = new THREE.Mesh(sphere, material);
-    const haloGeometry = new THREE.SphereBufferGeometry(0.02, 32, 32);
-    const haloMaterial = new THREE.MeshBasicMaterial({
+    let point = new THREE.Mesh(sphere, material);
+    let haloGeometry = new THREE.SphereBufferGeometry(0.02, 32, 32);
+    let haloMaterial = new THREE.MeshBasicMaterial({
       color: new THREE.Color(0x50BED7),
       depthWrite: false,
       depthTest: false,
       transparent: true
     });
-    const halo = new THREE.Mesh(haloGeometry, haloMaterial);
+    let halo = new THREE.Mesh(haloGeometry, haloMaterial);
     point.userData.type = halo.userData.type = 'point';
     point.add(halo);
     point.matrixAutoUpdate = true;
@@ -671,7 +676,7 @@ export class WorldService {
     mesh.userData = { ...device };
     return new Promise((resolve, reject) => {
       resolve(mesh);
-    });
+    })
 
   }
 
@@ -679,15 +684,15 @@ export class WorldService {
     let res;
     switch (device.type) {
       case 'robot': {
-        res = await this.initRobot(device);
+        res = await this.initRobot(device)
         break;
       }
       case 'gripper': {
-        res = await this.initGripper(device);
+        res = await this.initGripper(device)
         break;
       }
       case 'geometry': {
-        res = await this.initGeometry(device);
+        res = await this.initGeometry(device)
         break;
       }
     }
@@ -709,7 +714,7 @@ export class WorldService {
 
     vec.sub(camera.position).normalize();
 
-    const distance = (targetZ - camera.position.z) / vec.z;
+    var distance = (targetZ - camera.position.z) / vec.z;
 
     pos.copy(camera.position).add(vec.multiplyScalar(distance));
     return pos;
@@ -769,7 +774,7 @@ export class WorldService {
     child.position.copy(parent.userData.effector.position);
     child.quaternion.copy(parent.userData.effector.quaternion);
     this.transformControls.detach();
-
+    
   }
 
   /**
@@ -874,8 +879,8 @@ export class WorldService {
         parent: d.parent ? d.parent.uuid : undefined,
         matrix: d.matrix,
         uuid: d.uuid
-      };
-    });
+      }
+    })
     return msg;
   }
 
