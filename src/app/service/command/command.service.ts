@@ -70,6 +70,4 @@ export class CommandService {
     this.redos = [];
     this.commandEmit.emit();
   }
-
-
 }

@@ -28,19 +28,20 @@ export class RegisterComponent implements OnInit {
     });
   }
   async submitForm(): Promise<void> {
-    if (!this.validateForm.controls['agree'].value) {
-      this.messageService.warning('Please agree the compact')
-      return
+    if (!this.validateForm.controls.agree.value) {
+      this.messageService.warning('Please agree the compact');
+      return;
     }
+    // tslint:disable-next-line:forin
     for (const i in this.validateForm.controls) {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
     }
-    let res = await this.httpService.register({
-      username: this.validateForm.controls['name'].value,
-      password: this.validateForm.controls['password'].value
+    const res = await this.httpService.register({
+      username: this.validateForm.controls.name.value,
+      password: this.validateForm.controls.password.value
     }).toPromise();
-    this.messageService.success(res.data.user)
+    this.messageService.success(res.data.user);
   }
 
   updateConfirmValidator(): void {
@@ -55,7 +56,7 @@ export class RegisterComponent implements OnInit {
       return { confirm: true, error: true };
     }
     return {};
-  };
+  }
 
   getCaptcha(e: MouseEvent): void {
     e.preventDefault();
